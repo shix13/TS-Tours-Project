@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\Customer;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -55,4 +56,23 @@ class LoginController extends Controller
 
         return redirect('/');
     }
+
+    public function login(Request $request)
+{   
+    $this->validate($request, [
+        'email' => 'required|email',
+        'password' => 'required|min:8',
+    ]);
+
+    $credentials = $request->only('email', 'password');
+    
+    if (Auth::attempt($credentials)) {
+            return redirect()->intended('home'); // Redirect to the dashboard upon successful login
+    }
+    
+
+    return back()->withErrors(['email' => 'Invalid credentials']);
+}
+
+
 }

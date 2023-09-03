@@ -81,7 +81,7 @@ class EmployeeController extends Controller
 
     public function showDashboard()
     {
-        return view('employee');
+        return view('employees.dashboard');
     }
 
     public function logout(){
