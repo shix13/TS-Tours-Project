@@ -3080,6 +3080,38 @@ License - nucleoapp.com/license/
 Created using IcoMoon - icomoon.io
 
 -------------------------------- */
+
+.custom-file-upload {
+  cursor: pointer;
+  display: inline-block;
+  padding: 10px 18px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  color: #333;
+  text-align: center;
+}
+
+.custom-success-message {
+  background-color: #d4edda; /* Light green background color */
+  border-color: #c3e6cb; /* Light green border color */
+  color: #155724; /* Dark green text color */
+  padding: 0.75rem 1.25rem; /* Padding for the message */
+  border-radius: 0.25rem; /* Rounded corners */
+  font-size: 16px; /* Adjust font size as needed */
+  width: 100%; 
+}
+
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #d4d4ca4f; /* Change 'blue' to your desired color */
+}
+
+.custom-file-upload:hover {
+  background-color: #e9e9e9;
+}
+
+
 @font-face {
   font-family: 'Nucleo Outline';
   src: url("../fonts/nucleo-outline.eot");
@@ -4158,6 +4190,42 @@ Created using IcoMoon - icomoon.io
 .sidebar[data-color="black"] .nav li.active>a:not([data-toggle="collapse"]) i,
 .off-canvas-sidebar[data-color="black"] .nav li.active>a:not([data-toggle="collapse"]) i {
   color: #000; /* Set the icon color to black */
+}
+
+/* Set the background color to dark gray */
+.sidebar[data-color="dark-gray"]:after,
+.off-canvas-sidebar[data-color="dark-gray"]:after {
+  background: #333; /* Replace with your dark gray color code */
+}
+
+/* Set the text color to dark gray */
+.sidebar[data-color="dark-gray"] .nav li.active>a:not([data-toggle="collapse"]),
+.off-canvas-sidebar[data-color="dark-gray"] .nav li.active>a:not([data-toggle="collapse"]) {
+  color: #333; /* Replace with your dark gray color code */
+}
+
+/* Set the icon color to dark gray */
+.sidebar[data-color="dark-gray"] .nav li.active>a:not([data-toggle="collapse"]) i,
+.off-canvas-sidebar[data-color="dark-gray"] .nav li.active>a:not([data-toggle="collapse"]) i {
+  color: #333; /* Replace with your dark gray color code */
+}
+
+/* Set the background color to dark blue */
+.sidebar[data-color="dark-blue"]:after,
+.off-canvas-sidebar[data-color="dark-blue"]:after {
+  background: #191973; /* Set the background color to #191973 (dark blue) */
+}
+
+/* Set the text color to dark blue */
+.sidebar[data-color="dark-blue"] .nav li.active>a:not([data-toggle="collapse"]),
+.off-canvas-sidebar[data-color="dark-blue"] .nav li.active>a:not([data-toggle="collapse"]) {
+  color: #191973; /* Set the text color to #191973 (dark blue) */
+}
+
+/* Set the icon color to dark blue */
+.sidebar[data-color="dark-blue"] .nav li.active>a:not([data-toggle="collapse"]) i,
+.off-canvas-sidebar[data-color="dark-blue"] .nav li.active>a:not([data-toggle="collapse"]) i {
+  color: #191973; /* Set the icon color to #191973 (dark blue) */
 }
 
 

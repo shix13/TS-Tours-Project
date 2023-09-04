@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 use App\Models\Employee;
+use App\Models\Vehicle;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -52,7 +53,7 @@ class EmployeeController extends Controller
         ]);
 
         // Redirect or respond as needed
-        return redirect()->route('employee.login'); // Redirect to login page after registration
+        return redirect()->route('employee.dashboard'); // Redirect to login page after registration
     }
 
     public function showLoginForm()
@@ -90,4 +91,6 @@ class EmployeeController extends Controller
 
         return redirect('/');
     }
+
+    
 }

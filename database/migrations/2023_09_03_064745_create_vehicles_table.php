@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('registrationNumber')->unique();
             $table->string('unitName');
             $table->integer('pax');
-            $table->text('specification');
+            $table->text('specification')->nullable();
             $table->string('status');
             $table->timestamps();
         });

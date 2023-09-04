@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\AccountsController;
+use App\Http\Controllers\TariffController;
 use app\Http\Controllers\Auth\LoginController;
 use App\Http\Middleware\ManagerMiddleware;
 
@@ -44,6 +47,32 @@ Route::prefix('employee')->group(function(){
     
     //LOGOUT
         Route::get('/logout', [App\Http\Controllers\Auth\EmployeeController::class, 'logout'])->name('employee.logout');
+
+    //PAGES
+    //--Vehicle
+        Route::get('/vehicles', [VehicleController::class, 'vehicleIndex'])->name('employee.vehicle');
+        Route::get('/vehiclescreate', [VehicleController::class, 'create'])->name('vehicles.create');
+        Route::post('/vehicles/save', [VehicleController::class, 'store'])->name('vehicles.save');
+        Route::get('/vehicles/{id}/edit', [VehicleController::class, 'edit'])->name('vehicles.edit');
+        Route::delete('/vehicles/{id}', [VehicleController::class, 'destroy'])->name('vehicles.destroy');
+        Route::put('/vehicles/{id}', [VehicleController::class, 'update'])->name('vehicles.update');
+
+    //--Accounts
+        Route::get('/accounts', [AccountsController::class, 'accountIndex'])->name('employee.accounts');
+        
+
+    //--Tariffs
+        Route::get('/tariff', [TariffController::class, 'tariffIndex'])->name('employee.tariff'); 
+        Route::get('/tariffcreate', [TariffController::class, 'create'])->name('tariffs.create');
+        Route::post('/tariff/save', [TariffController::class, 'store'])->name('tariffs.save');
+        Route::get('/tariff/{id}/edit', [TariffController::class, 'edit'])->name('tariff.edit');
+        Route::delete('/tariff/{id}', [TariffController::class, 'destroy'])->name('tariff.destroy');
+        Route::put('/tariff/{id}', [TariffController::class, 'update'])->name('tariffs.update');
+
+    //--Maintenance
+        Route::get('/maintenance', [VehicleController::class, 'maintenanceIndex'])->name('employee.maintenance');
+
+    
     
     //DASHBOARD
         Route::get('/', [App\Http\Controllers\Auth\EmployeeController::class, 'showDashboard'])->name('employee.dashboard');
