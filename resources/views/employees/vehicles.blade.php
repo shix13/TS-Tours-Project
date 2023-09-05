@@ -89,7 +89,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="status col-md-2 align-middle">
+                                    <td class="status col-md-0 align-middle">
                                         <span style="color: {{ $vehicle->status === 'Available' ? 'green' : 'red' }}"><strong>{{ $vehicle->status }}</strong></span>
                                     </td>
                                     <td class="status col-md-3 align-middle">

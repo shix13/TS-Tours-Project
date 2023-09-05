@@ -31,6 +31,15 @@ Route::get('/user/logout', [App\Http\Controllers\Auth\LoginController::class, 'u
 
 Route::get('/browsevehicles', [App\Http\Controllers\CustomerController::class, 'getVehicles'])->name('browsevehicles');
 
+
+
+
+
+
+
+
+
+
 Route::prefix('employee')->group(function(){
     //LOGIN ACCOUNT
      Route::get('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'showLoginForm'])->name('employee.login');

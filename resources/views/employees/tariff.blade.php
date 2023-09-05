@@ -48,10 +48,10 @@
                             <strong>Location</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Rate Per Day</strong>
+                            <strong>Rate / Day</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Rent Per Hour</strong>
+                            <strong>Rent / Hour</strong>
                         </th>
                         <th class="bold-text">
                             <strong>Actions</strong>
@@ -67,8 +67,8 @@
                                 <tr>
                                     <td>{{ $counter++ }}</td>
                                     <td>{{ $tariff->location }}</td>
-                                    <td>{{ $tariff->rate_Per_Day }}</td>
-                                    <td>{{ $tariff->rent_Per_Hour }}</td>
+                                    <td>Php {{ $tariff->rate_Per_Day }}</td>
+                                    <td>Php {{ $tariff->rent_Per_Hour }}</td>
                                     <td>
                                         <a href="{{ route('tariff.edit', $tariff->tariffID) }}" class="btn btn-primary">EDIT</a>
                                         
