@@ -1,7 +1,7 @@
 @extends('layouts.empbar')
 
 @section('title')
-   TS | Dashboard
+    TS | Payment
 @endsection
 
 @section('content')

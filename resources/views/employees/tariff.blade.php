@@ -15,7 +15,7 @@
         </div>
         
         <div class="col-md-8">
-            <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-right:-190px; border-radius: 5px; margin-bottom: 20px;">
+            <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
                 <div class="form-group col-md-12">
                     <input type="text" id="locationSearch" class="form-control" placeholder="Enter location">
                 </div>
@@ -32,6 +32,16 @@
         </div>
         <br>
         @endif
+
+        @if(session('error'))
+        <div class="custom-error-message alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <br>
+        @endif
         
     <div class="card">
         <div class="card-header">
@@ -39,7 +49,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tariffTable" class="table table-hover table-striped">
+                <table id="table" class="table table-hover table-striped">
                     <thead class="text-primary font-montserrat">
                         <th class="bold-text">
                             <strong>#</strong>
@@ -69,8 +79,8 @@
                                     <td>{{ $tariff->location }}</td>
                                     <td>Php {{ $tariff->rate_Per_Day }}</td>
                                     <td>Php {{ $tariff->rent_Per_Hour }}</td>
-                                    <td>
-                                        <a href="{{ route('tariff.edit', $tariff->tariffID) }}" class="btn btn-primary">EDIT</a>
+                                    <td class="text-center col-3">
+                                        <a href="{{ route('tariff.edit', $tariff->tariffID) }}" class="btn btn-primary col-5">EDIT</a>
                                         
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $tariff->tariffID }}">DELETE</button>
                                         @include('employees.tariffmodal', ['tariffID' => $tariff->tariffID])
@@ -91,17 +101,7 @@
 
     
 
-    <div class="card card-plain">
-        <div class="card-header">
-            <h4 class="card-title">Table on Plain Background</h4>
-            <p class="category">Here is a subtitle for this table</p>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <!-- Second table structure here, if needed -->
-            </div>
-        </div>
-    </div>
+    
 </div>
 
 @endsection
@@ -111,7 +111,7 @@
     $(document).ready(function () {
         // Function to filter the table rows based on the location query
         function searchByLocation(query) {
-            var table = $('#tariffTable');
+            var table = $('#table');
             table.find('tbody tr').each(function () {
                 var row = $(this);
                 var locationCell = row.find('td:nth-child(2)'); // Adjust the column index if needed

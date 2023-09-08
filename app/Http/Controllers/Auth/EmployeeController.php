@@ -92,5 +92,83 @@ class EmployeeController extends Controller
         return redirect('/');
     }
 
+    public function edit($empID)
+{
+    $employee = Employee::find($empID); 
+
+    if (!$employee) {
+        // Handle the case where the employee is not found
+        return redirect()->route('employee.accounts')->with('error', 'Employee not found.');
+    }
+    return view('employees.accountsEdit', compact('employee'));
+}
+
+public function update(Request $request, $empID)
+{
+    // Validate the form data
+    $request->validate([
+        'ProfileImage' => 'image|max:2048',
+        'FirstName' => 'required|string|max:255',
+        'LastName' => 'required|string|max:255',
+        'Email' => 'required|email|unique:employees,email,' . $empID . ',empID',
+        'MobileNum' => 'required|string|max:20',
+        'AccountType' => 'required|string',
+    ]);
+
+    // Find the employee by ID
+    $employee = Employee::findOrFail($empID);
     
+    // Update the employee's information
+    $employee->firstName = $request->input('FirstName');
+    $employee->lastName = $request->input('LastName');
+    $employee->email = $request->input('Email');
+    $employee->mobileNum = $request->input('MobileNum');
+    $employee->accountType = $request->input('AccountType');
+
+    // Handle profile image upload
+    if ($request->hasFile('ProfileImage')) {
+        // Delete the old profile image if it exists
+        if ($employee->profile_img) {
+            Storage::disk('public')->delete($employee->profile_img);
+        }
+        // Store the new profile image
+        $employee->profile_img = $request->file('ProfileImage')->store('profile_images', 'public');
+    }
+
+    // Update the password if a new one is provided
+        if ($request->filled('password')) {
+        $employee->password = Hash::make($request->input('password'));
+    }
+
+        $employee->save();
+
+        return redirect()->route('employee.accounts')->with('success', 'Employee information updated successfully.');
+    }
+
+    public function delete(Request $request, $empID)
+    {
+    // Find the employee by ID
+        $employee = Employee::find($empID);
+
+    if (!$employee) {
+        // Handle the case where the employee is not found
+        // Redirect back with an error message, for example
+        return redirect()->back()->with('error', 'Employee not found.');
+    }
+
+    // Perform the deletion
+        $employee->delete();
+
+    // Redirect to a success page or back to the employee list
+    // Optionally, you can use ->with() to send a success message
+        return redirect()->route('employee.accounts')->with('success', 'Employee deleted successfully.');
+    }
+    public function profile()
+    {
+        // Get the currently authenticated employee using the 'employee' guard
+        $employee = auth()->guard('employee')->user();
+
+        // Pass the employee's data to the 'employee.profile' view
+        return view('employees.profile', compact('employee'));
+    }
 }

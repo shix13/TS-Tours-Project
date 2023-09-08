@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\Auth\EmployeeController; // Import the EmployeeController
 use Illuminate\Support\Facades\Auth;
+use App\Models\Employee; 
+
 class ManagerMiddleware
 {
     /**
@@ -17,9 +19,9 @@ class ManagerMiddleware
     
     public function handle($request, Closure $next)
     {
-        $user = Auth::user(); // Get the authenticated user
+        $user = Auth::guard('employee')->user(); // Get the authenticated user
         
-        if ($user instanceof EmployeeController && $user->accountType === 'Manager') {
+        if ($user instanceof Employee && $user->accountType === 'Manager') {
             return $next($request);
         }
 

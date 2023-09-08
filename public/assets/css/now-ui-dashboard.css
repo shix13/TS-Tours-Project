@@ -1971,6 +1971,20 @@ a.text-success:hover {
   color: #18ce0f !important;
 }
 
+.table th {
+  border: 1px solid #ccc;
+}
+
+/* Add border to table cells */
+.table td {
+  border: 1px solid #ccc;
+}
+
+/* Optional: Add padding to table cells for better spacing */
+.table td, .table th {
+  padding: 8px;
+}
+
 .text-warning,
 a.text-warning:focus,
 a.text-warning:hover {
@@ -2736,6 +2750,11 @@ a[data-toggle="collapse"][aria-expanded="true"] .caret,
   left: auto !important;
 }
 
+.dropdown-menu.dropdown-menu-left {
+  right: auto !important;
+  left: 0 !important;
+}
+
 .dropdown-menu .dropdown-item,
 .bootstrap-select .dropdown-menu.inner li a {
   font-size: 0.8571em;
@@ -3100,6 +3119,46 @@ Created using IcoMoon - icomoon.io
   border-radius: 0.25rem; /* Rounded corners */
   font-size: 16px; /* Adjust font size as needed */
   width: 100%; 
+}
+
+.custom-navbar-bg {
+  background-color: #181973;
+  /* Add any other custom styles here if needed */
+}
+
+#table th.bold-text {
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  color: #175097;
+}
+
+#emptable th.bold-text {
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  color: #175097;
+}
+
+#custtable th.bold-text {
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  color: #175097;
+}
+
+#completedCancelledTable th.bold-text {
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  color: #175097;
+}
+
+#scheduledInProgressTable th.bold-text{
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  color: #175097;
 }
 
 

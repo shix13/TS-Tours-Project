@@ -26,7 +26,7 @@
     -->
     <div class="sidebar" data-color="dark-blue">
       <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text logo-normal">
+        <a href="{{ url('/employee/vehicles') }}" class="simple-text logo-normal">
             <img src="{{ asset('storage/images/amvtsuKUK8PKSpZz1LvfqSL13YIbJSCv90KPx7kG.jpg') }}" alt="TS Tours | Rental Services Logo" class="img-fluid" style="max-width: 200px; max-height: 100px;">
             TS tours
         </a>
@@ -46,12 +46,14 @@
                         <p>Vehicles</p>
                     </a>
                 </li>
-                <li class="{{ Request::is('employee/accounts') ? 'active' : '' }}">
-                    <a href="{{ route('employee.accounts') }}">
-                        <i class="now-ui-icons users_circle-08"></i>
-                        <p>Accounts</p>
-                    </a>
-                </li>
+                @if(Auth::guard('employee')->check() && Auth::guard('employee')->user()->accountType == 'Manager')
+              <li class="{{ Request::is('employee/accounts') ? 'active' : '' }}">
+                <a href="{{ route('employee.accounts') }}">
+                    <i class="now-ui-icons users_circle-08"></i>
+                    <p>Accounts</p>
+                </a>
+              </li>
+               @endif
                 <li class="{{ Request::is('employee/tariff') ? 'active' : '' }}">
                     <a href="{{ route('employee.tariff') }}">
                         <i class="now-ui-icons business_money-coins"></i>
@@ -161,6 +163,7 @@
                     </a>
 
                      <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ route('employee.profile') }}">Profile</a>
                          <a class="dropdown-item" href="{{ route('employee.logout') }}"
                             onclick="event.preventDefault();
                                           document.getElementById('logout-form').submit();">

@@ -1,6 +1,6 @@
 <!-- resources/views/404_manager.blade.php -->
 
-@extends('layouts.app')
+@extends('layouts.employee-app')
 
 @section('content')
     <div class="container">

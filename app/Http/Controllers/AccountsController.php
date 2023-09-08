@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\Employee;
+use App\Models\Customer;
 
 class AccountsController extends Controller
 {
@@ -15,8 +16,19 @@ class AccountsController extends Controller
     {
         $this->middleware('employee')->except('logout');
     }
+
     public function accountIndex()
     {
-    return view('employees.accounts');
+        $employees = Employee::all(); // Fetch all accounts from the database
+
+        $customers = Customer::all();
+
+        return view('employees.accounts', compact('employees', 'customers'));
     }
+
+    public function create()
+    {
+        return view('accounts.create');
+    }
+
 }

@@ -19,7 +19,7 @@
 
                         <div class="form-group">
                             <label for="pic" class="custom-file-upload">
-                                <span class="icon"> </span> Update Photo
+                                <span class="icon"> </span> Upload New Photo
                             </label><hr>
                             <input type="file" name="pic" id="pic" class="form-control @error('pic') is-invalid @enderror" accept="image/*" onchange="displayImage(this)">
                             @error('pic')
@@ -72,17 +72,15 @@
 
                         <div class="form-group">
                             <label for="status">Status</label>
-                            <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
-                                <option value="Available" {{ $vehicle->status === 'Available' ? 'selected' : '' }}>Available</option>
-                                <option value="Booked" {{ $vehicle->status === 'Booked' ? 'selected' : '' }}>Booked</option>
-                                <option value="Maintenance" {{ $vehicle->status === 'Maintenance' ? 'selected' : '' }}>Maintenance</option>
-                            </select>
+                            <input type="text" id="status" name="status" class="form-control" value="{{ $vehicle->status }}" disabled>
+                            <input type="hidden" name="status" value="{{ $vehicle->status }}">
                             @error('status')
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}
                             </span>
                             @enderror
                         </div>
+                        
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Update Vehicle</button>

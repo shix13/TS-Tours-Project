@@ -1,12 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\Auth\EmployeeController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\TariffController;
 use app\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Middleware\ManagerMiddleware;
+use App\Http\Controllers\Controller;
+
 
 
 /*
@@ -40,19 +43,27 @@ Route::get('/browsevehicles', [App\Http\Controllers\CustomerController::class, '
 
 
 
+
+
+
+
 Route::prefix('employee')->group(function(){
     //LOGIN ACCOUNT
      Route::get('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'showLoginForm'])->name('employee.login');
      Route::post('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'login'])->name('employee.login.submit');
 
-    //Route::middleware('auth:employee')->group(function () {
-    //REGISTER ACCOUNT
-        //Route::middleware([App\Http\Middleware\ManagerMiddleware::class, 'Manager'])->group(function () {
+    Route::middleware('auth:employee')->group(function () {
+    //ACCOUNTS
+        Route::middleware(['manager'])->group(function (){
            Route::get('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'showRegisterForm'])->name('employee.register');
-        //});
+           Route::get('/account/{empID}/edit', [EmployeeController::class, 'edit'])->name('employee.edit');
+           Route::put('/account/{empID}', [EmployeeController::class, 'update'])->name('employee.update');
+           Route::get('/account', [AccountsController::class, 'accountIndex'])->name('employee.accounts');
+           Route::delete('/employee/{empID}', [EmployeeController::class, 'delete'])->name('employee.delete');
+        });
 
         Route::post('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'register'])->name('employee.register.submit');
-   
+        Route::get('/profile', [EmployeeController::class, 'profile'])->name('employee.profile');
     
     //LOGOUT
         Route::get('/logout', [App\Http\Controllers\Auth\EmployeeController::class, 'logout'])->name('employee.logout');
@@ -66,9 +77,7 @@ Route::prefix('employee')->group(function(){
         Route::delete('/vehicles/{id}', [VehicleController::class, 'destroy'])->name('vehicles.destroy');
         Route::put('/vehicles/{id}', [VehicleController::class, 'update'])->name('vehicles.update');
 
-    //--Accounts
-        Route::get('/accounts', [AccountsController::class, 'accountIndex'])->name('employee.accounts');
-        
+          
 
     //--Tariffs
         Route::get('/tariff', [TariffController::class, 'tariffIndex'])->name('employee.tariff'); 
@@ -79,12 +88,21 @@ Route::prefix('employee')->group(function(){
         Route::put('/tariff/{id}', [TariffController::class, 'update'])->name('tariffs.update');
 
     //--Maintenance
-        Route::get('/maintenance', [VehicleController::class, 'maintenanceIndex'])->name('employee.maintenance');
+        
+        // Routes for viewing the maintenance records
+        Route::get('/maintenance', [MaintenanceController::class, 'maintenanceIndex'])->name('employee.maintenance');
+        Route::get('/maintenanceCreate', [MaintenanceController::class, 'create'])->name('maintenance.create');
+        Route::post('/maintenance/store', [MaintenanceController::class, 'store'])->name('maintenance.store');
+        Route::put('/maintenance/{id}/update', [MaintenanceController::class, 'update'])->name('maintenance.update');
 
+        // Route for deleting a maintenance record
+        Route::delete('/maintenance/{id}/delete', [MaintenanceController::class, 'destroy'])->name('maintenance.destroy');
+
+    //BOOKING AND RENTAL
     
     
     //DASHBOARD
         Route::get('/', [App\Http\Controllers\Auth\EmployeeController::class, 'showDashboard'])->name('employee.dashboard');
 
-    //});
+    });
 });

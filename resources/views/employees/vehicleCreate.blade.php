@@ -19,7 +19,7 @@
 
                         <div class="form-group">
                             <label for="pic" class="custom-file-upload">
-                                <span class="icon"> </span> Select Photo
+                                <span class="icon">Select Photo </span> 
                             </label><hr>
                             <input type="file" name="pic" id="pic" class="form-control @error('pic') is-invalid @enderror" accept="image/*" onchange="displayImage(this)">
                             @error('pic')
