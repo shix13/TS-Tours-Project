@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Reservation extends Authenticatable
+class Booking extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -17,13 +17,13 @@ class Reservation extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $table = 'reservations';
+    protected $table = 'booking';
 
     protected $primaryKey = 'reserveID';
     
      protected $fillable = [
         'custID', 'unitID', 'tariffID', 'startDate', 'endDate', 'mobileNum', 'pickUp_Address',
-        'note', 'downpayment_Fee', 'gcash_RefNum', 'subtotal', 'status', 'date_Created'
+        'note', 'downpayment_Fee', 'gcash_RefNum', 'subtotal', 'status'
     ];
 
     /**
@@ -72,6 +72,8 @@ class Reservation extends Authenticatable
      */
     public function rental()
     {
-        return $this->hasOne(Rent::class, 'reserveID');
+        return $this->hasOne(Rent::class, 'rentID');
     }
+
+    
 }

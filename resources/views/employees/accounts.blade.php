@@ -113,7 +113,7 @@
                             <td>{{ $employee->mobileNum }}</td>
                             <td>{{ $employee->email }}</td>
                             <td class="text-center">
-                                <a href="{{ route('employee.edit', $employee->empID) }}" class="btn btn-primary">EDIT</a>
+                                <a href="{{ route('employee.edit', $employee->empID) }}" class="btn btn-primary  col-6">EDIT</a>
                                 
                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $employee->empID }}">DELETE</button>
                                 <div class="modal fade" id="deleteModal{{ $employee->empID }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -145,7 +145,7 @@
                         @endforeach
                         @else
                             <tr>
-                                <td colspan="7">No accounts available.</td>
+                                <td colspan="12">No accounts available.</td>
                             </tr>
                         @endif
                     </tbody>
@@ -202,7 +202,7 @@
                         @endforeach
                         @else
                             <tr>
-                                <td colspan="7">No accounts available.</td>
+                                <td colspan="12">No accounts available.</td>
                             </tr>
                         @endif
                     </tbody>
@@ -266,14 +266,17 @@
     }
 
     // Function to show/hide cards based on the selected filter
-    function toggleCards(selectedFilter) {
+    function toggleCards(selectedFilter, employeeRole ) {
         var employeeCard = $('#employeeCard');
         var customerCard = $('#customerCard');
 
-        if (selectedFilter === 'Employee') {
+        if (selectedFilter === 'Employee' && employeeRole!== 'All Roles') {
+            employeeCard.show();
+            customerCard.show();
+        } else if (selectedFilter === 'Employee' && employeeRole === 'All Roles') {
             employeeCard.show();
             customerCard.hide();
-        } else if (selectedFilter === 'Customer') {
+        }else if (selectedFilter === 'Customer') {
             employeeCard.hide();
             customerCard.show();
         } else if (selectedFilter === 'All') {

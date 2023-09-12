@@ -42,7 +42,7 @@ public function store(Request $request)
         'pic' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         'registrationnumber' => ['required','string','max:255',Rule::unique('vehicles'),],
         'unitname' => 'required|string|max:255',
-        'pax' => 'required|integer',
+        'pax' => 'required|integer|min:1',
         'specification' => 'nullable|string',
         'status' => 'required|string|in:Available,Booked,Maintenance',
     ]);
@@ -89,7 +89,7 @@ public function store(Request $request)
         $request->validate([
             'pic' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Add your validation rules for pic here
             'unitname' => 'required|string',
-            'pax' => 'required|integer',
+            'pax' => 'required|integer|min:1',
             'specification' => 'nullable|string',
             'status' => 'required|in:Available,Booked,Maintenance',
         ]);

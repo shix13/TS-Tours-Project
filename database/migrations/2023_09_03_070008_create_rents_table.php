@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Define foreign key constraints
-            $table->foreign('reserveID')->references('reserveID')->on('reservations');
+            $table->foreign('reserveID')->references('reserveID')->on('booking');
             $table->foreign('driverID')->references('empID')->on('employees');
         });
     }

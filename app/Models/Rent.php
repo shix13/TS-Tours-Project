@@ -47,9 +47,9 @@ class Rent extends Authenticatable
     /**
      * Get the reservation associated with the rental.
      */
-    public function reservation()
+    public function booking()
     {
-        return $this->belongsTo(Reservation::class, 'reserveID');
+        return $this->belongsTo(Booking::class, 'reserveID');
     }
 
     /**
@@ -57,6 +57,6 @@ class Rent extends Authenticatable
      */
     public function driver()
     {
-        return $this->belongsTo(Employee::class, 'empID');
+        return $this->belongsTo(Employee::class, 'driverID');
     }
 }

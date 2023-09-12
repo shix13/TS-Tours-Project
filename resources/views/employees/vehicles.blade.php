@@ -103,7 +103,7 @@
                                         <span style="color: {{ $vehicle->status === 'Available' ? 'green' : 'red' }}"><strong>{{ $vehicle->status }}</strong></span>
                                     </td>
                                     <td class="status col-md-3 align-middle text-center">
-                                        <a href="{{ route('vehicles.edit', $vehicle->unitID) }}" class="btn btn-primary">EDIT</a>
+                                        <a href="{{ route('vehicles.edit', $vehicle->unitID) }}" class="btn btn-primary  col-4">EDIT</a>
                                         
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $vehicle->unitID }}">DELETE</button>
                                         @include('employees.vehiclemodal') 
@@ -116,7 +116,7 @@
                             </tr>
                         @else
                             <tr>
-                                <td colspan="3">No vehicles available.</td>
+                                <td colspan="12">No vehicles available.</td>
                             </tr>
                         @endif
                     </tbody>

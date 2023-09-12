@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reservations', function (Blueprint $table) {
-            $table->id('reserveID'); // Auto-incrementing primary key
+        Schema::create('booking', function (Blueprint $table) {
+            $table->id('reserveID')->startingValue(1000000); // Auto-incrementing primary key
             $table->unsignedBigInteger('custID'); // Foreign key to customers table
             $table->unsignedBigInteger('unitID'); // Foreign key to vehicles table
             $table->unsignedBigInteger('tariffID'); // Foreign key to tariffs table
@@ -25,7 +25,6 @@ return new class extends Migration
             $table->string('gcash_RefNum')->nullable();
             $table->decimal('subtotal', 10, 2); // Decimal column with 10 total digits and 2 decimal places
             $table->string('status');
-            $table->timestamp('date_Created')->useCurrent();
             $table->timestamps();
 
             // Define foreign key constraints
@@ -40,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reservations');
+        Schema::dropIfExists('booking');
     }
 };

@@ -14,22 +14,19 @@
               <div class="card-header">
                 <h5 class="title">Edit Profile</h5>
               </div>
-              <div class="card-body">
+              <div class="card-body"  style="font-size: 16px;">
                 <form>
-                  
-                            
-                
                   <div class="row">
                     <div class="col-md-6 pr-1">
                       <div class="form-group">
                         <label>First Name</label>
-                        <input type="text" class="form-control" placeholder="Company" value="Mike">
+                        <input type="text" class="form-control" placeholder="First Name" value="{{$employee->firstName}}">
                       </div>
                     </div>
                     <div class="col-md-6 pl-1">
                       <div class="form-group">
                         <label>Last Name</label>
-                        <input type="text" class="form-control" placeholder="Last Name" value="Andrew">
+                        <input type="text" class="form-control" placeholder="Last Name" value="{{$employee->lastName}}">
                       </div>
                     </div>
                   </div>
@@ -37,20 +34,20 @@
                     <div class="col-md-3 pr-1">
                       <div class="form-group">
                         <label>Account Type</label>
-                        <input type="text" disabled class="form-control"  value="{{$employee->accountType}}">
+                        <input type="text" readonly class="form-control"  value="{{$employee->accountType}}" style="background-color:white;color:black">
                       </div>
                     </div>
                     <div class="col-md-5 pl-1">
                       <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
+                        <label >Email address</label>
                         <input type="email" class="form-control" value="{{$employee->email}}">
                       </div>
                     </div>
                   
                   <div class="col-md-4 pl-1">
                     <div class="form-group">
-                      <label for="email">Mobile Number</label>
-                      <input type="email" class="form-control" value="{{$employee->mobileNum}}">
+                      <label>Mobile Number</label>
+                      <input type="text" class="form-control" value="{{$employee->mobileNum}}">
                     </div>
                   </div>
                 </div>
@@ -95,6 +92,7 @@
           </div>
         </div>
       </div>
+    </div>
 @endsection
 
 @section('scripts')

@@ -16,6 +16,7 @@
   <!-- CSS Files -->
   <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" />
   <link href="{{ asset('assets/css/now-ui-dashboard.css?v=1.5.1') }}" rel="stylesheet" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body class="">
@@ -47,7 +48,7 @@
                     </a>
                 </li>
                 @if(Auth::guard('employee')->check() && Auth::guard('employee')->user()->accountType == 'Manager')
-              <li class="{{ Request::is('employee/accounts') ? 'active' : '' }}">
+              <li class="{{ Request::is('employee/account') ? 'active' : '' }}">
                 <a href="{{ route('employee.accounts') }}">
                     <i class="now-ui-icons users_circle-08"></i>
                     <p>Accounts</p>
@@ -66,8 +67,8 @@
                         <p>Maintenance</p>
                     </a>
                 </li>
-                <li class="{{ Request::is('booking-rental') ? 'active' : '' }}">
-                    <a href="{{ url('booking-rental') }}">
+                <li class="{{ Request::is('employee/booking-rental/booking') ? 'active' : '' }}">
+                    <a href="{{ route('employee.booking') }}">
                         <i class="now-ui-icons shopping_delivery-fast"></i>
                         <p>Booking & Rental</p>
                     </a>
@@ -95,10 +96,10 @@
     </div>
     
     </div>
-    <div class="main-panel" id="main-panel">
+    <div class="main-panel" id="main-panel" >
       <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-transparent bg-primary navbar-absolute">
-        <div class="container-fluid">
+      <nav class="navbar navbar-expand-lg navbar-transparent bg-primary navbar-absolute"  >
+        <div class="container-fluid" >
           <div class="navbar-wrapper">
             <div class="navbar-toggle">
               <button type="button" class="navbar-toggler">
@@ -107,46 +108,15 @@
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand">TS Tours Rental Services</a>
+            <a class="navbar-brand" style="font-size: 15px;margin-top:10px;">Employee Online System</a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
             <span class="navbar-toggler-bar navbar-kebab"></span>
             <span class="navbar-toggler-bar navbar-kebab"></span>
           </button>
-          <div class="collapse navbar-collapse justify-content-end" id="navigation">
-            <form>
-              <div class="input-group no-border">
-                <input type="text" value="" class="form-control" placeholder="Search...">
-                <div class="input-group-append">
-                  <div class="input-group-text">
-                    <i class="now-ui-icons ui-1_zoom-bold"></i>
-                  </div>
-                </div>
-              </div>
-            </form>
+          <div class="collapse navbar-collapse justify-content-end" id="navigation" >
             <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="#pablo">
-                  <i class="now-ui-icons media-2_sound-wave"></i>
-                  <p>
-                    <span class="d-lg-none d-md-block">Stats</span>
-                  </p>
-                </a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="now-ui-icons location_world"></i>
-                  <p>
-                    <span class="d-lg-none d-md-block">Some Actions</span>
-                  </p>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-              </li>
               <li class="nav-item">
                  <!-- Authentication Links -->
                  @guest('employee')
@@ -158,7 +128,7 @@
              @else
                  <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{Auth::guard('employee')->user()->firstName}}
+                      <span style="font-size: 12px;"> <strong>{{Auth::guard('employee')->user()->firstName}} {{Auth::guard('employee')->user()->lastName}}</strong> </span>
                        
                     </a>
 
@@ -183,6 +153,7 @@
       </nav>
       <!-- End Navbar -->
       <div class="panel-header panel-header-sm">
+        hi
       </div>
       <div class="content">
         @yield('content')

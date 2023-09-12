@@ -9,6 +9,7 @@ use app\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Middleware\ManagerMiddleware;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\BookingRentalController;
 
 
 
@@ -52,15 +53,15 @@ Route::prefix('employee')->group(function(){
      Route::get('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'showLoginForm'])->name('employee.login');
      Route::post('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'login'])->name('employee.login.submit');
 
-    Route::middleware('auth:employee')->group(function () {
+    //Route::middleware('auth:employee')->group(function () {
     //ACCOUNTS
-        Route::middleware(['manager'])->group(function (){
-           Route::get('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'showRegisterForm'])->name('employee.register');
+        //Route::middleware(['manager'])->group(function (){
+           Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
            Route::get('/account/{empID}/edit', [EmployeeController::class, 'edit'])->name('employee.edit');
            Route::put('/account/{empID}', [EmployeeController::class, 'update'])->name('employee.update');
            Route::get('/account', [AccountsController::class, 'accountIndex'])->name('employee.accounts');
            Route::delete('/employee/{empID}', [EmployeeController::class, 'delete'])->name('employee.delete');
-        });
+        //});
 
         Route::post('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'register'])->name('employee.register.submit');
         Route::get('/profile', [EmployeeController::class, 'profile'])->name('employee.profile');
@@ -94,15 +95,21 @@ Route::prefix('employee')->group(function(){
         Route::get('/maintenanceCreate', [MaintenanceController::class, 'create'])->name('maintenance.create');
         Route::post('/maintenance/store', [MaintenanceController::class, 'store'])->name('maintenance.store');
         Route::put('/maintenance/{id}/update', [MaintenanceController::class, 'update'])->name('maintenance.update');
-
-        // Route for deleting a maintenance record
         Route::delete('/maintenance/{id}/delete', [MaintenanceController::class, 'destroy'])->name('maintenance.destroy');
 
     //BOOKING AND RENTAL
-    
-    
+        Route::get('/booking', [BookingRentalController::class, 'bookIndex'])->name('employee.booking'); //BOOKING LIST
+        Route::get('/rents', [BookingRentalController::class, 'rentIndex'])->name('employee.rental');
+        Route::put('/approve-booking/{bookingId}', [BookingRentalController::class, 'approveBooking'])->name('employee.approveBooking');
+        Route::put('/deny-booking/{bookingId}', [BookingRentalController::class, 'denyBooking'])->name('employee.denyBooking');
+        Route::get('/rentalView/{id}', [BookingRentalController::class, 'rentalView'])->name('employee.rentalView');
+        Route::put('/rental/{id}', [BookingRentalController::class, 'rentalView'])->name('rental.update');
+
+    //PAYMENT
+        Route::get('/payment', [PaymentController::class, 'payIndex'])->name('employee.pay');
+
     //DASHBOARD
         Route::get('/', [App\Http\Controllers\Auth\EmployeeController::class, 'showDashboard'])->name('employee.dashboard');
 
-    });
+    //});
 });

@@ -11,7 +11,7 @@
 
     <div class="row">
         <div class="col-md-2">
-            <a href="{{ route('tariffs.create') }}" class="btn btn-danger">ADD NEW TARIFF</a>
+            <a href="{{ route('tariffs.create') }}" class="btn btn-danger"><strong>ADD NEW TARIFF</strong></a>
         </div>
         
         <div class="col-md-8">
@@ -80,16 +80,16 @@
                                     <td>Php {{ $tariff->rate_Per_Day }}</td>
                                     <td>Php {{ $tariff->rent_Per_Hour }}</td>
                                     <td class="text-center col-3">
-                                        <a href="{{ route('tariff.edit', $tariff->tariffID) }}" class="btn btn-primary col-5">EDIT</a>
+                                        <a href="{{ route('tariff.edit', $tariff->tariffID) }}" class="btn btn-primary col-5"><strong>EDIT</strong></a>
                                         
-                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $tariff->tariffID }}">DELETE</button>
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $tariff->tariffID }}"><strong>DELETE</strong></button>
                                         @include('employees.tariffmodal', ['tariffID' => $tariff->tariffID])
                                     </td>
                                 </tr>
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="7">No tariffs available.</td>
+                                <td colspan="12">No tariffs available.</td>
                             </tr>
                         @endif
                     </tbody>

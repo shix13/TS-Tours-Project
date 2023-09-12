@@ -3171,6 +3171,8 @@ Created using IcoMoon - icomoon.io
 }
 
 
+
+
 @font-face {
   font-family: 'Nucleo Outline';
   src: url("../fonts/nucleo-outline.eot");
@@ -4322,6 +4324,7 @@ Created using IcoMoon - icomoon.io
   padding: 0 30px 30px;
   min-height: calc(100vh - 123px);
   margin-top: -30px;
+
 }
 
 .main-panel>.navbar {
@@ -4347,7 +4350,6 @@ Created using IcoMoon - icomoon.io
 
 .panel-header {
   height: 260px;
-  padding-top: 80px;
   padding-bottom: 45px;
   background: #141E30;
   /* fallback for old browsers */
@@ -4362,7 +4364,7 @@ Created using IcoMoon - icomoon.io
 }
 
 .panel-header .header .category {
-  max-width: 600px;
+  max-width: 100%;
   color: rgba(255, 255, 255, 0.5);
   margin: 0 auto;
   font-size: 13px;
@@ -4373,7 +4375,7 @@ Created using IcoMoon - icomoon.io
 }
 
 .panel-header-sm {
-  height: 135px;
+  height: 80px;
 }
 
 .panel-header-lg {

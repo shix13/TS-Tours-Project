@@ -29,7 +29,7 @@
 
                         <div class="form-group">
                             <label for="rate_Per_Day">Rate Per Day</label>
-                            <input type="number" name="rate_Per_Day" id="rate_Per_Day" class="form-control @error('rate_Per_Day') is-invalid @enderror" required>
+                            <input type="number" name="rate_Per_Day" id="rate_Per_Day" class="form-control @error('rate_Per_Day') is-invalid @enderror" required min="1">
                             @error('rate_Per_Day')
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}
@@ -39,7 +39,7 @@
 
                         <div class="form-group">
                             <label for="rent_Per_Hour">Rent Per Hour</label>
-                            <input type="number" name="rent_Per_Hour" id="rent_Per_Hour" class="form-control @error('rent_Per_Hour') is-invalid @enderror" required>
+                            <input type="number" name="rent_Per_Hour" id="rent_Per_Hour" class="form-control @error('rent_Per_Hour') is-invalid @enderror" required min="1">
                             @error('rent_Per_Hour')
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}

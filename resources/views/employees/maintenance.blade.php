@@ -7,6 +7,7 @@
 @section('content')
 <br>
 <br>
+
 <div class="container">
     <div class="row">
         <div class="col-md-2">
@@ -98,10 +99,9 @@
                         <tr>
                             <td>{{ $counter++ }}</td>
                             <td class="text-center">
-                                {{-- Display vehicle image here --}}
-                                <img src="{{ asset('storage/' . $maintenance->vehicle->pic) }}"
-                                    alt="Vehicle Image"
-                                    style="max-width: 150px; max-height: 150px;"> <br>
+                                <div style="width: 200px; height: 150px; overflow: hidden; margin: 0 auto;">
+                                    <img src="{{ asset('storage/' . $maintenance->vehicle->pic) }}" alt="Vehicle Image" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
                                 <strong>{{$maintenance->vehicle->unitName}} - {{$maintenance->vehicle->registrationNumber}}</strong>
                             </td>
                             <td class="text-center"> {{ $maintenance->mechanic_firstName }} {{ $maintenance->mechanic_lastName }}</td>
@@ -114,7 +114,7 @@
                                 @endif
                             </td>   
                             </td>
-                            <td class="status col-md-0 align-middle">
+                            <td class="status col-md-0 align-middle text-center">
                                 <span
                                     style="color: {{ $maintenance->status === 'Scheduled' ? 'blue' : ($maintenance->status === 'In Progress' ? 'orange' : ($maintenance->status === 'Cancelled' ? 'red' : ($maintenance->status === 'Completed' ? 'green' : ''))) }}">
                                     <strong>{{ $maintenance->status }}</strong>
@@ -166,7 +166,7 @@
                         @endforeach
                         @else
                         <tr>
-                            <td colspan="7">No maintenance items available.</td>
+                            <td colspan="12">No maintenance items available.</td>
                         </tr>
                         @endif
                     </tbody>
@@ -220,10 +220,9 @@
                         <tr>
                             <td>{{ $counter++ }}</td>
                             <td class="text-center">
-                                {{-- Display vehicle image here --}}
-                                <img src="{{ asset('storage/' . $maintenance->vehicle->pic) }}"
-                                    alt="Vehicle Image"
-                                    style="max-width: 150px; max-height: 150px;"> <br>
+                                <div style="width: 200px; height: 150px; overflow: hidden; margin: 0 auto;">
+                                    <img src="{{ asset('storage/' . $maintenance->vehicle->pic) }}" alt="Vehicle Image" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
                                 <strong>{{$maintenance->vehicle->unitName}} - {{$maintenance->vehicle->registrationNumber}}</strong>
                             </td>
                             <td class="text-center"> {{ $maintenance->mechanic_firstName }} {{ $maintenance->mechanic_lastName }}</td>
@@ -235,10 +234,11 @@
                                     {!! $maintenance->notes !!}
                                 @endif
                             </td>                                            
-                            <td class="status col-md-0 align-middle">
-                                <span
+                            <td class="status col-md-0 align-middle text-center">
+                                <span 
                                     style="color: {{ $maintenance->status === 'Scheduled' ? 'blue' : ($maintenance->status === 'In Progress' ? 'orange' : ($maintenance->status === 'Cancelled' ? 'red' : ($maintenance->status === 'Completed' ? 'green' : ''))) }}">
                                     <strong>{{ $maintenance->status }}</strong>
+                                    
                                 </span>
                             </td>
                             <td class="text-center">{{ $maintenance->endDate ? $maintenance->endDate : 'Not Completed' }}</td>
@@ -249,7 +249,7 @@
                         @endforeach
                         @else
                         <tr>
-                            <td colspan="7">No completed or cancelled maintenance items available.</td>
+                            <td colspan="12">No completed or cancelled maintenance items available.</td>
                         </tr>
                         @endif
                     </tbody>
