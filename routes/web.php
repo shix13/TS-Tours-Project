@@ -34,19 +34,11 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/user/logout', [App\Http\Controllers\Auth\LoginController::class, 'userlogout'])->name('user.logout');
 
 Route::get('/browsevehicles', [App\Http\Controllers\CustomerController::class, 'getVehicles'])->name('browsevehicles');
+Route::get('/bookvehicle/{vehicle}', [App\Http\Controllers\CustomerController::class, 'book'])->name('bookvehicle');
 
-
-
-
-
-
-
-
-
-
-
-
-
+Route::post('/processbooking', [App\Http\Controllers\CustomerController::class, 'processBooking'])->name('processbooking');
+Route::post('/checkout', [App\Http\Controllers\CustomerController::class, 'storeBooking'])->name('checkout');
+Route::get('/bookingstatus', [App\Http\Controllers\CustomerController::class, 'bookingStatus'])->name('bookingstatus');
 
 Route::prefix('employee')->group(function(){
     //LOGIN ACCOUNT
