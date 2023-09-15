@@ -94,8 +94,8 @@ Route::prefix('employee')->group(function(){
         Route::get('/rents', [BookingRentalController::class, 'rentIndex'])->name('employee.rental');
         Route::put('/approve-booking/{bookingId}', [BookingRentalController::class, 'approveBooking'])->name('employee.approveBooking');
         Route::put('/deny-booking/{bookingId}', [BookingRentalController::class, 'denyBooking'])->name('employee.denyBooking');
-        Route::get('/rentalView/{id}', [BookingRentalController::class, 'rentalView'])->name('employee.rentalView');
-        Route::put('/rental/{id}', [BookingRentalController::class, 'rentalView'])->name('rental.update');
+        Route::get('/rentalView{id}', [BookingRentalController::class, 'rentalView'])->name('employee.rentalView');
+        Route::put('/rental/{id}', [BookingRentalController::class, 'update'])->name('rental.update');
 
     //PAYMENT
         Route::get('/payment', [PaymentController::class, 'payIndex'])->name('employee.pay');

@@ -115,13 +115,13 @@
                             });
                         @endphp
                             @foreach ($bookings as $booking)
-                            <tr class="{{ $booking->status === 'Approved' ? 'table-success' : ($booking->status === 'Denied' ? 'table-danger' : '') }}">
+                            <tr class="{{ $booking->status === 'Approved' ? 'table-success' : ($booking->status === 'Denied' ? 'table-danger' : '') }} text-center">
                                     <td>{{ $counter++ }}</td>
-                                    <td>{{ $booking->customer->firstName }}</td>
+                                    <td>{{ $booking->customer->firstName }} {{ $booking->customer->lastName }}</td>
                                     <td>{{ $booking->vehicle->unitName }} - {{ $booking->vehicle->registrationNumber }}</td>
                                     <td>{{ $booking->tariff->location }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($booking->startDate)->format('l M d, Y') }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($booking->endDate)->format('l M d, Y') }}</td>
+                                    <td>{!! \Carbon\Carbon::parse($booking->startDate)->format(' M d, Y <br>H:i A') !!}</td>
+                                    <td>{!! \Carbon\Carbon::parse($booking->endDate)->format('M d, Y <br>H:i A') !!}</td>
                                     <td>{{ $booking->mobileNum }}</td>
                                     <td>{{ $booking->pickUp_Address }}</td>
                                     <td>{{ $booking->note }}</td>
@@ -163,14 +163,11 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="paymentStatus">Full Payment Status:</label>
-                                                                <select class="form-control" id="paymentStatus" name="paymentStatus">
-                                                                    <option value="Pending">Pending</option>
-                                                                    <option value="Paid">Paid</option>
-                                                                </select>
-                                                            </div>
+                                                                <input type="text" style="background-color:white; color: rgb(40, 38, 38);" class="form-control" id="paymentStatus" name="paymentStatus" value="{{ $booking->subtotal - $booking->downpayment_Fee !== 0 ? 'Pending' : 'Paid' }}" readonly>
+                                                            </div>                                                            
                                                             <div class="form-group">
                                                                 <label for="totalPrice">Total Price: (Php)</label>
-                                                                <input type="text" style="background-color: rgba(111, 198, 111, 0.544);color:rgb(40, 38, 38);" class="form-control" id="totalPrice" name="totalPrice" value="   {{ $booking->subtotal + $booking->downpayment_Fee }}" readonly>
+                                                                <input type="text" style="background-color:white;color:rgb(40, 38, 38);" class="form-control" id="totalPrice" name="totalPrice" value="   {{ $booking->subtotal}}" readonly>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="balance">Balance: (Php)</label>
@@ -241,6 +238,9 @@
 </div>
 @endsection
 
+@section('scripts')
+    
+
 <script>
     function searchAndFilter() {
         // Get the input value and selected status from the filter
@@ -283,6 +283,9 @@
             }
         }
     }
+
+
+    
 </script>
 
-
+@endsection

@@ -92,7 +92,7 @@ class CustomerController extends Controller
     }
 
     public function storeBooking(Request $request){
-        try{
+    
         $bookingData = json_decode($request->input('booking_data'), true);
         $bookingData["gcash_RefNum"] = $request->input('gcash_RefNum');
         
@@ -100,12 +100,7 @@ class CustomerController extends Controller
         $booking = new Reservation($bookingData);
         $booking->save();
 
-        // Optionally, you can return a success response
-    return response()->json(['message' => 'Booking saved successfully']);
-} catch (\Exception $e) {
-    // Handle the exception, log it, or return an error response
-    return response()->json(['error' => 'An error occurred while saving the booking'], 500);
-}
+        
         //dd($bookingData);
         return redirect('home');
     }

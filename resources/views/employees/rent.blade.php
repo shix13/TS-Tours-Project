@@ -8,7 +8,6 @@
 <br><br>
 
 <div class="container">
-
     <div class="row " >
         <div class="col-md-0">
             <a href="{{ route('employee.booking') }}" class="btn btn-danger" style="padding:25px 30px 25px 30px;margin-left:15px;margin-top:0%"><strong>View Bookings</strong></a>

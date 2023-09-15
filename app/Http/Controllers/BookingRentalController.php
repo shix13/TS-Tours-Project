@@ -17,8 +17,6 @@ use App\Models\Vehicle;
 
 class BookingRentalController extends Controller
 {
-    
-
     public function bookIndex()
     {
         // Retrieve a list of drivers from the employees table
@@ -45,6 +43,13 @@ class BookingRentalController extends Controller
     try {
         $booking = Booking::findOrFail($bookingId);
 
+        $validatedData = request()->validate([
+            'driverID' => 'required|integer', 
+            'extraHours' => 'nullable|numeric', 
+            'paymentStatus' => 'required|in:Pending,Paid', 
+            'totalPrice' => 'numeric',
+            'balance' => 'numeric', 
+        ]);
         // Update the status to "Approved"
         $booking->status = 'Approved';
         $booking->save();
@@ -52,17 +57,17 @@ class BookingRentalController extends Controller
         // Create a new record in the 'rent' table
         Rent::create([
             'reserveID' => $booking->reserveID,
-            'driverID' => request('driverID'), // Assuming 'driverID' comes from a form input
+            'driverID' => $validatedData['driverID'],
             'rent_Period_Status' => 'Booked',
-            'extra_Hours' => request('extraHours'), // Assuming 'extraHours' comes from a form input
-            'payment_Status' => request('paymentStatus'), // Assuming 'paymentStatus' comes from a form input
-            'total_Price' => request('totalPrice'), // Assuming 'totalPrice' comes from a form input
-            'balance' => request('balance'), // Assuming 'balance' comes from a form input
+            'extra_Hours' => $validatedData['extraHours'],
+            'payment_Status' => $validatedData['paymentStatus'],
+            'total_Price' => $validatedData['totalPrice'],
+            'balance' => $validatedData['balance'],
         ]);
 
         return redirect()->back()->with('success', 'Booking has been approved and saved as a rent.');
     } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'An error occurred while approving the booking.');
+        return redirect()->back()->with('error', 'An error occurred while approving the booking: ' . $e->getMessage());
     }
 }
 
@@ -85,7 +90,9 @@ public function denyBooking($bookingId)
 public function rentalView($id)
 {
     // Retrieve the rental by its ID
-    $rental = Rent::find($id);
+    $rental = Rent::whereHas('booking', function ($query) use ($id) {
+        $query->where('reserveID', $id);
+    })->first();
 
     // Check if the rental exists
     if (!$rental) {
@@ -101,16 +108,29 @@ public function rentalView($id)
     $availableVehicles = Vehicle::where('status', 'Available')->get();
 
     // Retrieve a list of tariff locations
-    $tariffLocations = Tariff::pluck('location', 'tariffID');
+    $tariffs = Tariff::All();
+    
     // Pass the data to the Blade view
-    return view('employees.rentalView', compact('rental', 'bookings', 'rents','drivers', 'availableVehicles','tariffLocations'));
+    return view('employees.rentalView', compact('rental', 'bookings', 'rents','drivers', 'availableVehicles','tariffs'));
 }
 
 public function update(Request $request, $id)
-{
+{   
+    
     // Validate the form data if needed
     $request->validate([
-        // Define your validation rules here
+        'pickup_date' => 'required|date',
+        'pickup_time' => 'required|date_format:H:i',
+        'dropoff_date' => 'required|date',
+        'dropoff_time' => 'required|date_format:H:i',
+        'pickup_address'=> 'required',
+        'vehicle_id' => 'required|exists:vehicles,unitID', 
+        'tariff_id' => 'required|exists:tariffs,tariffID', 
+        'driver_assigned' => 'required|exists:employees,empID', 
+        'extra_hours' => 'numeric|min:0',
+        'status' => 'required|in:Approved,Canceled', 
+        'pickup_address' => 'required|string',
+        'note' => 'nullable|string',
     ]);
 
     // Find the rental by ID
@@ -131,31 +151,60 @@ public function update(Request $request, $id)
 
     // Attempt to update the booking information based on the form input
     try {
+
+        // Combine pickup_date and pickup_time into a single datetime string
+        $pickupDateTime = $request->input('pickup_date') . ' ' . $request->input('pickup_time');
+        // Use Carbon to create a datetime instance from the combined string
+        $combinedStartDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $pickupDateTime);
+        
+        // Combine dropoff_date and dropoff_time into a single datetime string
+        $dropoffDateTime = $request->input('dropoff_date') . ' ' . $request->input('dropoff_time');
+        // Use Carbon to create a datetime instance from the combined string
+        $combinedEndDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $dropoffDateTime);
+
+
+        // Attempt to update the booking information based on the form input
         $booking->update([
-            'startDate' => $request->input('start_date'),
-            'endDate' => $request->input('end_date'),
-            'mobileNum' => $request->input('mobile_num'),
-            'pickUp_Address' => $request->input('pick_up_address'),
+            'startDate' => $combinedStartDate, 
+            'endDate' => $combinedEndDate,
+            'tariffID' =>$request->input('tariff_id'),
+            'unitID' =>$request->input('vehicle_id'),
+            'pickUp_Address' => $request->input('pickup_address'),
             'note' => $request->input('note'),
-            'downpayment_Fee' => $request->input('downpayment_fee'),
-            'gcash_RefNum' => $request->input('gcash_ref_num'),
-            'subtotal' => $request->input('subtotal'),
             'status' => $request->input('status'),
         ]);
+       
+        $extraHours = $request->input('extra_hours', 0);
+        $ratePerHour = $booking->tariff->rent_Per_Hour; 
 
+       
+        // Calculate the difference between the new and old extra hours
+        $extraHoursDifference = $extraHours - $rental->extra_Hours;
+        
+        // Calculate the total price based on the new extra hours
+        $newTotalPrice = $rental->total_Price + ($extraHours * $ratePerHour);
+        $newBalance = $rental->balance + ($extraHours * $ratePerHour);
+        
+        // If the extra hours are reduced, adjust the total price and balance
+     if ($extraHoursDifference < 0) {
+        $extraHourRate = $ratePerHour * abs($extraHoursDifference);
+        $newTotalPrice -= $extraHourRate;
+        $newBalance -= $extraHourRate;
+        }
+        
         // Attempt to update the rental information based on the form input
         $rental->update([
             'driverID' => $request->input('driver_assigned'),
             'rent_Period_Status' => $request->input('rental_status'),
             'extra_Hours' => $request->input('extra_hours'),
-            'payment_Status' => $request->input('payment_status'),
-            'total_Price' => $request->input('total_price'),
-            'balance' => $request->input('balance'),
+            'total_Price' => $newTotalPrice, 
+            'balance' => $newBalance,
         ]);
-
+    
         return redirect()->back()->with('success', 'Rental information updated successfully.');
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'An error occurred while updating rental information: ' . $e->getMessage());
     }
+    
 }
 }
