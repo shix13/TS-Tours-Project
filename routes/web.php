@@ -10,6 +10,7 @@ use App\Http\Controllers\MaintenanceController;
 use App\Http\Middleware\ManagerMiddleware;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\BookingRentalController;
+use App\Http\Controllers\VisitorController;
 
 
 
@@ -24,9 +25,18 @@ use App\Http\Controllers\BookingRentalController;
 |
 */
 
+/*
 Route::get('/', function () {
     return view('welcome');
 });
+*/
+
+//VISITOR
+Route::get('/', [App\Http\Controllers\VisitorController::class, 'tsdefault']);
+Route::get('/aboutus', [App\Http\Controllers\VisitorController::class, 'tsabout'])->name('aboutus');
+Route::get('/fleet', [App\Http\Controllers\VisitorController::class, 'tsfleet'])->name('fleet');
+Route::get('/contactus', [App\Http\Controllers\VisitorController::class, 'tscontact'])->name('contactus');
+
 
 Auth::routes();
 
