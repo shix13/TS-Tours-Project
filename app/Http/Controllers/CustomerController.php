@@ -6,13 +6,15 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Vehicle;
 use App\Models\Tariff;
-use App\Models\Reservation;
+use App\Models\Booking;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
     //
+    private $sharedBooking; //Variable to be shared with other functions
+
     public function getVehicles(){
         $vehicles = Vehicle::all();
 
@@ -92,17 +94,16 @@ class CustomerController extends Controller
     }
 
     public function storeBooking(Request $request){
-    
         $bookingData = json_decode($request->input('booking_data'), true);
         $bookingData["gcash_RefNum"] = $request->input('gcash_RefNum');
         
         //dd($bookingData);
-        $booking = new Reservation($bookingData);
+        $booking = new Booking($bookingData);
         $booking->save();
-
         
         //dd($bookingData);
-        return redirect('home');
+        session(['sharedBooking' => $booking->toArray()]);
+        return redirect()->route('bookingstatus');
     }
 
     public function processRate($tariffRate, $startDate, $endDate){
@@ -123,5 +124,22 @@ class CustomerController extends Controller
         $downpayment = $subtotal * 0.10;
 
         return $downpayment;
+    }
+
+    public function bookingStatus(){
+        // Retrieve the shared booking data from the session or the redirect
+        $bookingData = session('sharedBooking');
+
+        return view('customers.bookingstatus', compact('bookingData'));
+    }
+
+    public function bookingIndex(){
+        $custID = Auth::user()->custID;
+
+        $bookings = Booking::with('vehicle', 'tariff')
+            ->where('custID', 'LIKE', "%{$custID}%")
+            ->paginate(10);
+        
+        return view('customers.bookingdashboard', compact('bookings'));
     }
 }

@@ -25,11 +25,6 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        Subtotal
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
                         Phone Number
                     </div>
                     <div class="col">
@@ -70,10 +65,11 @@
             </div>
             <div class="row">
                 <div class="col">
-                    Gcash Ref. Number {{ $bookingData['gcash_RefNo']}}
+                    Gcash Ref. Number {{ $bookingData['gcash_RefNum']}}
                 </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+

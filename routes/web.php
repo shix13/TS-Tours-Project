@@ -50,6 +50,8 @@ Route::post('/processbooking', [App\Http\Controllers\CustomerController::class, 
 Route::post('/checkout', [App\Http\Controllers\CustomerController::class, 'storeBooking'])->name('checkout');
 Route::get('/bookingstatus', [App\Http\Controllers\CustomerController::class, 'bookingStatus'])->name('bookingstatus');
 
+Route::get('/bookingdashboard', [App\Http\Controllers\CustomerController::class, 'bookingIndex'])->name('bookingdashboard');
+
 Route::prefix('employee')->group(function(){
     //LOGIN ACCOUNT
      Route::get('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'showLoginForm'])->name('employee.login');
