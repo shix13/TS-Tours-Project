@@ -101,9 +101,7 @@ class CustomerController extends Controller
         $booking = new Booking($bookingData);
         $booking->save();
         
-        //dd($bookingData);
-        session(['sharedBooking' => $booking->toArray()]);
-        return redirect()->route('bookingstatus');
+        return redirect()->route('bookingstatus', ['booking' => $booking])->with('success', 'Your booking details have been saved successfully');
     }
 
     public function processRate($tariffRate, $startDate, $endDate){
@@ -126,9 +124,9 @@ class CustomerController extends Controller
         return $downpayment;
     }
 
-    public function bookingStatus(){
+    public function bookingStatus($bookingID){
         // Retrieve the shared booking data from the session or the redirect
-        $bookingData = session('sharedBooking');
+        $bookingData = Booking::find($bookingID);
 
         return view('customers.bookingstatus', compact('bookingData'));
     }

@@ -31,14 +31,13 @@ Route::get('/', function () {
 });
 */
 
+Auth::routes();
+
 //VISITOR
 Route::get('/', [App\Http\Controllers\VisitorController::class, 'tsdefault']);
 Route::get('/aboutus', [App\Http\Controllers\VisitorController::class, 'tsabout'])->name('aboutus');
 Route::get('/fleet', [App\Http\Controllers\VisitorController::class, 'tsfleet'])->name('fleet');
 Route::get('/contactus', [App\Http\Controllers\VisitorController::class, 'tscontact'])->name('contactus');
-
-
-Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/user/logout', [App\Http\Controllers\Auth\LoginController::class, 'userlogout'])->name('user.logout');
@@ -48,7 +47,7 @@ Route::get('/bookvehicle/{vehicle}', [App\Http\Controllers\CustomerController::c
 
 Route::post('/processbooking', [App\Http\Controllers\CustomerController::class, 'processBooking'])->name('processbooking');
 Route::post('/checkout', [App\Http\Controllers\CustomerController::class, 'storeBooking'])->name('checkout');
-Route::get('/bookingstatus', [App\Http\Controllers\CustomerController::class, 'bookingStatus'])->name('bookingstatus');
+Route::get('/bookingstatus/{booking}', [App\Http\Controllers\CustomerController::class, 'bookingStatus'])->name('bookingstatus');
 
 Route::get('/bookingdashboard', [App\Http\Controllers\CustomerController::class, 'bookingIndex'])->name('bookingdashboard');
 

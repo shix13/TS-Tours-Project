@@ -70,7 +70,7 @@
                         @endphp
                             @foreach ($bookings as $booking)
                             <tr class="{{ $booking->status === 'Approved' ? 'table-success' : ($booking->status === 'Denied' ? 'table-danger' : '') }}">
-                                    <td>{{ $counter++ }}</td>
+                                    <td>{{ $booking->reserveID }}</td>
                                     <td>{{ $booking->customer->firstName }}</td>
                                     <td>{{ $booking->vehicle->unitName }} - {{ $booking->vehicle->registrationNumber }}</td>
                                     <td>{{ $booking->tariff->location }}</td>
