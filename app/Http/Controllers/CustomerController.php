@@ -97,7 +97,6 @@ class CustomerController extends Controller
         $bookingData = json_decode($request->input('booking_data'), true);
         $bookingData["gcash_RefNum"] = $request->input('gcash_RefNum');
         
-        //dd($bookingData);
         $booking = new Booking($bookingData);
         $booking->save();
         
@@ -125,8 +124,12 @@ class CustomerController extends Controller
     }
 
     public function bookingStatus($bookingID){
-        // Retrieve the shared booking data from the session or the redirect
-        $bookingData = Booking::find($bookingID);
+        $bookingData = Booking::with(['vehicle' => function ($query) {
+            $query->withTrashed(); // Include soft-deleted 'vehicle' records
+            }, 'tariff' => function ($query){
+            $query->withTrashed(); //Include soft-deleted 'tariff' records
+            }])
+            ->find($bookingID);
 
         return view('customers.bookingstatus', compact('bookingData'));
     }
@@ -134,8 +137,13 @@ class CustomerController extends Controller
     public function bookingIndex(){
         $custID = Auth::user()->custID;
 
-        $bookings = Booking::with('vehicle', 'tariff')
+        $bookings = Booking::with(['vehicle' => function ($query) {
+            $query->withTrashed(); // Include soft-deleted 'vehicle' records
+            }, 'tariff' => function ($query){
+            $query->withTrashed(); //Include soft-deleted 'tariff' records
+            }])
             ->where('custID', 'LIKE', "%{$custID}%")
+            ->withTrashed()
             ->paginate(10);
         
         return view('customers.bookingdashboard', compact('bookings'));

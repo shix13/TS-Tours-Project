@@ -76,7 +76,7 @@
                 <li class="{{ Request::is('payment') ? 'active' : '' }}">
                     <a href="{{ url('payment') }}">
                         <i class="now-ui-icons shopping_credit-card"></i>
-                        <p>Payment</p>
+                        <p>Remittances</p>
                     </a>
                 </li>
                 <li class="{{ Request::is('map') ? 'active' : '' }}">

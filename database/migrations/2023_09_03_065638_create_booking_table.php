@@ -32,6 +32,10 @@ return new class extends Migration
             $table->foreign('unitID')->references('unitID')->on('vehicles');
             $table->foreign('tariffID')->references('tariffID')->on('tariffs');
         });
+
+        Schema::table('booking', function (Blueprint $table) {
+            $table->softDeletes();
+        });
     }
 
     /**

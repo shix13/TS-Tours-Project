@@ -81,8 +81,6 @@ Route::prefix('employee')->group(function(){
         Route::delete('/vehicles/{id}', [VehicleController::class, 'destroy'])->name('vehicles.destroy');
         Route::put('/vehicles/{id}', [VehicleController::class, 'update'])->name('vehicles.update');
 
-          
-
     //--Tariffs
         Route::get('/tariff', [TariffController::class, 'tariffIndex'])->name('employee.tariff'); 
         Route::get('/tariffcreate', [TariffController::class, 'create'])->name('tariffs.create');
@@ -92,7 +90,6 @@ Route::prefix('employee')->group(function(){
         Route::put('/tariff/{id}', [TariffController::class, 'update'])->name('tariffs.update');
 
     //--Maintenance
-        
         // Routes for viewing the maintenance records
         Route::get('/maintenance', [MaintenanceController::class, 'maintenanceIndex'])->name('employee.maintenance');
         Route::get('/maintenanceCreate', [MaintenanceController::class, 'create'])->name('maintenance.create');
