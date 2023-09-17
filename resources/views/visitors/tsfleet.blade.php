@@ -29,30 +29,35 @@
     <!-- Image Gallery -->
     <div class="container">
         <h1>Vehicles</h1>
+        <br>
+
         <div class="image-gallery">
             <div class="image-card">
-                <img src="images/2023grandia.jpg" alt="Image 1">
+                <img src="images/2017grandia.jpg" alt="Image 1">
                 <div class="name-card">
-                    <h2>Grandia 2023</h2>
-                    <p>Specifications: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <p><b>Grandia 2017</b></p>
+                    <p>Bookings via TS Tours website.</p>
                 </div>
             </div>
             <div class="image-card">
                 <img src="images/2023grandia.jpg" alt="Image 2">
                 <div class="name-card">
-                    <h2>Toyota</h2>
-                    <p>Specifications: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <p><b>Grandia 2023</b></p>
+                    <p>Bookings via TS Tours website.</p>
                 </div>
             </div>
             <!-- Add more image cards here -->
             <div class="image-card">
-                <img src="images/2023grandia.jpg" alt="Image 3">
+                <img src="images/benz1.jpg" alt="Image 3">
                 <div class="name-card">
-                    <h2>Lexus</h2>
-                    <p>Specifications: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <p><b>Others</b></p>
+                    <p>Booking via Contact for Special Occassions.</p>
                 </div>
             </div>
         </div>
+
+        <br>
+        
     </div>
 
     <script>

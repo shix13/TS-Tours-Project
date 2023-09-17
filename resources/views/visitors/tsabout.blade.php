@@ -35,21 +35,25 @@
     <!-- Image Gallery -->
     <div class="container">
         <h1>Featured Collection</h1>
+        <br>
+
         <div class="image-gallery">
             <div class="image-card">
-                <img src="images/2023grandia.jpg" alt="Image 1">
-                <div class="image-text">Grandia 2023</div>
+                <img src="images/cbgrill1.jpg" alt="Image 1">
+                <div class="image-text">Fleet</div>
             </div>
             <div class="image-card">
-                <img src="images/2023grandia.jpg" alt="Image 2">
-                <div class="image-text">Toyota</div>
+                <img src="images/readyts1.jpg" alt="Image 2">
+                <div class="image-text">Ready</div>
             </div>
             <!-- Add more image cards here -->
             <div class="image-card">
-                <img src="images/2023grandia.jpg" alt="Image 3">
-                <div class="image-text">Lexus</div>
+                <img src="images/groupts1.jpg" alt="Image 3">
+                <div class="image-text">Team</div>
             </div>
         </div>
+
+        <br>
     </div>
 
     <script>
