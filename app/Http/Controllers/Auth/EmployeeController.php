@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
@@ -28,11 +28,46 @@ class EmployeeController extends Controller
             'FirstName' => 'required|string|max:255',
             'LastName' => 'required|string|max:255',
             'AccountType' => 'required|string|in:Manager,Clerk,Driver,Mechanic',
-            'Email' => 'required|email|unique:employees',
+            'Email' => 'required|email', Rule::unique('employees')->ignore($request->id)->whereNull('deleted_at'),
             'MobileNum' => 'required|string|min:11|max:11',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
+        // Check if a soft-deleted record with the same email exists
+        $existingAccount = Employee::onlyTrashed()->where('email', $validatedData['Email'])->first();
+
+        if ($existingAccount) {
+            // Restore and update the soft-deleted record
+            $existingAccount->restore();
+
+            // Handle profile image upload
+            if ($request->hasFile('ProfileImage')) {
+                // Delete the old profile image if it exists
+                if ($existingAccount->profile_img) {
+                    Storage::disk('public')->delete($existingAccount->profile_img);
+                } 
+                
+                $profileImage = $request->file('ProfileImage')->store('profile_images', 'public');
+            } else {
+                if ($existingAccount->profile_img) {
+                    Storage::disk('public')->delete($existingAccount->profile_img);
+                } 
+                
+                $profileImage = null;
+            }
+
+            $existingAccount->update([
+                'profile_img' => $profileImage,
+                'firstName' => $validatedData['FirstName'],
+                'lastName' => $validatedData['LastName'],
+                'accountType' => $validatedData['AccountType'],
+                'mobileNum' => $validatedData['MobileNum'],
+                'password' => $validatedData['password'],
+            ]);
+
+            return redirect()->route('employee.dashboard'); // Redirect to login page after registration
+        } 
+        else {
         // Handle profile image upload if provided
         if ($request->hasFile('ProfileImage')) {
             $profileImage = $request->file('ProfileImage')->store('profile_images', 'public');
@@ -42,7 +77,6 @@ class EmployeeController extends Controller
         
         // Create a new Employee record
         Employee::create([
-            
             'profile_img' => $profileImage,
             'firstName' => $validatedData['FirstName'],
             'lastName' => $validatedData['LastName'],
@@ -54,6 +88,7 @@ class EmployeeController extends Controller
 
         // Redirect or respond as needed
         return redirect()->route('employee.dashboard'); // Redirect to login page after registration
+        }
     }
 
     public function showLoginForm()

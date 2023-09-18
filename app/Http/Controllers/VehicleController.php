@@ -55,9 +55,17 @@ public function store(Request $request)
         // Restore and update the soft-deleted record
         $existingVehicle->restore();
 
-        // You can now update the other fields
+        // Handle vehicle image upload
+        if ($request->hasFile('pic')) {
+            // Delete the old profile image if it exists
+            if ($existingVehicle->pic) {
+                Storage::disk('public')->delete($existingVehicle->pic);
+            }
+            // Store the new profile image
+            $existingVehicle->pic = $request->file('pic')->store('profile_images', 'public');
+        }
+
         $existingVehicle->update([
-            'pic' => $data['pic'],
             'unitname' => $data['unitname'],
             'pax' => $data['pax'],
             'specification' => $data['specification'],
@@ -65,7 +73,8 @@ public function store(Request $request)
         ]);
 
         return redirect()->route('employee.vehicle')->with('success', 'Vehicle added successfully.');
-    } else {
+    } 
+    else {
         // Upload the image and store it in the 'public/vehicle' directory
         if ($request->hasFile('pic')) {
             $imagePath = $request->file('pic')->store('public/vehicle');
@@ -83,10 +92,8 @@ public function store(Request $request)
         ]);
 
         return redirect()->route('employee.vehicle')->with('success', 'Vehicle added successfully.');
+    }    
     }
-    
-    }
-
 
     public function edit($id)
     {
@@ -137,5 +144,4 @@ public function store(Request $request)
         return redirect()->route('employee.vehicle', $vehicle->unitID)
             ->with('success', 'Vehicle updated successfully');
     }
-
 }

@@ -11,7 +11,7 @@ use App\Http\Middleware\ManagerMiddleware;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\BookingRentalController;
 use App\Http\Controllers\VisitorController;
-
+use App\Http\Controllers\RemittanceController;
 
 
 /*
@@ -105,8 +105,11 @@ Route::prefix('employee')->group(function(){
         Route::get('/rentalView{id}', [BookingRentalController::class, 'rentalView'])->name('employee.rentalView');
         Route::put('/rental/{id}', [BookingRentalController::class, 'update'])->name('rental.update');
 
-    //PAYMENT
-        Route::get('/payment', [PaymentController::class, 'payIndex'])->name('employee.pay');
+    //REMITTANCE
+        Route::get('/remittance', [RemittanceController::class, 'remittanceIndex'])->name('employee.remittance');
+        Route::get('/remittance/selectrent', [RemittanceController::class, 'rentIndex'])->name('remittance.select-rent');
+        Route::get('/remittance/{id}/remittancecreate', [RemittanceController::class, 'create'])->name('remittance.create');
+        Route::post('/remittance/store', [RemittanceController::class, 'store'])->name('remittance.store');
 
     //DASHBOARD
         Route::get('/', [App\Http\Controllers\Auth\EmployeeController::class, 'showDashboard'])->name('employee.dashboard');
