@@ -23,7 +23,12 @@ class BookingRentalController extends Controller
     $drivers = Employee::where('accountType', 'Driver')->get();
 
     // Retrieve a list of bookings from the database
-    $bookings = Booking::All();
+    $bookings = Booking::with(['vehicle' => function ($query) {
+        $query->withTrashed(); // Include soft-deleted 'vehicle' records
+        }, 'tariff' => function ($query){
+        $query->withTrashed(); //Include soft-deleted 'tariff' records
+        }])
+        ->get();
 
     // Pass the data to the Blade view
     return view('employees.book', compact('bookings', 'drivers'));

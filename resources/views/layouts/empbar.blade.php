@@ -73,10 +73,10 @@
                         <p>Booking & Rental</p>
                     </a>
                 </li>
-                <li class="{{ Request::is('payment') ? 'active' : '' }}">
-                    <a href="{{ url('payment') }}">
+                <li class="{{ Request::is('employee/remittance') ? 'active' : '' }}">
+                    <a href="{{ url('employee.remittance') }}">
                         <i class="now-ui-icons shopping_credit-card"></i>
-                        <p>Payment</p>
+                        <p>Remittances</p>
                     </a>
                 </li>
                 <li class="{{ Request::is('map') ? 'active' : '' }}">

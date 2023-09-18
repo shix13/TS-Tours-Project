@@ -40,32 +40,60 @@ public function store(Request $request)
     // Validate the form data
     $data = $request->validate([
         'pic' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'registrationnumber' => ['required','string','max:255',Rule::unique('vehicles'),],
+        //registration number should be unique but ignores soft deleted ones
+        'registrationnumber' => ['required','string','max:255',Rule::unique('vehicles')->ignore($request->id)->whereNull('deleted_at'),],
         'unitname' => 'required|string|max:255',
         'pax' => 'required|integer|min:1',
         'specification' => 'nullable|string',
         'status' => 'required|string|in:Available,Booked,Maintenance',
     ]);
 
-    // Upload the image and store it in the 'public/vehicle' directory
-    if ($request->hasFile('pic')) {
-        $imagePath = $request->file('pic')->store('public/vehicle');
-        $data['pic'] = str_replace('public/', '', $imagePath); // Remove 'public/' from the image path
+    // Check if a soft-deleted record with the same registration number exists
+    $existingVehicle = Vehicle::onlyTrashed()->where('registrationnumber', $data['registrationnumber'])->first();
+
+    if ($existingVehicle) {
+        // Restore and update the soft-deleted record
+        $existingVehicle->restore();
+
+        // Handle vehicle image upload
+        if ($request->hasFile('pic')) {
+            // Delete the old profile image if it exists
+            if ($existingVehicle->pic) {
+                Storage::disk('public')->delete($existingVehicle->pic);
+            }
+            // Store the new profile image
+            $existingVehicle->pic = $request->file('pic')->store('profile_images', 'public');
+        }
+
+        $existingVehicle->update([
+            'unitname' => $data['unitname'],
+            'pax' => $data['pax'],
+            'specification' => $data['specification'],
+            'status' => $data['status'],
+        ]);
+
+        return redirect()->route('employee.vehicle')->with('success', 'Vehicle added successfully.');
+    } 
+    else {
+        // Upload the image and store it in the 'public/vehicle' directory
+        if ($request->hasFile('pic')) {
+            $imagePath = $request->file('pic')->store('public/vehicle');
+            $data['pic'] = str_replace('public/', '', $imagePath); // Remove 'public/' from the image path
+        }
+
+        // Create a new vehicle record with the validated data
+        Vehicle::create([
+            'pic' => $data['pic'],
+            'registrationNumber' => $data['registrationnumber'],
+            'unitName' => $data['unitname'],
+            'pax' => $data['pax'],
+            'specification' => $data['specification'],
+            'status' => $data['status'],
+        ]);
+
+        return redirect()->route('employee.vehicle')->with('success', 'Vehicle added successfully.');
+    }    
     }
-
-    // Create a new vehicle record with the validated data
-    Vehicle::create([
-        'pic' => $data['pic'],
-        'registrationNumber' => $data['registrationnumber'],
-        'unitName' => $data['unitname'],
-        'pax' => $data['pax'],
-        'specification' => $data['specification'],
-        'status' => $data['status'],
-    ]);
-
-    return redirect()->route('employee.vehicle')->with('success', 'Vehicle added successfully.');
-    }
-
 
     public function edit($id)
     {
@@ -116,5 +144,4 @@ public function store(Request $request)
         return redirect()->route('employee.vehicle', $vehicle->unitID)
             ->with('success', 'Vehicle updated successfully');
     }
-
 }
