@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Remittance extends Model
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     protected $table = 'remittances';
     protected $primaryKey = 'remitID';

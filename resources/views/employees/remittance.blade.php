@@ -16,7 +16,7 @@
         <div class="col-md-8">
             <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
                 <div class="form-group col-md-8">
-                    <input type="text" id="search" class="form-control" placeholder="Search booking" onkeyup="searchAndFilter()">
+                    <input type="text" id="search" class="form-control" placeholder="Search Remittance" onkeyup="searchAndFilter()">
                 </div>
             </div>
         </div>
