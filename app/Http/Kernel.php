@@ -74,5 +74,7 @@ class Kernel extends HttpKernel
 
     protected $routeMiddleware = [
         'Manager' => \App\Http\Middleware\ManagerMiddleware::class,
+        'employee' => \App\Http\Middleware\RedirectIfNotAuthenticated::class,
+        'customer' => \App\Http\Middleware\Authenticate::class,
     ];
 }

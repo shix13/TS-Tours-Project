@@ -10,13 +10,13 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-md-0">
-            <a href="{{ route('remittance.select-rent') }}" class="btn btn-danger" style="padding:25px 30px 25px 30px;margin-left:15px;margin-top:0%"><strong>ADD A NEW REMITTANCE</strong></a>
+        <div class="col-md-2">
+            <a href="{{ route('remittance.select-rent') }}" class="btn btn-danger">ADD A NEW REMITTANCE</a>
         </div>
         <div class="col-md-8">
             <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
-                <div class="form-group col-md-8">
-                    <input type="text" id="search" class="form-control" placeholder="Search Remittance" onkeyup="searchAndFilter()">
+                <div class="form-group col-md">
+                    <input type="text" id="search" class="form-control" placeholder="Search by Clerk, Driver, Date, etc." onkeyup="searchAndFilter()">
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
         <br>
         @endif
         
-    <div class="card " style="left:-50px;width: 110%;">
+    <div class="card">
         <div class="card-header">
             <h4 class="card-title">Remittance List</h4>
         </div>
@@ -113,49 +113,35 @@
 
 <script>
     function searchAndFilter() {
-        // Get the input value and selected status from the filter
-        var searchText = document.getElementById('search').value.toLowerCase();
-        var selectedStatus = document.getElementById('statusFilter').value;
-        var table = document.getElementById('table');
-        var rows = table.getElementsByTagName('tr');
+    // Get the input value and selected status from the filter
+    var searchText = document.getElementById('search').value.toLowerCase();
+    var table = document.getElementById('table');
+    var rows = table.getElementsByTagName('tr');
 
-        // Loop through all table rows, and show/hide them based on conditions
-        for (var i = 1; i < rows.length; i++) {
-            var row = rows[i];
-            var columns = row.getElementsByTagName('td');
-            var statusCell = row.getElementsByTagName('td')[12]; // Adjust the index based on your table structure
-            var found = false;
+    // Loop through all table rows, and show/hide them based on the search text
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var columns = row.getElementsByTagName('td');
+        var found = false;
 
-            for (var j = 0; j < columns.length; j++) {
-                var cell = columns[j];
-                if (cell) {
-                    var text = cell.textContent.toLowerCase();
-                    if (text.indexOf(searchText) > -1) {
-                        found = true;
-                        break;
-                    }
+        for (var j = 0; j < columns.length; j++) {
+            var cell = columns[j];
+            if (cell) {
+                var text = cell.textContent.toLowerCase();
+                if (text.indexOf(searchText) > -1) {
+                    found = true;
+                    break;
                 }
-            }
-
-            if (
-                (searchText === '' && selectedStatus === '') ||
-                (searchText === '' && selectedStatus !== '' && statusCell && statusCell.textContent.trim() === selectedStatus) ||
-                (searchText !== '' && selectedStatus === '') ||
-                (searchText !== '' && selectedStatus !== '' && statusCell && statusCell.textContent.trim() === selectedStatus)
-            ) {
-                if (found) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            } else {
-                row.style.display = 'none';
             }
         }
+
+        if (found) {
+            row.style.display = ''; // Show the row if it contains the search text
+        } else {
+            row.style.display = 'none'; // Hide the row if it doesn't contain the search text
+        }
     }
-
-
-    
+    }
 </script>
 
 @endsection

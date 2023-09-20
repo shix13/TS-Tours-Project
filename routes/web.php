@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\BookingRentalController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\RemittanceController;
+use App\Http\Controllers\ReportsController;
 
 
 /*
@@ -51,12 +52,13 @@ Route::get('/bookingstatus/{booking}', [App\Http\Controllers\CustomerController:
 
 Route::get('/bookingdashboard', [App\Http\Controllers\CustomerController::class, 'bookingIndex'])->name('bookingdashboard');
 
+
 Route::prefix('employee')->group(function(){
     //LOGIN ACCOUNT
      Route::get('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'showLoginForm'])->name('employee.login');
      Route::post('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'login'])->name('employee.login.submit');
 
-    //Route::middleware('auth:employee')->group(function () {
+    Route::middleware(['auth:employee'])->group(function () {
     //ACCOUNTS
         //Route::middleware(['manager'])->group(function (){
            Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
@@ -111,8 +113,11 @@ Route::prefix('employee')->group(function(){
         Route::get('/remittance/{id}/remittancecreate', [RemittanceController::class, 'create'])->name('remittance.create');
         Route::post('/remittance/store', [RemittanceController::class, 'store'])->name('remittance.store');
 
+    //REPORTS
+        Route::get('/reports', [ReportsController::class, 'processReports'])->name('employee.reports');      
+
     //DASHBOARD
         Route::get('/', [App\Http\Controllers\Auth\EmployeeController::class, 'showDashboard'])->name('employee.dashboard');
 
-    //});
+    });
 });

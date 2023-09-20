@@ -8,14 +8,14 @@
 <br><br>
 
 <div class="container">
-    <div class="row " >
-        <div class="col-md-0">
-            <a href="{{ route('employee.remittance') }}" class="btn btn-danger" style="padding:25px 30px 25px 30px;margin-left:15px;margin-top:0%"><strong>Back</strong></a>
+    <div class="row">
+        <div class="col-md-1">
+            <a href="{{ route('employee.remittance') }}" class="btn btn-danger">BACK</a>
         </div>
-        <div class="col-md-4" style="justify-content:flex-end">
-            <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
-                <div class="form-group col-md-12">
-                    <input type="text" id="search" class="form-control" placeholder="Enter Booking ID ">
+        <div class="col-md-9">
+            <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-left:10px; margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
+                <div class="form-group col-md">
+                    <input type="text" id="search" class="form-control" placeholder="Enter Rent ID, Booking ID, Driver Assigned, etc." onkeyup="searchAndFilter()">
                 </div>
             </div>
         </div>
@@ -104,7 +104,7 @@
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="12">No rentals made.</td>
+                                <td colspan="12">No rentals with pending payment.</td>
                             </tr>
                         @endif
                     </tbody>
@@ -122,21 +122,35 @@
 
 @section('scripts')
     <script>
-        $(document).ready(function () {
-            $('#search').on('keyup', function () {
-                var searchText = $(this).val().toLowerCase();
+        function searchAndFilter() {
+    // Get the input value and selected status from the filter
+    var searchText = document.getElementById('search').value.toLowerCase();
+    var table = document.getElementById('table');
+    var rows = table.getElementsByTagName('tr');
 
-                // Loop through each row in the table
-                $('#table tbody tr').each(function () {
-                    var bookingId = $(this).find('td:eq(1)').text().toLowerCase();
+    // Loop through all table rows, and show/hide them based on the search text
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var columns = row.getElementsByTagName('td');
+        var found = false;
 
-                    if (bookingId.includes(searchText)) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
-        });
+        for (var j = 0; j < columns.length; j++) {
+            var cell = columns[j];
+            if (cell) {
+                var text = cell.textContent.toLowerCase();
+                if (text.indexOf(searchText) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (found) {
+            row.style.display = ''; // Show the row if it contains the search text
+        } else {
+            row.style.display = 'none'; // Hide the row if it doesn't contain the search text
+        }
+    }
+    }
     </script>
 @endsection

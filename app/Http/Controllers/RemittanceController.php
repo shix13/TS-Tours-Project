@@ -35,7 +35,7 @@ class RemittanceController extends Controller
         'clerk' => 'required|string|max:255',
         'clerkID' => 'required|integer',
         'driver' => 'required|integer',
-        'rent' => 'required|string|max:255',
+        'rent' => 'required|integer',
         'receipt_num' => 'required|integer|min:1',
         'amount' => 'required|numeric',
     ]);
@@ -49,13 +49,20 @@ class RemittanceController extends Controller
         'amount' => $data['amount'],
     ]);
 
+    $rentData = Rent::find($data['rent']);
+
+    $rentData->payment_Status = 'Paid';
+    $rentData->save();
+
     return redirect()->route('employee.remittance');
     }
 
     public function rentIndex()
     {
         // Retrieve a list of rentals from the database 
-        $rents = Rent::with('driver')->get();
+        $rents = Rent::with('driver')
+            ->where('payment_Status','=','Pending')
+            ->get();
 
         // Pass the data to the Blade view
         return view('employees.remittanceSelectRent', compact('rents'));
