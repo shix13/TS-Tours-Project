@@ -1,0 +1,113 @@
+/* Hollow Buttons */
+
+header{
+    background: rgba(245, 245, 245, 0.5);
+    height: 90px;
+}
+.navbar-nav .gbtnHollow {
+    background: transparent;
+    border: 2px solid midnightblue;
+    text-align: center;
+    width: 120px;
+    font-size: 14px;
+    color: midnightblue; /* Normal text color */
+    margin: 5px;
+}
+
+.navbar-nav .gbtnHollow:hover, .navbar-nav .gbtnHollow.active  {
+    color: white !important;
+    background: midnightblue;
+    opacity: 100%;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    background: rgb(208, 214, 233);
+    background: radial-gradient(circle, rgba(234,235,238,1) 0%, rgba(226,228,231,1) 23%, rgba(211,211,224,1) 50%, rgba(221,221,232,1) 79%, rgba(205,207,209,1) 100%);
+}
+
+.container {
+    opacity: 0;
+    animation: fadeIn 1.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.logo img {
+    width: 50px;
+    height: auto;
+    margin-right: 10px;
+}
+
+/* Set normal nav link color */
+.navbar-nav .nav-link {
+    color: midnightblue ;
+}
+
+/* Override active and hover colors for nav links */
+.navbar-nav .nav-item.active .nav-link, .navbar-nav .nav-link:hover {
+    color: white !important;
+}
+
+.navbar-brand.logo {
+    width: 0px;
+    height: auto;
+    margin-right: 10px;
+    margin-left:50px;
+    color:midnightblue;
+    font-weight:bold;
+    font-size:30px;
+}
+
+@media (max-width: 854px) {
+    .navbar-nav .gbtnHollow {
+        border: none;
+        width: 90%;       
+    }
+
+    .navbar-brand.logo {
+        font-size: 20px;
+    }
+
+    ul {
+        position: relative;
+        width: 75%;
+        background: rgba(245, 245, 245,.5);
+        top: -10px;
+        align-items: center;
+        z-index: 9999; /* Set a very high z-index value */
+        
+    }
+
+    header {
+        background: rgba(245, 245, 245, );
+    }
+
+    .navbar-nav .nav-item.active .nav-link, .navbar-nav .nav-link:hover {
+        color: white !important;
+        background-color: midnightblue !important;
+        width: 100%;
+    }
+
+    .navbar-nav .nav-item.active .nav-link {
+        padding: 10px 0; /* Add some padding to fill the entire height of the navbar */
+    }
+
+/* Add a class to the body when the menu is open */
+body.menu-open {
+    overflow: hidden; /* Prevent scrolling of the page */
+}
+
+
+
+}

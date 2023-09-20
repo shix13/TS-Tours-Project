@@ -34,12 +34,12 @@ Route::get('/', function () {
 Auth::routes();
 
 //VISITOR
-Route::get('/', [App\Http\Controllers\VisitorController::class, 'tsdefault']);
+Route::get('/', [App\Http\Controllers\VisitorController::class, 'tsdefault'])->name('home');
 Route::get('/aboutus', [App\Http\Controllers\VisitorController::class, 'tsabout'])->name('aboutus');
 Route::get('/fleet', [App\Http\Controllers\VisitorController::class, 'tsfleet'])->name('fleet');
 Route::get('/contactus', [App\Http\Controllers\VisitorController::class, 'tscontact'])->name('contactus');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/user/logout', [App\Http\Controllers\Auth\LoginController::class, 'userlogout'])->name('user.logout');
 
 Route::get('/browsevehicles', [App\Http\Controllers\CustomerController::class, 'getVehicles'])->name('browsevehicles');

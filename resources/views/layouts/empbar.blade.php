@@ -11,8 +11,7 @@
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!-- Fonts and icons -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
-    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ asset('css/fontawesome-free-6.4.2-web/css/all.min.css') }}">
   <!-- CSS Files -->
   <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" />
   <link href="{{ asset('assets/css/now-ui-dashboard.css?v=1.5.1') }}" rel="stylesheet" />
@@ -21,10 +20,6 @@
 
 <body class="">
   <div class="wrapper ">
-    <div class="sidebar" data-color="orange">
-      <!--
-        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow |black"
-    -->
     <div class="sidebar" data-color="dark-blue">
       <div class="logo">
         <a href="{{ url('/employee/vehicles') }}" class="simple-text logo-normal">
@@ -94,8 +89,7 @@
             </ul>
         </div>
     </div>
-    
-    </div>
+
     <div class="main-panel" id="main-panel" >
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-transparent bg-primary navbar-absolute"  >
@@ -108,7 +102,7 @@
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand" style="font-size: 15px;margin-top:10px;">Employee Online System</a>
+            <a class="navbar-brand" style="font-size: 15px;">Employee Online System</a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>

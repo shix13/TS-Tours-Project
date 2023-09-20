@@ -104,7 +104,10 @@
                                 </button>
                             </div>
                         </div>
-                    </form>             
+                        
+                    </form>       
+                    <br>
+                    <div class="text-center">Have an account? <a href="{{ route('login') }}">Login</a></div>      
                 </div>
             </div>
         </div>

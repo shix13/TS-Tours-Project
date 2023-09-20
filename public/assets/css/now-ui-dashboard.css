@@ -22,6 +22,7 @@ Licensed under the MIT license - http://opensource.org/licenses/MIT
 
 Copyright (c) 2015 Daniel Eden
 */
+
 .animated {
   -webkit-animation-duration: 1s;
   animation-duration: 1s;
@@ -379,15 +380,16 @@ Copyright (c) 2015 Daniel Eden
 .show>.navbar .navbar-nav>a.btn.dropdown-toggle,
 .show>.navbar .navbar-nav>a.btn.dropdown-toggle:focus,
 .show>.navbar .navbar-nav>a.btn.dropdown-toggle:hover {
-  background-color: #979797;
-  color: #FFFFFF;
-  box-shadow: none;
-  border-color: #979797;
+  background: #181973;
+    color: #fff; 
+    opacity: 100%;
 }
 
 .btn:not([data-action]):not([class*="btn-outline-"]):hover,
 .navbar .navbar-nav>a.btn:not([data-action]):not([class*="btn-outline-"]):hover {
-  box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.17);
+    color: white;
+    background: #181973;
+    opacity: 100%;
 }
 
 .btn.disabled,
@@ -477,6 +479,7 @@ fieldset[disabled] .navbar .navbar-nav>a.btn.active {
   -webkit-box-shadow: none;
   box-shadow: none;
   outline: 0 !important;
+  color: white;
 }
 
 .btn .badge,
@@ -2283,6 +2286,8 @@ a[data-toggle="collapse"][aria-expanded="true"] .caret,
   min-height: 53px;
   margin-bottom: 20px;
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
+  color:midnightblue
+ 
 }
 
 .navbar a {
@@ -2419,7 +2424,11 @@ a[data-toggle="collapse"][aria-expanded="true"] .caret,
 }
 
 .navbar .navbar-nav .nav-link.btn {
-  padding: 11px 22px;
+  width: 120px; 
+  padding: 0px!important;
+  font-size: 13px;
+  font-family: 'Montserrat', sans-serif;
+  
 }
 
 .navbar .navbar-nav .nav-link.btn.btn-lg {

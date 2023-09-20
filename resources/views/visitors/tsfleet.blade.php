@@ -24,10 +24,10 @@
     </header>
 
     <br-->
-@extends('layouts.custbar')
+@extends('layouts.index')
 @section('content')
     <!-- Image Gallery -->
-    <div class="container">
+    <div class="container1">
         <h1>Vehicles</h1>
         <br>
 
@@ -60,24 +60,7 @@
         
     </div>
 
-    <script>
-    // Add click event listeners to navigation buttons
-    const buttons = document.querySelectorAll('.gbtnHollow');
-
-    buttons.forEach(button => {
-        button.addEventListener('click', (event) => {
-            event.preventDefault(); // Prevent default link behavior
-
-            // Add a class to trigger the transition
-            document.body.classList.add('page-leave');
-
-            // Delay the actual page redirection by a short time
-            setTimeout(() => {
-                window.location.href = event.target.getAttribute('data-href');
-            }, 300); // Adjust the delay time (in milliseconds) as needed
-        });
-    });
-</script>
+<br><br>
 
 <!--/body>
 </html-->
