@@ -53,8 +53,7 @@ class LoginController extends Controller
     public function userlogout(){
        
         Auth::guard('web')->logout();
-
-        return redirect('/');
+        return redirect()->intended('home');
     }
 
     public function login(Request $request)
@@ -67,7 +66,7 @@ class LoginController extends Controller
     $credentials = $request->only('email', 'password');
     
     if (Auth::attempt($credentials)) {
-            return redirect()->intended('/'); // Redirect to the dashboard upon successful login
+            return redirect()->intended('home'); // Redirect to the dashboard upon successful login
     }
     
 

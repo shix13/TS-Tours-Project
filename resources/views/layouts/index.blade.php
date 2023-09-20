@@ -42,7 +42,7 @@
             data-nav-image="">
             <ul class="navbar-nav ms-auto">
               @guest
-              <li class="nav-item custom-nav-item {{ Request::is('/') ? 'active' : '' }}"><a class="nav-link"
+              <li class="nav-item custom-nav-item {{ Request::is('home') ? 'active' : '' }}"><a class="nav-link"
                       href="{{ route('home') }}">Home</a></li>
               <li class="nav-item custom-nav-item {{ Request::is('aboutus') ? 'active' : '' }}"><a class="nav-link"
                       href="{{ route('aboutus') }}">About Us</a></li>
@@ -76,7 +76,7 @@
                               document.getElementById('logout-form').submit();">
                           {{ __('Logout') }}
                       </a>
-                      <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                      <form id="logout-form" action="{{ route('user.logout') }}" method="get" class="d-none">
                           @csrf
                       </form>
                   </div>

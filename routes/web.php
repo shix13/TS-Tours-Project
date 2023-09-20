@@ -34,7 +34,7 @@ Route::get('/', function () {
 Auth::routes();
 
 //VISITOR
-Route::get('/', [App\Http\Controllers\VisitorController::class, 'tsdefault'])->name('home');
+Route::get('/home', [App\Http\Controllers\VisitorController::class, 'tsdefault'])->name('home');
 Route::get('/aboutus', [App\Http\Controllers\VisitorController::class, 'tsabout'])->name('aboutus');
 Route::get('/fleet', [App\Http\Controllers\VisitorController::class, 'tsfleet'])->name('fleet');
 Route::get('/contactus', [App\Http\Controllers\VisitorController::class, 'tscontact'])->name('contactus');
