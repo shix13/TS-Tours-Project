@@ -18,7 +18,7 @@ class TariffController extends Controller
 
     public function tariffIndex()
     {
-    $tariffs = Tariff::all(); // Retrieve all tariffs from the database
+    $tariffs = Tariff::paginate(10); // Retrieve all tariffs from the database
     return view('employees.tariff', compact('tariffs'));
     }
 

@@ -19,7 +19,7 @@
                     <input type="text" id="search" class="form-control" placeholder="Search booking" onkeyup="searchAndFilter()">
                 </div>
                 <div class="col-md-4">
-                    <select class="form-control" id="statusFilter" onchange="searchAndFilter()">
+                    <select class="form-control" id="statusFilter">
                         <option value="">All</option>
                         <option value="Pending">Pending</option>
                         <option value="Approved">Approved</option>
@@ -30,7 +30,6 @@
         </div>
     </div>
     
-
         @if(session('success'))
         <div class="custom-success-message alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -53,11 +52,11 @@
         
     <div class="card " style="left:-50px;width: 110%;">
         <div class="card-header">
-            <h4 class="card-title">Booking List</h4>
+            <h4 class="card-title">Pending Bookings</h4>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="table" class="table table-hover table-striped" style="font-size: 12px;">
+                <table id="scheduledInProgressTable" class="table table-hover table-striped" style="font-size: 12px;">
                     <thead class="text-primary font-montserrat">
                         <th class="bold-text">
                             <strong>#</strong>
@@ -107,45 +106,39 @@
                             $counter = 1; // Initialize a counter variable
                         @endphp
 
-                        @if ($bookings !== null && $bookings->count() > 0)
-                        @php
-                            // Sort the $bookings array so that 'Pending' statuses come first
-                            $bookings = $bookings->sortBy(function ($booking) {
-                                return $booking->status === 'Pending' ? 0 : 1;
-                            });
-                        @endphp
-                            @foreach ($bookings as $booking)
-                            <tr class="{{ $booking->status === 'Approved' ? 'table-success' : ($booking->status === 'Denied' ? 'table-danger' : '') }} text-center">
+                        @if ($pendingBookings !== null && $pendingBookings->count() > 0)
+                            @foreach ($pendingBookings as $pendingBooking)
+                            @if ($pendingBooking->status === 'Pending')
+                            <tr class="{{ $pendingBooking->status === 'Approved' ? 'table-success' : ($pendingBooking->status === 'Denied' ? 'table-danger' : '') }} text-center">
                                     <td>{{ $counter++ }}</td>
-                                    <td>{{ $booking->customer->firstName }} {{ $booking->customer->lastName }}</td>
-                                    <td>{{ $booking->vehicle->unitName }} - {{ $booking->vehicle->registrationNumber }}</td>
-                                    <td>{{ $booking->tariff->location }}</td>
-                                    <td>{!! \Carbon\Carbon::parse($booking->startDate)->format(' M d, Y <br>H:i A') !!}</td>
-                                    <td>{!! \Carbon\Carbon::parse($booking->endDate)->format('M d, Y <br>H:i A') !!}</td>
-                                    <td>{{ $booking->mobileNum }}</td>
-                                    <td>{{ $booking->pickUp_Address }}</td>
-                                    <td>{{ $booking->note }}</td>
-                                    <td>{{ $booking->gcash_RefNum }}</td>
-                                    <td>{{ $booking->downpayment_Fee }}</td>
-                                    <td>{{ $booking->subtotal }}</td>
-                                    <td>{{ $booking->status }}</td>
+                                    <td>{{ $pendingBooking->customer->firstName }} {{ $pendingBooking->customer->lastName }}</td>
+                                    <td>{{ $pendingBooking->vehicle->unitName }} - {{ $pendingBooking->vehicle->registrationNumber }}</td>
+                                    <td>{{ $pendingBooking->tariff->location }}</td>
+                                    <td>{!! \Carbon\Carbon::parse($pendingBooking->startDate)->format(' M d, Y <br>H:i A') !!}</td>
+                                    <td>{!! \Carbon\Carbon::parse($pendingBooking->endDate)->format('M d, Y <br>H:i A') !!}</td>
+                                    <td>{{ $pendingBooking->mobileNum }}</td>
+                                    <td>{{ $pendingBooking->pickUp_Address }}</td>
+                                    <td>{{ $pendingBooking->note }}</td>
+                                    <td>{{ $pendingBooking->gcash_RefNum }}</td>
+                                    <td>{{ $pendingBooking->downpayment_Fee }}</td>
+                                    <td>{{ $pendingBooking->subtotal }}</td>
+                                    <td>{{ $pendingBooking->status }}</td>
                                     <td class="col-md-1">
-                                        @if ($booking->status === 'Pending') <!-- Only show actions if the status is "Pending" -->
-                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#approveModal{{ $booking->reserveID }}">
+                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#approveModal{{ $pendingBooking->reserveID }}">
                                                 <strong>Approve</strong>
                                             </button>
                                         
                                         <!-- Approval Modal -->
-                                        <div class="modal fade" id="approveModal{{ $booking->reserveID }}" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel{{ $booking->reserveID }}" aria-hidden="true">
+                                        <div class="modal fade" id="approveModal{{ $pendingBooking->reserveID }}" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel{{ $pendingBooking->reserveID }}" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered modal-lg"  role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header" style="background-color:#175097;">
-                                                        <h5 class="modal-title" id="approveModalLabel{{ $booking->reserveID }}" style="color: white">Confirm Approval</h5>
+                                                        <h5 class="modal-title" id="approveModalLabel{{ $pendingBooking->reserveID }}" style="color: white">Confirm Approval</h5>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
-                                                    <form method="POST" action="{{ route('employee.approveBooking', $booking->reserveID) }}">
+                                                    <form method="POST" action="{{ route('employee.approveBooking', $pendingBooking->reserveID) }}">
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="modal-body " style="font-size: 15px;">
@@ -163,15 +156,15 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="paymentStatus">Full Payment Status:</label>
-                                                                <input type="text" style="background-color:white; color: rgb(40, 38, 38);" class="form-control" id="paymentStatus" name="paymentStatus" value="{{ $booking->subtotal - $booking->downpayment_Fee !== 0 ? 'Pending' : 'Paid' }}" readonly>
+                                                                <input type="text" style="background-color:white; color: rgb(40, 38, 38);" class="form-control" id="paymentStatus" name="paymentStatus" value="{{ $pendingBooking->subtotal - $pendingBooking->downpayment_Fee !== 0 ? 'Pending' : 'Paid' }}" readonly>
                                                             </div>                                                            
                                                             <div class="form-group">
                                                                 <label for="totalPrice">Total Price: (Php)</label>
-                                                                <input type="text" style="background-color:white;color:rgb(40, 38, 38);" class="form-control" id="totalPrice" name="totalPrice" value="   {{ $booking->subtotal}}" readonly>
+                                                                <input type="text" style="background-color:white;color:rgb(40, 38, 38);" class="form-control" id="totalPrice" name="totalPrice" value="   {{ $pendingBooking->subtotal}}" readonly>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="balance">Balance: (Php)</label>
-                                                                <input type="text" style="background-color: rgba(111, 198, 111, 0.544);color:rgb(40, 38, 38);" class="form-control" id="balance" name="balance" value="    {{ $booking->subtotal - $booking->downpayment_Fee }}" readonly>
+                                                                <input type="text" style="background-color: rgba(111, 198, 111, 0.544);color:rgb(40, 38, 38);" class="form-control" id="balance" name="balance" value="    {{ $pendingBooking->subtotal - $pendingBooking->downpayment_Fee }}" readonly>
                                                             </div>
                                                             <input type="hidden" name="rentPeriodStatus" value="pending">
                                                             <input type="hidden" name="approvedBy" value="">
@@ -187,21 +180,21 @@
                                         </div>
                                         
                             <br> <br>
-                            <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#denyModal{{ $booking->reserveID }}">
+                            <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#denyModal{{ $pendingBooking->reserveID }}">
                                 <strong>Deny</strong>
                             </button>
                             
                             <!-- Deny Modal -->
-                            <div class="modal fade" id="denyModal{{ $booking->reserveID }}" tabindex="-1" role="dialog" aria-labelledby="denyModalLabel{{ $booking->reserveID }}" aria-hidden="true">
+                            <div class="modal fade" id="denyModal{{ $pendingBooking->reserveID }}" tabindex="-1" role="dialog" aria-labelledby="denyModalLabel{{ $pendingBooking->reserveID }}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="denyModalLabel{{ $booking->reserveID }}">Confirm Denial</h5>
+                                            <h5 class="modal-title" id="denyModalLabel{{ $pendingBooking->reserveID }}">Confirm Denial</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form method="POST" action="{{ route('employee.denyBooking', $booking->reserveID) }}">
+                                        <form method="POST" action="{{ route('employee.denyBooking', $pendingBooking->reserveID) }}">
                                             @csrf
                                             @method('PUT')
                                             <div class="modal-body">
@@ -215,10 +208,10 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div>
-                            @endif                
-                                    </td>
-                                </tr>
+                            </div>                
+                            </td>
+                            </tr>
+                            @endif
                             @endforeach
                         @else
                             <tr>
@@ -227,11 +220,95 @@
                         @endif
                     </tbody>
                 </table>
+                {{ $pendingBookings->links() }}
             </div>
         </div>
     </div>
 
+    <div class="card " style="left:-50px;width: 110%;">
+        <div class="card-header">
+            <h4 class="card-title">Booking History</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="completedCancelledTable" class="table table-hover table-striped" style="font-size: 12px;">
+                    <thead class="text-primary font-montserrat">
+                        <th class="bold-text">
+                            <strong>#</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Customer Name</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Fleet</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Destination</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Pick-up Schedule</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Drop-Off Schedule</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Contact Number</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Pick-up Address</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Note</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Gcash Reference No.</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Amount Paid</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Subtotal</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Status</strong>
+                        </th>
+                    </thead>
+                    <tbody>
+                        @php
+                            $counter = 1; // Initialize a counter variable
+                        @endphp
 
+                        @if ($completedBookings !== null && $completedBookings->count() > 0)
+                            @foreach ($completedBookings as $completedBooking)
+                            @if ($completedBooking->status === 'Approved' || $completedBooking->status === 'Denied')
+                            <tr class="{{ $completedBooking->status === 'Approved' ? 'table-success' : ($completedBooking->status === 'Denied' ? 'table-danger' : '') }} text-center">
+                                    <td>{{ $counter++ }}</td>
+                                    <td>{{ $completedBooking->customer->firstName }} {{ $completedBooking->customer->lastName }}</td>
+                                    <td>{{ $completedBooking->vehicle->unitName }} - {{ $completedBooking->vehicle->registrationNumber }}</td>
+                                    <td>{{ $completedBooking->tariff->location }}</td>
+                                    <td>{!! \Carbon\Carbon::parse($completedBooking->startDate)->format(' M d, Y <br>H:i A') !!}</td>
+                                    <td>{!! \Carbon\Carbon::parse($completedBooking->endDate)->format('M d, Y <br>H:i A') !!}</td>
+                                    <td>{{ $completedBooking->mobileNum }}</td>
+                                    <td>{{ $completedBooking->pickUp_Address }}</td>
+                                    <td>{{ $completedBooking->note }}</td>
+                                    <td>{{ $completedBooking->gcash_RefNum }}</td>
+                                    <td>{{ $completedBooking->downpayment_Fee }}</td>
+                                    <td>{{ $completedBooking->subtotal }}</td>
+                                    <td>{{ $completedBooking->status }}</td>
+                            </tr>
+                            @endif
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="12">No bookings made.</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+                {{ $completedBookings->links() }}
+            </div>
+        </div>
+    </div>
     
 
     
@@ -242,6 +319,7 @@
     
 
 <script>
+    /*
     function searchAndFilter() {
         // Get the input value and selected status from the filter
         var searchText = document.getElementById('search').value.toLowerCase();
@@ -283,8 +361,85 @@
             }
         }
     }
+    */
 
+    $(document).ready(function () {
+    // Function to filter the table rows based on status and search query
+    function filterAndSearchTable(tableId, status, query) {
+        var table = $('#' + tableId);
+        table.find('tbody tr').each(function () {
+            var row = $(this);
+            var rowStatusCell = row.find('td:eq(12)'); // Update the column index for Status
+            var rowStatus = rowStatusCell.text().trim();
+            var found = false;
 
+            // Condition 1: Status is null and query is null
+            if (status === '' && query === '') {
+                found = true;
+            } 
+            // Condition 2: Status is null and there is a query
+            else if (status === '' && query !== '') {
+                if (row.text().toLowerCase().includes(query.toLowerCase())) {
+                    found = true;
+                }
+            } 
+            // Condition 3: Status has a value and query is null
+            else if (status !== '' && query === '') {
+                if (rowStatus === status) {
+                    found = true;
+                }
+            } 
+            // Default condition: Both status and query have values
+            else {
+                if ((status === '' || rowStatus === status) && (query === '' || row.text().toLowerCase().includes(query.toLowerCase()))) {
+                    found = true;
+                }
+            }
+
+            if (found) {
+                row.show();
+            } else {
+                row.hide();
+            }
+        });
+    }
+
+    // Initial filter when the page loads
+    filterAndSearchTable('scheduledInProgressTable', '', '');
+    filterAndSearchTable('completedCancelledTable', '', '');
+
+    // Handle filter button change and search input keyup/change
+    $('#statusFilter, #search').on('input', function () {
+        var status = $('#statusFilter').val();
+        var query = $('#search').val();
+
+        // Check the conditions and show/hide tables and rows accordingly
+        if (status === '' && query === '') {
+            $('#scheduledInProgressTable').show();
+            $('#completedCancelledTable').show();
+            $('#scheduledInProgressTable tbody tr').show();
+            $('#completedCancelledTable tbody tr').show();
+        } else if (status === '' && query !== '') {
+            $('#scheduledInProgressTable').show();
+            $('#completedCancelledTable').show();
+            filterAndSearchTable('scheduledInProgressTable', status, query);
+            filterAndSearchTable('completedCancelledTable', status, query);
+        } else if (status !== '' && query === '') {
+            $('#scheduledInProgressTable').hide();
+            $('#completedCancelledTable').hide();
+            filterAndSearchTable('scheduledInProgressTable', status, query);
+            filterAndSearchTable('completedCancelledTable', status, query);
+            $('#' + (status === 'Approved' || status === 'Cancelled' || status === 'Denied' ? 'completedCancelledTable' : 'scheduledInProgressTable')).show();
+            $('#completedCancelledTable, #scheduledInProgressTable').not('#' + (status === 'Approved' || status === 'Cancelled' || status === 'Denied' ? 'completedCancelledTable' : 'scheduledInProgressTable')).hide();
+        } else {
+            filterAndSearchTable('scheduledInProgressTable', status, query);
+            filterAndSearchTable('completedCancelledTable', status, query);
+            $('#scheduledInProgressTable, #completedCancelledTable').hide();
+            $('#' + (status === 'Approved' || status === 'Cancelled' || status === 'Denied' ? 'completedCancelledTable' : 'scheduledInProgressTable')).show();
+            $('#completedCancelledTable, #scheduledInProgressTable').not('#' + (status === 'Approved' || status === 'Cancelled' || status === 'Denied' ? 'completedCancelledTable' : 'scheduledInProgressTable')).hide();
+        }
+    });
+});
     
 </script>
 

@@ -24,7 +24,7 @@ class MaintenanceController extends Controller
         ->leftJoin('employees as mechanics', 'maintenances.mechanicAssigned', '=', 'mechanics.empID')
         ->leftJoin('employees as scheduledBy', 'maintenances.empID', '=', 'scheduledBy.empID')
         ->select('maintenances.*', 'vehicles.pic', 'mechanics.firstName as mechanic_firstName','mechanics.lastName as mechanic_lastName', 'scheduledBy.firstName as scheduled_by_firstName','scheduledBy.lastName as scheduled_by_lastName')
-        ->orderBy('scheduleDate')->get();
+        ->orderBy('scheduleDate')->paginate(10);
 
     return view('employees.maintenance', compact('maintenances'));
 }

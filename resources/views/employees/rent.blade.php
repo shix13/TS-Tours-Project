@@ -109,6 +109,7 @@
                         @endif
                     </tbody>
                 </table>
+                {{ $rents -> links() }}
             </div>
         </div>
     </div>

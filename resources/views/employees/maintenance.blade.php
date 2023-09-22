@@ -254,6 +254,7 @@
                         @endif
                     </tbody>
                 </table>
+                {{ $maintenances -> links() }}
             </div>
         </div>
     </div>

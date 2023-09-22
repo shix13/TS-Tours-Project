@@ -121,7 +121,7 @@
                         @endif
                     </tbody>
                 </table>
-                
+                {{ $vehicles->links() }}
             </div>
         </div>
     </div>

@@ -94,6 +94,7 @@
                         @endif
                     </tbody>
                 </table>
+                {{ $tariffs->links() }}
             </div>
         </div>
     </div>

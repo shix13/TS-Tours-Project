@@ -97,6 +97,7 @@
                         @endif
                     </tbody>
                 </table>
+                {{ $remittance -> links() }}
             </div>
         </div>
     </div>

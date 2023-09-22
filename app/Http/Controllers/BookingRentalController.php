@@ -14,7 +14,6 @@ use App\Models\Rent;
 use App\Models\Tariff;
 use App\Models\Vehicle;
 
-
 class BookingRentalController extends Controller
 {
     public function bookIndex()
@@ -22,22 +21,34 @@ class BookingRentalController extends Controller
         // Retrieve a list of drivers from the employees table
     $drivers = Employee::where('accountType', 'Driver')->get();
 
-    // Retrieve a list of bookings from the database
-    $bookings = Booking::with(['vehicle' => function ($query) {
+    // Retrieve a list of pending bookings from the database
+    $pendingBookings = Booking::with(['vehicle' => function ($query) {
         $query->withTrashed(); // Include soft-deleted 'vehicle' records
         }, 'tariff' => function ($query){
         $query->withTrashed(); //Include soft-deleted 'tariff' records
         }])
-        ->get();
+        ->where('status', 'Pending')
+        ->paginate(10, ['*'], 'pending');
+    
+    // Retrieve a list of completed bookings from the database
+    $completedBookings = Booking::with(['vehicle' => function ($query) {
+        $query->withTrashed(); // Include soft-deleted 'vehicle' records
+        }, 'tariff' => function ($query){
+        $query->withTrashed(); //Include soft-deleted 'tariff' records
+        }])
+        ->where('status', 'Approved')
+        ->orWhere('status', 'Cancelled')
+        ->orWhere('status', 'Denied')
+        ->paginate(10, ['*'], 'completed'); 
 
     // Pass the data to the Blade view
-    return view('employees.book', compact('bookings', 'drivers'));
+    return view('employees.book', compact('pendingBookings', 'completedBookings', 'drivers'));
     }
 
     public function rentIndex()
     {
         // Retrieve a list of rentals from the database 
-        $rents = Rent::with('driver')->get();
+        $rents = Rent::with('driver')->paginate(10);
 
         // Pass the data to the Blade view
         return view('employees.rent', compact('rents'));
@@ -59,6 +70,7 @@ class BookingRentalController extends Controller
         $booking->status = 'Approved';
         $booking->save();
 
+        //Change vehicle status to "Booked"
         // Create a new record in the 'rent' table
         Rent::create([
             'reserveID' => $booking->reserveID,

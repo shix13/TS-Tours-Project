@@ -150,6 +150,7 @@
                         @endif
                     </tbody>
                 </table>
+                {{ $employees -> links() }}
             </div>
         </div>
     </div>
@@ -207,6 +208,7 @@
                         @endif
                     </tbody>
                 </table>
+                {{ $customers -> links() }}
             </div>
         </div>
     </div>

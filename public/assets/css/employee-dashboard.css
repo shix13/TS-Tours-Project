@@ -62,6 +62,6 @@
 .bg-red {
     background-color: #d9534f !important;
 }
-.bg-gradient {
-    background: linear-gradient(to right, #0c2646 0%, #204065 60%, #2a5788 100%);
+.bg-darkblu {
+    background-color: #2a5788 !important;
 }
