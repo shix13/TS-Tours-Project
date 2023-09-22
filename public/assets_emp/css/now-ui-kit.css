@@ -159,7 +159,9 @@ nav ul li a{
   }
 }
 
-
+.modal {
+  z-index: 9999; /* Adjust this value as needed */
+}
  .custom-nav-item {
   border: 2px solid midnightblue;
   display: inline-block;
@@ -2212,6 +2214,104 @@ fieldset[disabled] .btn-warning.active {
   background-color: #FF3636;
   color: #FFFFFF;
 }
+
+.btn-ts {
+  background-color: midnightblue;
+  color: #FFFFFF;
+}
+
+
+.btn-ts:hover,
+.btn-ts:focus,
+.btn-ts:not(:disabled):not(.disabled):active,
+.btn-ts:not(:disabled):not(.disabled).active,
+.btn-ts:not(:disabled):not(.disabled):active:focus,
+.btn-ts:not(:disabled):not(.disabled).active:focus,
+.btn-ts:active:hover,
+.btn-ts.active:hover,
+.show>.btn-ts.dropdown-toggle,
+.show>.btn-ts.dropdown-toggle:focus,
+.show>.btn-ts.dropdown-toggle:hover {
+  background-color:  rgba(50, 50, 150, 0.753);
+  color: #FFFFFF;
+  box-shadow: none;
+}
+
+.btn-ts:hover {
+  box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.17);
+}
+
+.btn-ts.disabled,
+.btn-ts.disabled:hover,
+.btn-ts.disabled:focus,
+.btn-ts.disabled.focus,
+.btn-ts.disabled:active,
+.btn-ts.disabled.active,
+.btn-ts:disabled,
+.btn-ts:disabled:hover,
+.btn-ts:disabled:focus,
+.btn-ts:disabled.focus,
+.btn-ts:disabled:active,
+.btn-ts:disabled.active,
+.btn-ts[disabled],
+.btn-ts[disabled]:hover,
+.btn-ts[disabled]:focus,
+.btn-ts[disabled].focus,
+.btn-ts[disabled]:active,
+.btn-ts[disabled].active,
+fieldset[disabled] .btn-ts,
+fieldset[disabled] .btn-ts:hover,
+fieldset[disabled] .btn-ts:focus,
+fieldset[disabled] .btn-ts.focus,
+fieldset[disabled] .btn-ts:active,
+fieldset[disabled] .btn-ts.active {
+  background-color: rgba(25, 25, 112, 0.753);
+  border-color: rgba(25, 25, 112, 0.753);
+}
+
+.btn-ts.btn-simple {
+  color: rgba(82, 82, 190, 0.753);
+  border-color: rgba(82, 82, 190, 0.753);
+}
+
+.btn-ts.btn-simple:hover,
+.btn-ts.btn-simple:focus,
+.btn-ts.btn-simple:not(:disabled):not(.disabled):active,
+.btn-ts.btn-simple:not(:disabled):not(.disabled).active,
+.btn-ts.btn-simple:not(:disabled):not(.disabled):active:focus,
+.btn-ts.btn-simple:not(:disabled):not(.disabled).active:focus,
+.btn-ts.btn-simple:active:hover,
+.btn-ts.btn-simple.active:hover,
+.show>.btn-ts.btn-simple.dropdown-toggle,
+.show>.btn-ts.btn-simple.dropdown-toggle:focus,
+.show>.btn-ts.btn-simple.dropdown-toggle:hover {
+  background-color: transparent;
+  color:  rgba(25, 25, 112, 0.753);
+  border-color:  rgba(25, 25, 112, 0.753);
+  box-shadow: none;
+}
+
+.btn-ts.btn-link {
+  color: midnightblue;
+}
+
+.btn-ts.btn-link:hover,
+.btn-ts.btn-link:focus,
+.btn-ts.btn-link:not(:disabled):not(.disabled):active,
+.btn-ts.btn-link:not(:disabled):not(.disabled).active,
+.btn-ts.btn-link:not(:disabled):not(.disabled):active:focus,
+.btn-ts.btn-link:not(:disabled):not(.disabled).active:focus,
+.btn-ts.btn-link:active:hover,
+.btn-ts.btn-link.active:hover,
+.show>.btn-ts.btn-link.dropdown-toggle,
+.show>.btn-ts.btn-link.dropdown-toggle:focus,
+.show>.btn-ts.btn-link.dropdown-toggle:hover {
+  background-color: transparent;
+  color:  rgba(82, 82, 190, 0.753);
+  text-decoration: none;
+  box-shadow: none;
+}
+------
 
 .btn-danger:hover,
 .btn-danger:focus,
@@ -6852,7 +6952,7 @@ img {
     left: auto;
     right: 300px;
     content: "";
-    z-index: 9999;
+    z-index: 9997;
     overflow-x: hidden;
     background-color: transparent;
     -webkit-transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
@@ -7258,7 +7358,7 @@ img {
     left: auto;
     right: 300px;
     content: "";
-    z-index: 9999;
+    z-index: 9997;
     overflow-x: hidden;
     background-color: transparent;
     -webkit-transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);

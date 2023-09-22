@@ -2,10 +2,10 @@
 
 @section('content')
 <div class="container">
-<h1 style="font-weight: 700;">Payment Under Review</h1>
+<h1 style="font-weight: 700;">Booking Denied</h1>
     <div class="row" style="padding: 10px;">
-        <p style="font-weight:700;font-size:20px">Your booking downpayment is currently under review. </p>
-            <p><hr>You can check your email regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.   </p>
+        <p style="font-weight:700;font-size:20px">Your booking downpayment is subject for refund. </p>
+            <p><hr>You can check your email regarding the refund transfer. <br> We are sorry for this inconvenience, it seems there were some unforeseen problems. You can contact our team for any concern or assistance on this matter.  </p> 
         <p style="margin-top:30px;font-weight:700">Thank You for choosing TS Tours Services!</p>
     </div>
     <div class="row">

@@ -28,8 +28,8 @@
 @extends('layouts.index')
 @section('content')
 <div>
-    <div class="row container1">
-        <div class="col-md-6">
+    <div class="row container1" >
+        <div class="col-md-6" style="border:2px solid midnightblue">
             <h1><strong>Contact Us</strong></h1>
             <p style="font-size: 20px">We'd love to hear from you.<strong> Get in touch with us</strong>! </p>
                 <br>
@@ -54,13 +54,13 @@
                     <textarea id="message" name="message" class="form-control" rows="4" required placeholder="Your Message"></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Send</button>
             </form>
         </div>
 
         <div class="col-md-4 container1" style="display: inline-block">
             <div class="contact-info">
-                <h2>Contact Information</h2>
+                <h3><strong>Contact Information</strong></h3>
                 <p><i class="fa fa-phone"></i> Contact Number: +0995-132-0184</p>
                 <p><i class="fa fa-map-marker"></i> Address: Motong, Negros Oriental</p>
                 <p><i class="fa fa-envelope"></i> Email Address: tstours@gmail.com</p>

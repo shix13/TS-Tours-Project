@@ -1,7 +1,7 @@
 @extends('layouts.index')
 @section('content')
 
-<div class="container1 col-md-10">
+<div class="container1 col-md-10" style="border:2px solid midnightblue">
         <h1 style="color: midnightblue"><strong>ABOUT US</strong></h1>
         <div >
             <p style="font-size:18px;font-weight:400;color:black">With <strong>TS Tours Services</strong>, we take pride in providing unmatched mobility solutions, combining top-quality vehicles, exceptional customer service, <br> and a passion for delivering unforgettable travel experiences to every customer.</p>

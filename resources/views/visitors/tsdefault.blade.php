@@ -16,7 +16,7 @@
  <div class="container1 text-center fade-in">
         <div class="card">
             <div class="card-header"></div>
-            <div class="card-body">
+            <div class="card-body" style="border:2px solid midnightblue">
                 <h1><strong>Welcome to TS Tours Services</strong></h1>
                 <p style="font-size:18px;font-weight:400;color:black">Welcome to our premier car rental service, where convenience, reliability, and a fleet of top-notch vehicles await to make your journey unforgettable!</p>
             </div>

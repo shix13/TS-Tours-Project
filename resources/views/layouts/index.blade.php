@@ -27,7 +27,7 @@
   <nav class="navbar navbar-expand-lg bg-white fixed-top " >
     <div class="container">
         <div class="navbar-translate">
-          <a class="navbar-brand" href="#" rel="tooltip"  data-placement="bottom" target="_blank"><img src="{{ asset('images/TS Tours.jpg') }}" alt="TS logo" style="width: 60px;border-radius:20%">
+          <a class="navbar-brand" href="{{ route('home') }}" rel="tooltip"  data-placement="bottom"><img src="{{ asset('images/TS Tours.jpg') }}" alt="TS logo" style="width: 60px;border-radius:20%">
             TS Tours Services
           </a>
             <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse"
@@ -55,19 +55,19 @@
                       href="login">Login</a></li>
               @endif
               @else
-              <li class="nav-item custom-nav-item {{ Request::is('home') ? 'active' : '' }}"><a class="nav-link"
-                      href="{{ route('home') }}">Home</a></li>
-              <li class="nav-item custom-nav-item {{ Request::is('aboutus') ? 'active' : '' }}"><a class="nav-link"
-                      href="{{ route('aboutus') }}">About Us</a></li>
-              <li class="nav-item custom-nav-item {{ Request::is('fleet') ? 'active' : '' }}"><a class="nav-link"
-                      href="{{ route('fleet') }}">Vehicles</a></li>
+            
+              <li class="nav-item custom-nav-item {{ Request::is('browsevehicles') ? 'active' : '' }}"><a class="nav-link"
+                      href="{{ route('browsevehicles') }}">Vehicles</a></li>
               <li class="nav-item custom-nav-item {{ Request::is('contactus') ? 'active' : '' }}"><a class="nav-link"
-                      href="{{ route('contactus') }}">Contact Us</a></li>
+                        href="{{ route('contactus') }}">Contact Us</a></li>
               <li class="nav-item dropdown custom-nav-item" >
                   <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink1" data-toggle="dropdown">
                      Account
                   </a>
                   <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{ route('profile') }}">
+                      {{ __('Profile') }}
+                  </a>
                       <a class="dropdown-item" href="{{ route('bookingdashboard') }}">
                           {{ __('My Bookings') }}
                       </a>
@@ -89,7 +89,7 @@
 </nav>
   <!-- End Navbar -->
   <div class="wrapper">
-    <div style="margin-top:110px">
+    <div style="margin-top:110px;">
 
     
     
@@ -110,6 +110,7 @@
   <script src="./assets/js/plugins/bootstrap-datepicker.js" type="text/javascript"></script>
   <!-- Control Center for Now Ui Kit: parallax effects, scripts for the example pages etc -->
   <script src="./assets/js/now-ui-kit.js?v=1.3.0" type="text/javascript"></script>
+  
   <script>
 
 
