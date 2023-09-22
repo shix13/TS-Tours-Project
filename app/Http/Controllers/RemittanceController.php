@@ -51,7 +51,9 @@ class RemittanceController extends Controller
 
     $rentData = Rent::find($data['rent']);
 
+    $rentData->rent_Period_Status = 'Completed';
     $rentData->payment_Status = 'Paid';
+    $rentData->balance = $data['amount'] - $rentData->balance;
     $rentData->save();
 
     return redirect()->route('employee.remittance');

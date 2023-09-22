@@ -12,10 +12,18 @@
         <div class="col-md-0">
             <a href="{{ route('employee.booking') }}" class="btn btn-danger" style="padding:25px 30px 25px 30px;margin-left:15px;margin-top:0%"><strong>View Bookings</strong></a>
         </div>
-        <div class="col-md-4" style="justify-content:flex-end">
+        <div class="col-md-8" style="justify-content:flex-end">
             <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
-                <div class="form-group col-md-12">
-                    <input type="text" id="search" class="form-control" placeholder="Enter Booking ID ">
+                <div class="form-group col-md-8">
+                    <input type="text" id="search" class="form-control" placeholder="Enter Booking ID" onkeyup="searchAndFilter()">
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control" id="statusFilter">
+                        <option value="">All</option>
+                        <option value="Pending">Booked</option>
+                        <option value="Approved">Ongoing</option>
+                        <option value="Denied">Completed</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -123,6 +131,7 @@
 
 @section('scripts')
     <script>
+        /*
         $(document).ready(function () {
             $('#search').on('keyup', function () {
                 var searchText = $(this).val().toLowerCase();
@@ -139,5 +148,116 @@
                 });
             });
         });
+        */
+
+        /*
+        $(document).ready(function () {
+        // Function to filter the table rows based on the location query
+        function searchByLocation(query) {
+            var table = $('#table');
+            table.find('tbody tr').each(function () {
+                var row = $(this);
+                var locationCell = row.find('td:nth-child(2)'); // Adjust the column index if needed
+                var location = locationCell.text().trim();
+                var found = false;
+
+                // Check if the location contains the query
+                if (location.toLowerCase().includes(query.toLowerCase())) {
+                    found = true;
+                }
+
+                if (found) {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
+        }
+
+        // Handle search input keyup
+        $('#search').on('input', function () {
+            var query = $(this).val();
+            searchByLocation(query);
+        });
+    });
+    */
+
+    $(document).ready(function () {
+    // Function to filter the table rows based on status and search query
+    function filterAndSearchTable(tableId, status, query) {
+        var table = $('#' + tableId);
+        table.find('tbody tr').each(function () {
+            var row = $(this);
+            var rowStatusCell = row.find('td:eq(12)'); // Update the column index for Status
+            var rowStatus = rowStatusCell.text().trim();
+            var found = false;
+
+            // Condition 1: Status is null and query is null
+            if (status === '' && query === '') {
+                found = true;
+            } 
+            // Condition 2: Status is null and there is a query
+            else if (status === '' && query !== '') {
+                if (row.text().toLowerCase().includes(query.toLowerCase())) {
+                    found = true;
+                }
+            } 
+            // Condition 3: Status has a value and query is null
+            else if (status !== '' && query === '') {
+                if (rowStatus === status) {
+                    found = true;
+                }
+            } 
+            // Default condition: Both status and query have values
+            else {
+                if ((status === '' || rowStatus === status) && (query === '' || row.text().toLowerCase().includes(query.toLowerCase()))) {
+                    found = true;
+                }
+            }
+
+            if (found) {
+                row.show();
+            } else {
+                row.hide();
+            }
+        });
+    }
+
+    // Initial filter when the page loads
+    filterAndSearchTable('scheduledInProgressTable', '', '');
+    filterAndSearchTable('completedCancelledTable', '', '');
+
+    // Handle filter button change and search input keyup/change
+    $('#statusFilter, #search').on('input', function () {
+        var status = $('#statusFilter').val();
+        var query = $('#search').val();
+
+        // Check the conditions and show/hide tables and rows accordingly
+        if (status === '' && query === '') {
+            $('#scheduledInProgressTable').show();
+            $('#completedCancelledTable').show();
+            $('#scheduledInProgressTable tbody tr').show();
+            $('#completedCancelledTable tbody tr').show();
+        } else if (status === '' && query !== '') {
+            $('#scheduledInProgressTable').show();
+            $('#completedCancelledTable').show();
+            filterAndSearchTable('scheduledInProgressTable', status, query);
+            filterAndSearchTable('completedCancelledTable', status, query);
+        } else if (status !== '' && query === '') {
+            $('#scheduledInProgressTable').hide();
+            $('#completedCancelledTable').hide();
+            filterAndSearchTable('scheduledInProgressTable', status, query);
+            filterAndSearchTable('completedCancelledTable', status, query);
+            $('#' + (status === 'Approved' || status === 'Cancelled' || status === 'Denied' ? 'completedCancelledTable' : 'scheduledInProgressTable')).show();
+            $('#completedCancelledTable, #scheduledInProgressTable').not('#' + (status === 'Approved' || status === 'Cancelled' || status === 'Denied' ? 'completedCancelledTable' : 'scheduledInProgressTable')).hide();
+        } else {
+            filterAndSearchTable('scheduledInProgressTable', status, query);
+            filterAndSearchTable('completedCancelledTable', status, query);
+            $('#scheduledInProgressTable, #completedCancelledTable').hide();
+            $('#' + (status === 'Approved' || status === 'Cancelled' || status === 'Denied' ? 'completedCancelledTable' : 'scheduledInProgressTable')).show();
+            $('#completedCancelledTable, #scheduledInProgressTable').not('#' + (status === 'Approved' || status === 'Cancelled' || status === 'Denied' ? 'completedCancelledTable' : 'scheduledInProgressTable')).hide();
+        }
+    });
+});
     </script>
 @endsection

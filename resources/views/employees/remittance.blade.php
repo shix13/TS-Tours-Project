@@ -55,13 +55,13 @@
                             <strong>#</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Clerk</strong>
+                            <strong>Received by</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Driver</strong>
+                            <strong>Sent by</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Rent</strong>
+                            <strong>Rent ID</strong>
                         </th>
                         <th class="bold-text">
                             <strong>Receipt Number</strong>

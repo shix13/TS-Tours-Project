@@ -13,7 +13,7 @@
         <div class="col-md-0">
             <a href="{{ route('employee.rental') }}" class="btn btn-danger" style="padding:25px 30px 25px 30px;margin-left:15px;margin-top:0%"><strong>View Rentals</strong></a>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8" style="justify-content:flex-end">
             <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
                 <div class="form-group col-md-8">
                     <input type="text" id="search" class="form-control" placeholder="Search booking" onkeyup="searchAndFilter()">
