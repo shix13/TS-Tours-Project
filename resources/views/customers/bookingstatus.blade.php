@@ -1,10 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.index')
 
 @section('content')
 <div class="container">
-<h1>Payment Success</h1>
-    <div class="row">
-        <p>You have paid the downpayment for the booking successfully. Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.
+<h1 style="font-weight: 700;">Payment Under Review</h1>
+    <div class="row" style="padding: 10px;">
+        <p style="font-weight:700;font-size:20px">Your booking downpayment is currently under review. </p>
+            <p><hr>You can check your email regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.   </p>
+        <p style="margin-top:30px;font-weight:700">Thank You for choosing TS Tours Services!</p>
     </div>
     <div class="row">
         <div class="col">
@@ -12,20 +14,26 @@
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        Schedule Date
+                        <i class="fas fa-calendar-alt"></i> Schedule Date <hr>
                         <div class="row">
                             <div class="col">
-                                Start date {{ $bookingData['startDate']}}
+                                Start Date:
                             </div>
                             <div class="col">
-                                End date {{ $bookingData['startDate']}}
+                                {{ $bookingData['startDate'] }}
                             </div>
-                        </div>
+                            <div class="col">
+                                End Date:
+                            </div>
+                            <div class="col">
+                                {{ $bookingData['endDate'] }}
+                            </div>
+                        </div><hr>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        Phone Number
+                        <i class="fas fa-phone"></i> Phone Number
                     </div>
                     <div class="col">
                         {{ $bookingData['mobileNum']}}
@@ -33,7 +41,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        Pickup Address
+                        <i class="fas fa-map-pin"></i> Pickup Address
                     </div>
                     <div class="col">
                         {{ $bookingData['pickUp_Address']}}
@@ -41,7 +49,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        Additional Notes
+                        <i class="fas fa-sticky-note"></i> Additional Notes
                     </div>
                     <div class="col">
                     {{ $bookingData['note']}}
@@ -50,7 +58,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" style="padding: 20px">
         <h4>Payment Details</h4>
         <div class="container">
             <div class="row">

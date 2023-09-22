@@ -11,7 +11,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
-{
+{   
+    public function __construct()
+    {
+        $this->middleware('auth')->except('logout' , 'userlogout');
+    }
     //
     private $sharedBooking; //Variable to be shared with other functions
 
@@ -147,5 +151,44 @@ class CustomerController extends Controller
             ->paginate(10);
         
         return view('customers.bookingdashboard', compact('bookings'));
+    }
+
+    public function customerHome(){
+        $vehicles = Vehicle::all();
+
+        return view('customers.home', compact('vehicles'));
+    }
+
+    public function profile()
+    {
+        // Get the currently authenticated user
+        $customer = auth()->user();
+
+
+        return view('customers.myaccount', compact('customer'));
+    }
+
+    public function bookingApproved($bookingID){
+        
+        $bookingData = Booking::with(['vehicle' => function ($query) {
+            $query->withTrashed(); // Include soft-deleted 'vehicle' records
+            }, 'tariff' => function ($query){
+            $query->withTrashed(); //Include soft-deleted 'tariff' records
+            }])
+            ->find($bookingID);
+
+        return view('customers.bookingApproved', compact('bookingData'));
+    }
+
+    public function bookingDenied($bookingID){
+        
+        $bookingData = Booking::with(['vehicle' => function ($query) {
+            $query->withTrashed(); // Include soft-deleted 'vehicle' records
+            }, 'tariff' => function ($query){
+            $query->withTrashed(); //Include soft-deleted 'tariff' records
+            }])
+            ->find($bookingID);
+
+        return view('customers.bookingDenied', compact('bookingData'));
     }
 }

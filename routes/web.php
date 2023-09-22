@@ -35,20 +35,26 @@ Route::get('/', function () {
 Auth::routes();
 
 //VISITOR
-Route::get('/', [App\Http\Controllers\VisitorController::class, 'tsdefault']);
+Route::get('/home', [App\Http\Controllers\VisitorController::class, 'tsdefault'])->name('home');
 Route::get('/aboutus', [App\Http\Controllers\VisitorController::class, 'tsabout'])->name('aboutus');
 Route::get('/fleet', [App\Http\Controllers\VisitorController::class, 'tsfleet'])->name('fleet');
 Route::get('/contactus', [App\Http\Controllers\VisitorController::class, 'tscontact'])->name('contactus');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/user/logout', [App\Http\Controllers\Auth\LoginController::class, 'userlogout'])->name('user.logout');
 
 Route::get('/browsevehicles', [App\Http\Controllers\CustomerController::class, 'getVehicles'])->name('browsevehicles');
-Route::get('/bookvehicle/{vehicle}', [App\Http\Controllers\CustomerController::class, 'book'])->name('bookvehicle');
+Route::get('/bookvehicle{vehicle}', [App\Http\Controllers\CustomerController::class, 'book'])->name('bookvehicle');
 
 Route::post('/processbooking', [App\Http\Controllers\CustomerController::class, 'processBooking'])->name('processbooking');
 Route::post('/checkout', [App\Http\Controllers\CustomerController::class, 'storeBooking'])->name('checkout');
-Route::get('/bookingstatus/{booking}', [App\Http\Controllers\CustomerController::class, 'bookingStatus'])->name('bookingstatus');
+Route::get('/bookingstatus{booking}', [App\Http\Controllers\CustomerController::class, 'bookingStatus'])->name('bookingstatus');
+
+Route::get('/approvedbookingstatus{booking}', [App\Http\Controllers\CustomerController::class, 'bookingApproved'])->name('bookingapproved');
+Route::get('/deniedbookingstatus{booking}', [App\Http\Controllers\CustomerController::class, 'bookingDenied'])->name('bookingdenied');
+
+Route::get('/TShome', [App\Http\Controllers\CustomerController::class, 'customerHome'])->name('tshome');
+Route::get('/Profile', [App\Http\Controllers\CustomerController::class, 'profile'])->name('profile');
 
 Route::get('/bookingdashboard', [App\Http\Controllers\CustomerController::class, 'bookingIndex'])->name('bookingdashboard');
 
@@ -58,15 +64,15 @@ Route::prefix('employee')->group(function(){
      Route::get('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'showLoginForm'])->name('employee.login');
      Route::post('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'login'])->name('employee.login.submit');
 
-    //Route::middleware(['auth:employee'])->group(function () {
+    Route::middleware('auth:employee')->group(function () {
     //ACCOUNTS
-        //Route::middleware(['manager'])->group(function (){
+        Route::middleware(['manager'])->group(function (){
            Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
            Route::get('/account/{empID}/edit', [EmployeeController::class, 'edit'])->name('employee.edit');
            Route::put('/account/{empID}', [EmployeeController::class, 'update'])->name('employee.update');
            Route::get('/account', [AccountsController::class, 'accountIndex'])->name('employee.accounts');
            Route::delete('/employee/{empID}', [EmployeeController::class, 'delete'])->name('employee.delete');
-        //});
+        });
 
         Route::post('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'register'])->name('employee.register.submit');
         Route::get('/profile', [EmployeeController::class, 'profile'])->name('employee.profile');
@@ -119,5 +125,5 @@ Route::prefix('employee')->group(function(){
     //DASHBOARD
         Route::get('/', [App\Http\Controllers\Auth\EmployeeController::class, 'showDashboard'])->name('employee.dashboard');
 
-    //});
+    });
 });

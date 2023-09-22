@@ -190,12 +190,14 @@
                             <td>{{ $counter++ }}</td>
                             <td class="text-center">
                                 @if ($customer->profile_img)
-                                    <img src="{{ asset('storage/' . $customer->profile_img) }}" alt="Profile Image" width="100">
-                                @else
-                                    <!-- If there is no profile image, display a default image -->
-                                    <img src="{{ asset('storage/profile_images/def.png') }}" alt="Default Image" width="100">
-                                @endif
+                                <img src="{{ asset('storage/'. $customer->profile_img) }}" alt="Profile Image" width="100">
+                            @else
+                                <!-- If there is no profile image, display a default image -->
+                                <img src="{{ asset('storage/profile_images/def.png') }}" alt="Default Image" width="100">
+                            @endif
+                            
                             </td>
+                            
                             <td>{{ $customer->firstName }} {{ $customer->lastName }}</td>
                             <td>{{ $customer->mobileNum }}</td>
                             <td>{{ $customer->email }}</td>

@@ -1,16 +1,16 @@
-@extends('layouts.app')
+@extends('layouts.index')
 
 @section('content')
 <br><br>
 
 <div class="container">
-    <div class="form-group">
-        <input type="text" id="search" class="form-control" placeholder="Search booking" onkeyup="searchAndFilter()">
+    <div class="form-group col-md-6">
+        <input type="text" id="search" class="form-control" placeholder="Search booking" onkeyup="searchAndFilter()" style="background: white;padding:20px;border:2px solid midnightblue;">
     </div>
      
-    <div class="card " style="margin-top:10px;left:-50px;width: 110%;">
+    <div class="card mx-auto" style="width: 1200px;margin-top: 10px;background: white;border:2px solid midnightblue">
         <div class="card-header">
-            <h4 class="card-title">Booking List</h4>
+            <h1 class="card-title" style="text-align: left; padding: 10px;"><strong>Booking Records</strong></h1>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -146,15 +146,23 @@
                     // Get the data you need from the clicked row
                     var cell = this.cells[0]; // Adjust the index based on your table structure
                     var data = cell.textContent;
+                    var cell1= this.cells[12];
+                    var status= cell1.textContent;
 
                     // Construct the URL based on the data or any other logic
-                    var url = "/bookingstatus/" + data;
-
-                    // Redirect to the URL
-                    window.location.href = url;
+                    var url;
+        if (status === 'Pending') {
+            url = "/bookingstatus" + data; // Redirect to a URL for 'Pending' status
+        } else if (status === 'Approved') {
+            url = "/approvedbookingstatus" + data; // Redirect to a URL for 'Approved' status
+        } else if (status === 'Denied') {
+            url = "/deniedbookingstatus" + data; // Redirect to a URL for 'Denied' status
+        }
+        window.location.href = url;
                 });
             }
         });
 </script>
+
 
 

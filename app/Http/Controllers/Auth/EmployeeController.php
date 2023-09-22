@@ -124,7 +124,7 @@ class EmployeeController extends Controller
        
         Auth::guard('employee')->logout();
 
-        return redirect('/');
+        return redirect('/home');
     }
 
     public function edit($empID)

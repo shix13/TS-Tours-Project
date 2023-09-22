@@ -3,7 +3,8 @@
             font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 0;
-            background: rgb(234,235,238);
+            background: transparent;
+            background: rgb(208, 214, 233);
             background: radial-gradient(circle, rgba(234,235,238,1) 0%, rgba(226,228,231,1) 23%, rgba(211,211,224,1) 50%, rgba(221,221,232,1) 79%, rgba(205,207,209,1) 100%);
         }
 
@@ -31,7 +32,6 @@
         /* Basic styling for the header */
         header {
             font-family: 'Montserrat', sans-serif;
-            background-color: #333;
             color: midnightblue;
             display: flex;
             justify-content: space-between;
@@ -40,26 +40,92 @@
             background-color: rgba(255,255,255, .6);
         }
 
-        /* Hollow Buttons */
-        .gbtnHollow  {
-     background:  transparent;
-     height:  38px;
-     line-height:  20px;
-     border:  2px solid midnightblue;
-     display:  inline-block;
-     float:  none;
-     text-align:  center;
-     width:  120px;
-     padding:  0px!important;
-     font-size:  14px;
-     color:  midnightblue;
-    }
 
-        .gbtnHollow:hover  {
-     color:  white;
-     background:  #181973;
-     opacity: 100%;
-    }
+        .container {
+            opacity: 0; /* Initially, set opacity to 0 */
+            animation: fadeIn 1.5s ease-in-out forwards; /* Apply the fade-in animation */
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1; /* At the end of the animation, set opacity to 1 */
+            }
+        }
+
+        nav{
+            background: transparent;
+            
+        }
+
+        nav ul li a{
+            color: #181973;
+            font-size: 17px;
+            padding: 7px 13px;
+        }
+
+
+       /* Hollow Buttons */
+.gbtnHollow  {
+    background: transparent;
+    height: 38px;
+    line-height: 20px;
+    border: 2px solid midnightblue;
+    display: inline-block;
+    float: none;
+    text-align: center;
+    width: 120px;
+    padding: 0px!important;
+    font-size: 14px;
+    color: midnightblue;
+    border-radius:0px;
+}
+
+.gbtnHollow:hover  {
+    color: white;
+    background: #181973;
+    opacity: 100%;
+}
+
+.gbtnHollow.active {
+    background: #181973;
+    color: #fff; 
+    opacity: 100%;
+}
+
+
+       /* Style the specific button with the id of "navbarDropdown" */
+#navbarDropdown {
+    background: transparent;
+    height: 38px;
+    line-height: 20px;
+    border: 2px solid midnightblue;
+    display: inline-block;
+    float: none;
+    text-align: center;
+    width: 120px;
+    padding: 0px!important;
+    font-size: 14px;
+    color: midnightblue;
+    border-radius:0px;
+}
+
+#navbarDropdown:hover {
+    color: white;
+    background: #181973;
+    opacity: 100%;
+}
+
+#navbarDropdown.active {
+    background: #181973;
+    color: #fff;
+    opacity: 100%;
+}
+
+
+    
 
     /* Responsive styles */
     @media screen and (max-width: 768px) {
@@ -175,18 +241,98 @@
             color: white; /* Text color */
         }
 
+        .imgCaption{
+            color: #181973;
+            font-size: 20px;
+            
+        }
+
         .image-card:hover .image-text {
             display: block;
         }
 
-         /* Add a class to trigger the fade-out transition */
-.page-leave {
-    opacity: 0;
-    transition: opacity 0.3s;
+        .sidebar {
+            display: block;
+            box-shadow: 0px 2px 22px 0 rgba(0, 0, 0, 0.2), 0px 2px 30px 0 rgba(0, 0, 0, 0.35);
+          }
+
+ /* Style the dropdown menu as a button */
+ .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 10rem;
+    padding: 0.5rem 0;
+    margin: 0.125rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+   
 }
 
-/* Add a class to trigger the fade-in transition */
-.page-enter {
-    opacity: 1;
-    transition: opacity 0.3s;
+/* Style the dropdown items */
+.dropdown-menu a {
+    display: block;
+    padding: 0.25rem 1.5rem;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.5;
+    color: #212529;
+    white-space: nowrap;
+}
+
+/* Add a background color on hover */
+.dropdown-menu a:hover {
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+
+/* Custom styles for mobile view */
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden; /* Prevent horizontal scroll when the menu is open */
+    }
+
+    .navbar-collapse {
+        position: fixed;
+        top: 0;
+        right: -250px; /* Initially hide the menu off-screen to the right */
+        width: 250px;
+        height: 100%;
+        background-color: #ffffff; /* Menu background color */
+        transition: right 0.3s ease-in-out; /* Add a smooth slide-in transition */
+        box-shadow: -1px 0px 10px 1px rgba(0, 0, 0, 0.2); /* Optional box shadow */
+    }
+
+    .navbar-toggler {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 9999;
+        transition: transform 0.3s ease-in-out; /* Add a smooth rotation transition */
+    }
+
+    /* Show the menu when the navbar-toggler button is clicked */
+    .navbar-toggler.opened ~ .navbar-collapse {
+        right: 0;
+    }
+
+    /* Push the content to the right when the menu is open */
+    .navbar-toggler.opened ~ .content {
+        margin-right: 250px;
+    }
+
+    /* Rotate the toggle button when the menu is open */
+    .navbar-toggler.opened .icon-bars {
+        transform: rotate(90deg);
+    }
 }

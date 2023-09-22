@@ -50,6 +50,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
+            'ProfileImage' => ['nullable', 'file', 'image', 'max:2048'],
             'FirstName' => ['required', 'string', 'max:255'],
             'LastName' => ['required', 'string', 'max:255'],
             'Email' => ['required', 'string', 'email', 'max:255', 'unique:customers'],
@@ -66,13 +67,23 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {  
-        return Customer::create([
-            'firstName' => $data['FirstName'],
-            'lastName' => $data['LastName'],
-            'email' => $data['Email'],
-            'mobileNum' => $data['MobileNum'],
-            'password' => Hash::make($data['password']),
-            
-        ]);
+        // Upload and store the user's profile image
+    $profileImage = null;
+
+    if (request()->hasFile('ProfileImage')) {
+        $uploadedImage = request()->file('ProfileImage');
+        $profileImage = $uploadedImage->store('customer_images', 'public'); // Store in "public/customer_images"
+    }
+
+    // Create the user record with the profile image path
+    return Customer::create([
+        'profile_img' => $profileImage,
+        'firstName' => $data['FirstName'],
+        'lastName' => $data['LastName'],
+        'email' => $data['Email'],
+        'mobileNum' => $data['MobileNum'],
+        'password' => Hash::make($data['password']),
+        
+    ]);
     }
 }
