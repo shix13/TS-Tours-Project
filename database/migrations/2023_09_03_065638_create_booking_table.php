@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('booking', function (Blueprint $table) {
             $table->id('reserveID')->startingValue(1000000); // Auto-incrementing primary key
-            $table->unsignedBigInteger('custID'); // Foreign key to customers table
             $table->unsignedBigInteger('unitID'); // Foreign key to vehicles table
             $table->unsignedBigInteger('tariffID'); // Foreign key to tariffs table
             $table->date('startDate');
@@ -28,7 +27,6 @@ return new class extends Migration
             $table->timestamps();
 
             // Define foreign key constraints
-            $table->foreign('custID')->references('custID')->on('customers');
             $table->foreign('unitID')->references('unitID')->on('vehicles');
             $table->foreign('tariffID')->references('tariffID')->on('tariffs');
         });
