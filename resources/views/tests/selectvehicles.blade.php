@@ -23,55 +23,56 @@
   </div>
 </div>
 
-  
-
 <hr>
 <div class="row" >
-<form action="#" method="POST">
-@csrf
-  @foreach($vehicles as $v)
+  @foreach($vehicleTypes as $v)
     <div class="col-md-3" >
-        <div class="vehicle-card" style="width: 18rem;border-radius:10px;height:380px;"
+        <div class="vehicle-card" style="width: 18rem;border-radius:10px;height:380px;background-color:white"
             data-id="{{ $v->id }}">
 
             <div style="max-height: 250px; overflow: hidden;" >
-                <img class="card-img-top" src="{{ asset('storage/' . $v->pic) }}" alt="Card image cap" style="width: 100%;" height="auto" >
+                <img class="card-img-top" src="" alt="Card image cap" style="width: 100%;" height="auto" >
             </div>
             <div class="card-content" style="height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
                 <br>
-                <h5 class="card-title" style="font-size: 30px;"><strong>{{ $v->unitName }}</strong></h5>
-                <div class="specification">
-                    @if ($v->specification)
-                        <p style="font-weight: 400; font-size: 15px;">{{ strlen($v->specification) > 100 ? substr($v->specification, 0, 109) . '...' : $v->specification}}</p>
-                    @else
-                        <p style="font-weight: 400; font-size: 15px;">--No Description--</p>
-                    @endif
-                </div>
+                <h5 class="card-title" style="font-size: 30px;"><strong>{{ $v->vehicle_Type }}</strong></h5>
             </div>
         </div>
     </div>
   @endforeach
-  <button type="submit">Select Vehicles</button>
-</form>
 </div>
+<form id="vehicleSelectionForm" action="#" method="POST">
+    @csrf
+    <input type="hidden" id="selectedVehicleTypes" name="selectedVehicleTypes" value="">
+    <button type="button" id="submitSelectionButton">Submit Selection</button>
+</form>
+
 </div>
 <script>
 // JavaScript to handle vehicle selection
-        const selectedVehicles = [];
+const selectedVehicleTypes = [];
 
-        document.querySelectorAll('.vehicle-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const vehicleId = card.getAttribute('data-id');
+document.querySelectorAll('.vehicle-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const vehicleId = card.getAttribute('data-id');
 
-                // Toggle selection
-                if (selectedVehicles.includes(vehicleId)) {
-                    selectedVehicles.splice(selectedVehicles.indexOf(vehicleId), 1);
-                    card.style.backgroundColor = 'white'; // Deselect
-                } else {
-                    selectedVehicles.push(vehicleId);
-                    card.style.backgroundColor = 'lightgreen'; // Select
-                }
-            });
-        });
+        // Toggle selection
+        if (selectedVehicleTypes.includes(vehicleId)) {
+            selectedVehicleTypes.splice(selectedVehicleTypes.indexOf(vehicleId), 1);
+            card.style.backgroundColor = 'white'; // Deselect
+        } else {
+            selectedVehicleTypes.push(vehicleId);
+            card.style.backgroundColor = 'lightgreen'; // Select
+        }
+    });
+});
+
+document.getElementById('submitSelectionButton').addEventListener('click', () => {
+    // Update the hidden form field with selected data
+    document.getElementById('selectedVehicleTypes').value = selectedVehicleTypes.join(',');
+
+    // Submit the form
+    document.getElementById('vehicleSelectionForm').submit();
+});
 </script>
 @endsection
