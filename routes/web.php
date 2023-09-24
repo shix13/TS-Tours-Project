@@ -130,4 +130,7 @@ Route::prefix('employee')->group(function(){
 
 //Route::prefix('test')->group(function(){
     Route::get('/selectvehicles', [TestController::class, 'getVehicles'])->name('selectvehicles');
+    Route::post('/createbooking', [TestController::class, 'proceedBooking'])->name('createbooking');
+    Route::post('/processbookingreq', [TestController::class, 'processBooking'])->name('processbookingreq');
+    Route::get('/checkbookingstatus{bookingID}', [TestController::class, 'bookingStatus'])->name('checkbookingstatus');
 //});

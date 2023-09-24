@@ -27,7 +27,7 @@
 <div class="row" >
   @foreach($vehicleTypes as $v)
     <div class="col-md-3" >
-        <div class="vehicle-card" style="width: 18rem;border-radius:10px;height:380px;background-color:white"
+        <div class="vehicle-card" data-id="{{ $v->vehicle_Type_ID }}" style="width: 18rem;border-radius:10px;height:380px;background-color:white"
             data-id="{{ $v->id }}">
 
             <div style="max-height: 250px; overflow: hidden;" >
@@ -41,7 +41,7 @@
     </div>
   @endforeach
 </div>
-<form id="vehicleSelectionForm" action="#" method="POST">
+<form id="vehicleSelectionForm" action="{{ route('createbooking') }}" method="POST">
     @csrf
     <input type="hidden" id="selectedVehicleTypes" name="selectedVehicleTypes" value="">
     <button type="button" id="submitSelectionButton">Submit Selection</button>
@@ -54,14 +54,14 @@ const selectedVehicleTypes = [];
 
 document.querySelectorAll('.vehicle-card').forEach(card => {
     card.addEventListener('click', () => {
-        const vehicleId = card.getAttribute('data-id');
+        const vehicleTypeId = card.getAttribute('data-id');
 
         // Toggle selection
-        if (selectedVehicleTypes.includes(vehicleId)) {
-            selectedVehicleTypes.splice(selectedVehicleTypes.indexOf(vehicleId), 1);
+        if (selectedVehicleTypes.includes(vehicleTypeId)) {
+            selectedVehicleTypes.splice(selectedVehicleTypes.indexOf(vehicleTypeId), 1);
             card.style.backgroundColor = 'white'; // Deselect
         } else {
-            selectedVehicleTypes.push(vehicleId);
+            selectedVehicleTypes.push(vehicleTypeId);
             card.style.backgroundColor = 'lightgreen'; // Select
         }
     });
