@@ -76,5 +76,11 @@ class Booking extends Authenticatable
         return $this->hasOne(Rent::class, 'rentID');
     }
 
-    
+    /**
+     * Define a one-to-many relationship with VehicleTypeBooked.
+     */
+    public function vehicleTypesBooked()
+    {
+        return $this->hasMany(VehicleTypeBooked::class, 'reserveID');
+    }
 }
