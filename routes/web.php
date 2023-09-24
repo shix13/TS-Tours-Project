@@ -13,7 +13,7 @@ use App\Http\Controllers\BookingRentalController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\RemittanceController;
 use App\Http\Controllers\ReportsController;
-
+use App\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,3 +127,7 @@ Route::prefix('employee')->group(function(){
 
     });
 });
+
+//Route::prefix('test')->group(function(){
+    Route::get('/selectvehicles', [TestController::class, 'getVehicles'])->name('selectvehicles');
+//});
