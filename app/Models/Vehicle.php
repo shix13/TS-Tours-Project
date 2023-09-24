@@ -21,7 +21,7 @@ class Vehicle extends Authenticatable
     protected $table = 'vehicles';
     protected $primaryKey = 'unitID'; 
     protected $fillable = [
-        'pic', 'registrationNumber', 'unitName', 'pax', 'specification', 'status'
+        'pic', 'registrationNumber', 'unitName', 'pax', 'specification', 'status', 'vehicle_Type_ID'
     ];
 
     /**
@@ -47,5 +47,10 @@ class Vehicle extends Authenticatable
     public function maintenances()
     {
         return $this->hasMany(Maintenance::class, 'unitID');
+    }
+
+    public function vehicleType()
+    {
+        return $this->hasOne(VehicleType::class, 'vehicle_Type_ID');
     }
 }
