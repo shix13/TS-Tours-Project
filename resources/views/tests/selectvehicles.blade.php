@@ -8,11 +8,11 @@
   <!-- Add search and filter section on the right side -->
   <div class="row">
   <!-- Browse Vehicle text on the left -->
-  <div class="col-md-6">
-    <h1 style="text-align: left; padding-left: 30px; font-size: 30px; font-weight: 700">Vehicles We Offer</h1>
+  <div class="col">
+    <h1 style="text-align: center;font-size: 30px; font-weight: 700">Vehicles We Offer</h1>
   </div>
 
-  <!-- Search bar on the right -->
+  <!-- Search bar on the right >
   <div class="col-md-6">
     <div class="input-group mb-3">
       <input type="text" class="form-control" style="background: white;border-radius:10px" placeholder="Search..." aria-label="Search" aria-describedby="basic-addon2">
@@ -20,7 +20,7 @@
         <button style="background: midnightblue;padding:10px;color:white;border-radius:5px;"> <i class="fas fa-search"></i> Search</button>
       </div>
     </div>
-  </div>
+  </div-->
 </div>
 
 <hr>
@@ -31,17 +31,18 @@
             data-id="{{ $v->id }}">
 
             <div style="max-height: 250px; overflow: hidden;" >
-                <img class="card-img-top" src="" alt="Card image cap" style="width: 100%;" height="auto" >
+                <img class="card-img-top" src="{{ asset('storage/' . $v->pic) }}" alt="Card image cap" style="width: 100%;" height="auto" >
             </div>
             <div class="card-content" style="height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
                 <br>
                 <h5 class="card-title" style="font-size: 30px;"><strong>{{ $v->vehicle_Type }}</strong></h5>
+                <p class="card-text">{{ $v->description }}</p>
             </div>
         </div>
     </div>
   @endforeach
 </div>
-<form id="vehicleSelectionForm" action="{{ route('createbooking') }}" method="POST">
+<form id="vehicleSelectionForm" action="{{ route('checkoutbooking') }}" method="POST">
     @csrf
     <input type="hidden" id="selectedVehicleTypes" name="selectedVehicleTypes" value="">
     <button type="button" id="submitSelectionButton">Submit Selection</button>

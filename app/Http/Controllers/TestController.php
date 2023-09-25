@@ -124,7 +124,7 @@ class TestController extends Controller
         $bookingStatusUrl = route('checkbookingstatus', $reserveID);
         return Redirect::to($bookingStatusUrl);
         */
-        return redirect()->route('checkbookingstatus', $reserveID)->with('success', 'Your booking details have been saved successfully');
+        return redirect()->route('checkbookingstatus', ['booking' => $booking])->with('success', 'Your booking details have been saved successfully');
     }
 
     public function processRate($tariffRate, $startDate, $endDate){
@@ -147,17 +147,45 @@ class TestController extends Controller
         return $downpayment;
     }
 
-    public function bookingStatus($bookingID){
+    public function searchView(){
+        return view('tests.searchbooking');
+    }
+
+    public function processSearch(Request $request){
+        $reserveID = $request->input('reserveID');
+        /*
         $booking = Booking::with(['tariff' => function ($query){
             $query->withTrashed(); //Include soft-deleted 'tariff' records
             }])
             ->find($bookingID);
-        
+        */
+        $booking = Booking::where('reserveID', $reserveID)->first();
+            
+        if($booking){
+            return redirect()->route('checkbookingstatus', $booking);
+        } else {
+            return redirect()->route('search')->with('error', 'Booking not found');
+        }
+    }
+
+    public function bookingStatus(Booking $booking){
         $vehicleTypesBooked = $booking->vehicleTypesBooked;
         //dd($vehicleTypesBooked);
         $tariffs = $booking->tariff;
-
+        //dd($booking);
         //dd($type);
         return view('tests.bookingstatus', compact('booking', 'vehicleTypesBooked', 'tariffs'));
+    }
+
+    public function checkout(Request $request){
+        //dd($request->input('bookingID'));
+        $booking = Booking::where('reserveID', $request->input('bookingID'))->first();
+        //dd($booking);
+
+        $booking->gcash_RefNum = $request->input('gcash_RefNum');
+        //dd($booking);
+        
+        $booking->save();
+        return redirect()->route('checkbookingstatus', $booking);
     }
 }

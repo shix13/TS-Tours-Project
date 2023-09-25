@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<div id="preApprovedMessage" class="row" style="display: none;">
+<div id="prePay" class="row" style="display: none;">
     <h1 style="font-weight: 700;text-align: center;">Booking Approved</h1>
     <div class="row" style="padding: 10px;">
         <p style="font-weight:700;font-size:20px">Your booking has been approved. </p>
@@ -45,7 +45,8 @@
                             Downpayment Fee (10%): {{ $booking['downpayment_Fee']}}
                         </div>
                     </div>
-                    <form method="POST" action="{{ route('checkout') }}">
+                    <form method="POST" action="{{ route('checkoutbooking') }}">
+                        <input type="hidden" name="bookingID" value="{{ $booking->reserveID }}">
                         @csrf
                         Enter GCASH reference number: <input name="gcash_RefNum" required>
                             <div class="col text-center"> 
@@ -59,6 +60,24 @@
                 <img src="{{ asset('/storage/images/gcash.jpg') }}" alt="Your Image" style="width: 100%;margin-left:0%">
             </div>
         </div>
+    </div>
+</div>
+
+<div id="postPay" class="row" style="display: none;padding: 10px;">
+    <h1 style="font-weight: 700;text-align: center;">Payment Under Review</h1>
+    <div class="row" style="padding: 10px;">
+        <p style="font-weight:700;font-size:20px">Your downpayment is being reviewed. </p>
+        <p><hr>You can check your email regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.</p>
+        <p style="margin-top:30px;font-weight:700">Thank You for choosing TS Tours Services!</p>
+    </div>
+</div>
+
+<div id="approved" class="row" style="display: none;padding: 10px;">
+    <h1 style="font-weight: 700;text-align: center;">Payment is approved</h1>
+    <div class="row" style="padding: 10px;">
+        <p style="font-weight:700;font-size:20px">Your downpayment is being reviewed. </p>
+        <p><hr>You can check your email regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.</p>
+        <p style="margin-top:30px;font-weight:700">Thank You for choosing TS Tours Services!</p>
     </div>
 </div>
 
@@ -134,15 +153,20 @@
 <script>
     // Assuming you have a variable or way to determine the booking status
     var bookingStatus = "{{ $booking->status }}"; // Change this to the actual booking status
+    var bookingGcash = "{{ $booking->gcash_RefNum }}";
 
     // Show the appropriate message based on the booking status
     if (bookingStatus === "Pending") {
         document.getElementById("pendingMessage").style.display = "flex";
     } else if (bookingStatus === "Denied") {
         document.getElementById("deniedMessage").style.display = "flex";
-    } else if (bookingStatus === "Pre-approved") {
-        document.getElementById("preApprovedMessage").style.display = "flex";
+    } else if (bookingStatus === "Pre-approved" && bookingGcash === null) {
+        document.getElementById("prePay").style.display = "flex";
         document.getElementById("paymentForm").style.display = "flex";
+    } else if (bookingStatus === "Pre-approved" && bookingGcash !== null) {
+        document.getElementById("postPay").style.display = "flex";
+    } else if (bookingStatus === "Approved") {
+        document.getElementById("approved").style.display = "flex";
     }
 </script>
 
