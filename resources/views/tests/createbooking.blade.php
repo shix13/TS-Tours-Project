@@ -4,31 +4,31 @@
 <div class="container">
 <h2>BOOKING</h2>
     <div class="row container">
-        <div class="container1" style="display: inline-block;max-height:750px;">
+        <div class="container1" style="display: inline-block;max-height:680px;">
             <h4>Booking Details</h4>
             <form method="POST" action="{{ route('processbookingreq') }}">
             @csrf
             <div class="container">
                 <div class="row">
-                <table class="table">
-                <thead>
-                    <tr>
-                        <th>Vehicle Type</th>
-                        <th>Quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($vehicleTypes as $vehicleType)
-                        <tr>
-                            <td>{{ $vehicleType->vehicle_Type }}</td>
-                            <td>
-                                <input type="number" name="TypeQuantity[{{ $vehicleType->vehicle_Type_ID }}]" value="1">
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-                </table>
+                    <div class="col">
+                        <b>Vehicle Type</b>
+                    </div>
+                    <div class="col">
+                        <b>Quantity</b>
+                    </div>
                 </div>
+                @foreach($vehicleTypes as $vehicleType)
+                <div class="row">
+                    <div class="col" style="padding: 5px;">
+                        {{ $vehicleType->vehicle_Type }}
+                    </div>
+                    <div class="col" style="padding: 5px;">
+                        <input type="number" name="TypeQuantity[{{ $vehicleType->vehicle_Type_ID }}]" value="1">
+                    </div>
+                </div>
+                @endforeach
+                <br>
+                
                 <div class="row">
                     <div class="col">
                         <i class="fas fa-map-marker-alt"></i> Location
@@ -54,21 +54,16 @@
                         </div><hr>
                     </div>
                 </div>
-                <div class="row container1" style="background: none;box-shadow:none;">
-                    <div class="col">
-                        <div class="row">
-                            <div class="col">
-                                <div class="row">First Name</div> 
-                                <div class="row"><input name="FirstName" required></div> 
-                            </div>
-                            <div class="col">
-                                <div class="row">First Name</div> 
-                                <div class="row"><input name="LastName" required></div>
-                            </div>
-                        </div>
-                    </div>
+                
+                <div class="row">
+                    <div class="col">First Name</div> 
+                    <div class="col">Last Name</div> 
                 </div>
-                    
+                <div class="row">
+                    <div class="col"><input name="FirstName" required></div> 
+                    <div class="col"><input name="LastName" required></div>
+                </div><br>
+
                 <div class="row">
                     <div class="col">
                         <i class="fas fa-envelope"></i> Email Address

@@ -2,13 +2,13 @@
 
 @section('content')
 <div class="container">
-<div id="pendingMessage" style="display: none;">
-    <h1 style="font-weight: 700;text-align:center">Booking Under Review</h1>
-    <!--div class="row" style="padding: 10px;"-->
+<div id="pendingMessage" class="row" style="display: none;">
+        <h1 style="font-weight: 700;">Booking Under Review</h1>
+    <div class="row" style="padding: 10px;">
         <p style="font-weight:700;font-size:20px">Your booking is currently under review. </p>
-        <p><hr>You can check your email regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.</p>
+            <p><hr>You can check your email to be notified regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.</p>
         <p style="margin-top:30px;font-weight:700">Thank You for choosing TS Tours Services!</p>
-    <!--/div-->
+    </div>
 </div>
 
 <div id="deniedMessage" class="row" style="display: none;padding: 10px;">
@@ -30,7 +30,7 @@
 </div>
 
 <div id="paymentForm" class="row" style="display: none;padding: 10px;">
-<div class="row container1" style="text-align: justify; width: 95%;padding:10px 80px">
+    <div class="row container1" style="text-align: justify; width: 95%;padding:10px 80px">
         <div class="row">
             <div class="col-md-8">
                 <h2 style="margin-bottom: 0px;margin-top:20px"><strong>Secure Payment</strong></h2>
@@ -87,7 +87,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <i class="fas fa-calendar-alt"></i> Vehicles booked <hr>
+                        <i class="fas fa-car"></i> Vehicles booked
                         <div class="row">
                             @foreach($vehicleTypesBooked as $vehicleTypeBooked)
                                 @php
@@ -96,16 +96,16 @@
                                     $type = $vehicleType->vehicle_Type;
                                     
                                 @endphp
-
-                                <p>Type: {{ $type }}<br>
-                                Quantity: {{ $vehicleTypeBooked->quantity }}</p>
+                            <div class="col">
+                                x{{ $vehicleTypeBooked->quantity }} {{ $type }}
+                            </div>
                             @endforeach
                         </div><hr>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <i class="fas fa-calendar-alt"></i> Schedule Date <hr>
+                        <i class="fas fa-calendar-alt"></i> Schedule Date
                         <div class="row">
                             <div class="col">
                                 Start Date:
@@ -120,6 +120,14 @@
                                 {{ $booking['endDate'] }}
                             </div>
                         </div><hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <i class="fas fa-user"></i> Customer Name
+                    </div>
+                    <div class="col">
+                        {{ $booking['cust_first_name'] }} {{ $booking['cust_last_name'] }}
                     </div>
                 </div>
                 <div class="row">

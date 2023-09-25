@@ -43,9 +43,9 @@
             <ul class="navbar-nav ms-auto">
             
               <li class="nav-item custom-nav-item {{ Request::is('selectvehicles') ? 'active' : '' }}"><a class="nav-link"
-                      href="{{ route('selectvehicles') }}">Book vehicles</a></li>
+                      href="{{ route('selectvehicles') }}">Vehicles</a></li>
               <li class="nav-item custom-nav-item {{ Request::is('search') ? 'active' : '' }}"><a class="nav-link"
-                      href="{{ route('search') }}">Track bookings</a></li>
+                      href="{{ route('search') }}">Bookings</a></li>
               <li class="nav-item custom-nav-item {{ Request::is('contactus') ? 'active' : '' }}"><a class="nav-link"
                       href="{{ route('contactus') }}">Contact Us</a></li>
               <li class="nav-item custom-nav-item {{ Request::is('aboutus') ? 'active' : '' }}"><a class="nav-link"

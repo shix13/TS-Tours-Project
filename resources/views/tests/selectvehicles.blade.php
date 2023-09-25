@@ -24,28 +24,28 @@
 </div>
 
 <hr>
-<div class="row" >
+<div class="row mx-auto text-center">
   @foreach($vehicleTypes as $v)
-    <div class="col-md-3" >
+    <div class="col-md-3 mb-4">
         <div class="vehicle-card" data-id="{{ $v->vehicle_Type_ID }}" style="width: 18rem;border-radius:10px;height:380px;background-color:white"
             data-id="{{ $v->id }}">
 
             <div style="max-height: 250px; overflow: hidden;" >
-                <img class="card-img-top" src="{{ asset('storage/' . $v->pic) }}" alt="Card image cap" style="width: 100%;" height="auto" >
+                <img class="card-img-top" src="{{ asset('images/' ) }}" alt="Card image cap" style="width: 100%;" height="auto" >
             </div>
             <div class="card-content" style="height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
                 <br>
                 <h5 class="card-title" style="font-size: 30px;"><strong>{{ $v->vehicle_Type }}</strong></h5>
-                <p class="card-text">{{ $v->description }}</p>
+                
             </div>
         </div>
     </div>
   @endforeach
 </div>
-<form id="vehicleSelectionForm" action="{{ route('checkoutbooking') }}" method="POST">
+<form id="vehicleSelectionForm" action="{{ route('createbooking') }}" method="POST">
     @csrf
     <input type="hidden" id="selectedVehicleTypes" name="selectedVehicleTypes" value="">
-    <button type="button" id="submitSelectionButton">Submit Selection</button>
+    <button type="button" id="submitSelectionButton" class="btn btn-primary"  style="margin-top: 10px">Submit Selection</button>
 </form>
 
 </div>
