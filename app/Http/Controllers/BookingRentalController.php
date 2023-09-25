@@ -13,6 +13,8 @@ use App\Models\Booking;
 use App\Models\Rent;
 use App\Models\Tariff;
 use App\Models\Vehicle;
+use App\Models\VehicleTypeBooked;
+use App\Models\VehicleAssigned;
 
 class BookingRentalController extends Controller
 {
@@ -223,5 +225,35 @@ public function update(Request $request, $id)
         return redirect()->back()->with('error', 'An error occurred while updating rental information: ' . $e->getMessage());
     }
     
+}
+
+public function bookAssign($id)
+{
+    // Retrieve data from the 'booking' table where status is 'Pending' and reserveID matches $id
+    $pendingBooking = Booking::where('status', 'Pending')->where('reserveID', $id)->first();
+
+    // Retrieve data from the 'vehicle_types_booked' table
+    $bookedTypes = VehicleTypeBooked::whereIn('reserveID', $pendingBooking->pluck('reserveID'))->get();
+
+    // Retrieve the list of available vehicles and employees
+    $vehicles = Vehicle::with('vehicleType')->get(); // Eager load the 'vehicleType' relationship
+
+    $employees = Employee::all();
+
+    // Pass the filtered data, vehicles, and employees to the view
+    return view('employees.bookAssignments', [
+        'pendingBooking' => $pendingBooking,
+        'bookedTypes' => $bookedTypes,
+        'vehicles' => $vehicles,
+        'employees' => $employees,
+    ]);
+}
+
+public function preApproved(){
+        // Retrieve a list of drivers from the employees table
+        $drivers = Employee::where('accountType', 'Driver')->get();
+
+    $preApprovedBookings = Booking::where('status', 'Pre-Approved')->get();
+    return view('employees.preApproved', compact('preApprovedBookings','drivers'));
 }
 }

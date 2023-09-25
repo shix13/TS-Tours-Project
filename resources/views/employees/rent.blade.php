@@ -8,26 +8,39 @@
 <br><br>
 
 <div class="container">
-    <div class="row " >
-        <div class="col-md-0">
-            <a href="{{ route('employee.booking') }}" class="btn btn-danger" style="padding:25px 30px 25px 30px;margin-left:15px;margin-top:0%"><strong>View Bookings</strong></a>
-        </div>
-        <div class="col-md-8" style="justify-content:flex-end">
-            <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
-                <div class="form-group col-md-8">
-                    <input type="text" id="search" class="form-control" placeholder="Enter Booking ID" onkeyup="searchAndFilter()">
+    <div class="row">
+        <div class="container">
+            <nav class="navbar navbar-expand-md" style="background: midnightblue; font-weight: 700">
+                <ul class="navbar-nav" style="font-size: 18px">
+                    <li class="nav-item">
+                        <a class="nav-link " href="{{ route('employee.booking') }}">Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="{{ route('employee.preapproved') }}">Downpayment Review</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('employee.rental') }}">Rentals</a>
+                    </li>
+                </ul>
+                <div class="col-md-7" style="justify-content: flex-end">
+                    <div class="form-row" style="background-color: transparent; padding: 10px; border-radius: 5px;">
+                        <div class="form-group col-md-6">
+                            <input type="text" id="search" class="form-control" placeholder="Search booking" onkeyup="searchAndFilter()" style="padding: 10px; background: white">
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control" id="statusFilter" style="padding: 8px; color: black; font-weight: 400; background: white;">
+                                <option value="">All</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Denied">Denied</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <select class="form-control" id="statusFilter">
-                        <option value="">All</option>
-                        <option value="Pending">Booked</option>
-                        <option value="Approved">Ongoing</option>
-                        <option value="Denied">Completed</option>
-                    </select>
-                </div>
-            </div>
+            </nav>
         </div>
     </div>
+    
 
         @if(session('success'))
         <div class="custom-success-message alert-dismissible fade show" role="alert">
@@ -51,7 +64,7 @@
         
     <div class="card ">
         <div class="card-header">
-            <h4 class="card-title">Rentals</h4>
+            <h4 class="card-title" style="font-weight: 700">Rentals</h4>
         </div>
         <div class="card-body">
             <div class="table-responsive">

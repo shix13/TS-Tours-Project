@@ -1,17 +1,18 @@
 @extends('layouts.employee-app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
+<body style="background: radial-gradient(circle, rgba(234,235,238,1) 0%, rgba(226,228,231,1) 23%, rgba(211,211,224,1) 50%, rgba(221,221,232,1) 79%, rgba(205,207,209,1) 100%);">
+    <div class="container">
+    <div class="row justify-content-center" >
+        <div class="col-md-8" >
+            <div class="card" >
                 <div class="card-header" style="background-color: #122E50;color:white;">{{ __('Employee Login') }}</div>
-                <div class="card-body" style="background-color: #dde5ee;color:rgb(0, 0, 0);">
+                <div class="card-body" style="background-color: #ffffffa9;color:rgb(0, 0, 0);">
                     <form method="POST" action="{{ route('employee.login.submit') }}">
                         @csrf
 
                         <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+                            <label for="email" class="col-md-4 col-form-label text-md-end"> <i class="fas fa-envelope"></i> {{ __('Email Address') }}</label>
 
                             <div class="col-md-6">
                                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
@@ -25,7 +26,7 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
+                            <label for="password" class="col-md-4 col-form-label text-md-end"> <i class="fas fa-lock"></i> {{ __('Password') }}</label>
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
@@ -63,10 +64,16 @@
                                 @endif
                             </div>
                         </div>
+                        <br>
+                        <div style="text-align: center;">
+                            <a href="{{ route('register') }}" style="color:orangered;text-decoration::none">Create An Account?</a>
+                        </div> 
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+</body>
+
 @endsection

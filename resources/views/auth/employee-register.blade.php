@@ -1,19 +1,19 @@
 @extends('layouts.employee-app')
 
 @section('content')
-
-<div class="container" >
+<body style="background: radial-gradient(circle, rgba(234,235,238,1) 0%, rgba(226,228,231,1) 23%, rgba(211,211,224,1) 50%, rgba(221,221,232,1) 79%, rgba(205,207,209,1) 100%);text-align:left">
+    <div class="container"  >
     <div class="row justify-content-center">
-        <div class="col-md-8" >
+        <div class="col-md-7" >
             <div class="card" >
-                <div class="card-header" style="background-color: #122E50;color:white;">{{ __('Employee Account Creation') }}</div>
+                <div class="card-header" style="background-color: #122E50;color:white;padding:10px;font-size:20px;font-weight:700;text-align:center">{{ __('Employee Account Creation') }}</div>
 
-                <div class="card-body" style="background-color: #dde5ee;color:rgb(0, 0, 0);">
+                <div class="card-body" style="background-color: #ffffffa9;color:rgb(0, 0, 0);">
                     <form method="POST" action="{{ route('employee.register.submit') }}" enctype="multipart/form-data">
                         @csrf
 
                         <div class="row mb-3">
-                            <label for="ProfileImage" class="col-md-4 col-form-label text-md-end">{{ __('Profile Image') }}</label>
+                            <label for="ProfileImage" class="col-md-4 col-form-label text-md-end">  <i class="fas fa-image"></i>  {{ __('Profile Image') }}</label>
                         
                             <div class="col-md-6">
                                 <input id="ProfileImage" type="file" class="form-control @error('ProfileImage') is-invalid @enderror" name="ProfileImage" accept="image/*">
@@ -27,10 +27,10 @@
                         </div>
                         
                         <div class="row mb-3">
-                            <label for="FirstName" class="col-md-4 col-form-label text-md-end">{{ __('First Name') }}</label>
+                            <label for="FirstName" class="col-md-4 col-form-label text-md-end"> <i class="fas fa-user"></i> {{ __('First Name') }}</label>
 
                             <div class="col-md-6">
-                                <input id="FirstName" type="text" class="form-control @error('FirstName') is-invalid @enderror" name="FirstName" value="{{ old('FirstName') }}" required autocomplete="FirstName" autofocus>
+                                <input id="FirstName" type="text" class="form-control @error('FirstName') is-invalid @enderror" name="FirstName" value="{{ old('FirstName') }}" required autocomplete="FirstName" autofocus required>
 
                                 @error('FirstName')
                                     <span class="invalid-feedback" role="alert">
@@ -41,10 +41,10 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="LastName" class="col-md-4 col-form-label text-md-end">{{ __('Last Name') }}</label>
+                            <label for="LastName" class="col-md-4 col-form-label text-md-end"> <i class="fas fa-user"></i> {{ __('Last Name') }}</label>
 
                             <div class="col-md-6">
-                                <input id="LastName" type="text" class="form-control @error('LastName') is-invalid @enderror" name="LastName" value="{{ old('LastName') }}" required autocomplete="LastName" autofocus>
+                                <input id="LastName" type="text" class="form-control @error('LastName') is-invalid @enderror" name="LastName" value="{{ old('LastName') }}" required autocomplete="LastName" autofocus required>
 
                                 @error('LastName')
                                     <span class="invalid-feedback" role="alert">
@@ -55,10 +55,10 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="Email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+                            <label for="Email" class="col-md-4 col-form-label text-md-end"><i class="fas fa-envelope"></i> {{ __('Email Address') }}</label>
 
                             <div class="col-md-6">
-                                <input id="Email" type="email" class="form-control @error('Email') is-invalid @enderror" name="Email" value="{{ old('Email') }}" required autocomplete="Email">
+                                <input id="Email" type="email" class="form-control @error('Email') is-invalid @enderror" name="Email" value="{{ old('Email') }}" required autocomplete="Email" required>
 
                                 @error('Email')
                                     <span class="invalid-feedback" role="alert">
@@ -69,9 +69,9 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="MobileNum" class="col-md-4 col-form-label text-md-end">{{ __('Mobile Number') }}</label>
+                            <label for="MobileNum" class="col-md-4 col-form-label text-md-end"><i class="fas fa-phone"></i> {{ __('Mobile Number') }}</label>
                             <div class="col-md-6">
-                                <input id="MobileNum" type="text" class="form-control @error('MobileNum') is-invalid @enderror" name="MobileNum" value="{{ old('MobileNum') }}" required>
+                                <input id="MobileNum" type="text" class="form-control @error('MobileNum') is-invalid @enderror" name="MobileNum" value="{{ old('MobileNum') }}" required required>
                                 @error('MobileNum')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -81,10 +81,10 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="AccountType" class="col-md-4 col-form-label text-md-end">{{ __('Account Type') }}</label>
+                            <label for="AccountType" class="col-md-4 col-form-label text-md-end"><i class="fas fa-user-tag"></i> {{ __('Account Type') }}</label>
 
                             <div class="col-md-6">
-                                <select id="AccountType" class="form-control @error('AccountType') is-invalid @enderror" name="AccountType" required>
+                                <select id="AccountType" class="form-control @error('AccountType') is-invalid @enderror" name="AccountType" required> 
                                     <option value="">--Select Account Type--</option>
                                     <option value="Manager">Manager</option>
                                     <option value="Clerk">Clerk</option>
@@ -101,7 +101,7 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
+                            <label for="password" class="col-md-4 col-form-label text-md-end"><i class="fas fa-lock"></i> {{ __('Password') }}</label>
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
@@ -115,7 +115,7 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
+                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end"><i class="fas fa-lock"></i> {{ __('Confirm Password') }}</label>
 
                             <div class="col-md-6">
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
@@ -135,4 +135,6 @@
         </div>
     </div>
 </div>
+</body>
+
 @endsection

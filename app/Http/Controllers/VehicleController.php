@@ -9,6 +9,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\Vehicle;
 use App\Models\Maintenance;
+use App\Models\VehicleType;
 use Illuminate\Validation\Rule;
 
 class VehicleController extends Controller
@@ -31,69 +32,52 @@ public function maintenanceIndex()
 
 public function create()
 {
-    return view('employees.vehiclecreate');
-}
+    // Fetch the vehicle types from the database
+    $vehicleTypes = VehicleType::all();
 
+    return view('employees.vehiclecreate', compact('vehicleTypes'));
+}
 
 public function store(Request $request)
 {
     // Validate the form data
     $data = $request->validate([
         'pic' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        //registration number should be unique but ignores soft deleted ones
-        'registrationnumber' => ['required','string','max:255',Rule::unique('vehicles')->ignore($request->id)->whereNull('deleted_at'),],
-        'unitname' => 'required|string|max:255',
+        'registrationNumber' => [
+            'required',
+            'string',
+            'max:255',
+            Rule::unique('vehicles')->ignore($request->id)->whereNull('deleted_at'),
+        ],
+        'unitName' => 'required|string|max:255',
         'pax' => 'required|integer|min:1',
         'specification' => 'nullable|string',
         'status' => 'required|string|in:Available,Booked,Maintenance',
+        'vehicleType' => 'required|exists:vehicle_types,vehicle_Type_ID', // Validate that the selected type exists in the vehicle_types table
     ]);
 
-    // Check if a soft-deleted record with the same registration number exists
-    $existingVehicle = Vehicle::onlyTrashed()->where('registrationnumber', $data['registrationnumber'])->first();
-
-    if ($existingVehicle) {
-        // Restore and update the soft-deleted record
-        $existingVehicle->restore();
-
-        // Handle vehicle image upload
-        if ($request->hasFile('pic')) {
-            // Delete the old profile image if it exists
-            if ($existingVehicle->pic) {
-                Storage::disk('public')->delete($existingVehicle->pic);
-            }
-            // Store the new profile image
-            $existingVehicle->pic = $request->file('pic')->store('profile_images', 'public');
-        }
-
-        $existingVehicle->update([
-            'unitname' => $data['unitname'],
-            'pax' => $data['pax'],
-            'specification' => $data['specification'],
-            'status' => $data['status'],
-        ]);
-
-        return redirect()->route('employee.vehicle')->with('success', 'Vehicle added successfully.');
-    } 
-    else {
-        // Upload the image and store it in the 'public/vehicle' directory
-        if ($request->hasFile('pic')) {
-            $imagePath = $request->file('pic')->store('public/vehicle');
-            $data['pic'] = str_replace('public/', '', $imagePath); // Remove 'public/' from the image path
-        }
-
-        // Create a new vehicle record with the validated data
-        Vehicle::create([
-            'pic' => $data['pic'],
-            'registrationNumber' => $data['registrationnumber'],
-            'unitName' => $data['unitname'],
-            'pax' => $data['pax'],
-            'specification' => $data['specification'],
-            'status' => $data['status'],
-        ]);
-
-        return redirect()->route('employee.vehicle')->with('success', 'Vehicle added successfully.');
-    }    
+    // Upload the image and store it in the 'public/vehicle' directory
+    if ($request->hasFile('pic')) {
+        $imagePath = $request->file('pic')->store('public/vehicle');
+        $data['pic'] = str_replace('public/', '', $imagePath); // Remove 'public/' from the image path
     }
+
+    // Create a new vehicle record with the validated data
+    Vehicle::create([
+        'pic' => $data['pic'],
+        'registrationNumber' => $data['registrationNumber'],
+        'unitName' => $data['unitName'],
+        'pax' => $data['pax'],
+        'specification' => $data['specification'],
+        'status' => $data['status'],
+        'vehicle_Type_ID' => $data['vehicleType'], // Assign the selected vehicle type
+    ]);
+
+    return redirect()->route('employee.vehicle')->with('success', 'Vehicle added successfully.');
+}
+
+
+
 
     public function edit($id)
     {
@@ -144,4 +128,46 @@ public function store(Request $request)
         return redirect()->route('employee.vehicle', $vehicle->unitID)
             ->with('success', 'Vehicle updated successfully');
     }
+
+    public function newVType()
+{
+    // Fetch the existing vehicle types from the database
+    $vehicleTypes = VehicleType::all();
+
+    // Pass the existing vehicle types to the view
+    return view('employees.vehicle_types_view')->with('vehicleTypes', $vehicleTypes);
+}
+
+public function VtypeCreate()
+{
+    return view('employees.vehicle_types_create');
+}
+
+public function VtypeStore(Request $request)
+{
+    // Validate the incoming request data
+    $request->validate([
+        'vehicle_type' => 'required|string|max:255',
+    ]);
+
+    // Create and store the new vehicle type in the database
+    VehicleType::create([
+        'vehicle_type' => $request->input('vehicle_type'),
+    ]);
+
+    // Redirect back to the form page with a success message
+    return redirect()->route('vehicleTypes.view')->with('success', 'Vehicle type added successfully.');
+}
+
+public function VtypeDestroy(VehicleType $vehicle_type)
+{
+    try {
+        $vehicle_type->delete();
+
+        return redirect()->route('vehicleTypes.view')->with('success', 'Vehicle type deleted successfully.');
+    } catch (\Exception $e) {
+        return redirect()->route('vehicleTypes.view')->with('error', 'Failed to delete vehicle type.');
+    }
+}
+
 }

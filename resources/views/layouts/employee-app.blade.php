@@ -10,20 +10,23 @@
 
     <title>TS Tours Services</title>
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+      <!--     Fonts and icons     -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;500;700&family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
 </head>
 <body >
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light  shadow-sm" style="background-color: #122E50;">
+    <div id="app" style="font-family: 'Montserrat', sans-serif;">
+        <nav class="navbar navbar-expand-md navbar-light  shadow-sm" style="background-color: #122E50;padding:10px;font-size:15px">
             <div class="container"  >
                 
-                <a class="navbar-brand" href="{{ url('/') }}" style="color:white;">
+                <a class="navbar-brand" href="{{ url('employee') }}" style="color:white;font-size:25px"><img src="{{ asset('images/TS Tours.jpg') }}" alt="TS logo" style="width: 60px;border-radius:20%">
                    <strong>TS Tours Services</strong>  | Employee Online Account 
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -74,10 +77,10 @@
                 </div>
             </div>
         </nav>
-
-        <main class="py-4">
+    </div>
+        <main class="py-4" style="background: radial-gradient(circle, rgba(234,235,238,1) 0%, rgba(226,228,231,1) 23%, rgba(211,211,224,1) 50%, rgba(221,221,232,1) 79%, rgba(205,207,209,1) 100%);">
             @yield('content')
         </main>
-    </div>
+    
 </body>
 </html>

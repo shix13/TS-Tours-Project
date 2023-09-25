@@ -5,7 +5,6 @@
 @endsection
 
 @section('content')
-
 <div class="container">
     <div class="row">
         <div class="col-md-12 offset-md-0">
@@ -19,32 +18,32 @@
 
                         <div class="form-group">
                             <label for="pic" class="custom-file-upload">
-                                <span class="icon">Select Photo </span> 
-                            </label><hr>
+                                <span class="icon">Select Photo</span>
+                            </label>
+                            <hr>
                             <input type="file" name="pic" id="pic" class="form-control @error('pic') is-invalid @enderror" accept="image/*" onchange="displayImage(this)">
                             @error('pic')
                             <span class="invalid-feedback" role="alert">
-                                **You forgot to select a photo
+                                **{{ $message }}
                             </span>
                             @enderror
                             <img id="picPreview" src="#" alt="Selected Image" style="display: none; max-width: 100%; max-height: 200px;">
                         </div>
-                        
 
                         <div class="form-group">
                             <label for="registrationnumber">Registration Number</label>
-                            <input type="text" name="registrationnumber" id="registrationnumber" class="form-control @error('registrationnumber') is-invalid @enderror" required>
-                            @error('registrationnumber')
+                            <input type="text" name="registrationNumber" id="registrationnumber" class="form-control @error('registrationNumber') is-invalid @enderror" required>
+                            @error('registrationNumber')
                             <span class="invalid-feedback" role="alert">
-                               **{{ $message }}
+                                **{{ $message }}
                             </span>
                             @enderror
                         </div>
 
                         <div class="form-group">
                             <label for="unitname">Unit/Name</label>
-                            <input type="text" name="unitname" id="unit_name" class="form-control @error('unitname') is-invalid @enderror" required>
-                            @error('unitname')
+                            <input type="text" name="unitName" id="unit_name" class="form-control @error('unitName') is-invalid @enderror" required>
+                            @error('unitName')
                             <span class="invalid-feedback" role="alert">
                                 **{{ $message }}
                             </span>
@@ -70,19 +69,41 @@
                             </span>
                             @enderror
                         </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="status">Status</label>
+                                <select name="status" id="status" class="form-control @error('status') is-invalid @enderror">
+                                    <option value="Available">Available</option>
+                                    <option value="Booked">Booked</option>
+                                    <option value="Maintenance">Maintenance</option>
+                                </select>
+                                @error('status')
+                                <span class="invalid-feedback" role="alert">
+                                    **{{ $message }}
+                                </span>
+                                @enderror
+                            </div>
 
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
-                                <option value="Available">Available</option>
-                                <option value="Booked">Booked</option>
-                                <option value="Maintenance">Maintenance</option>
-                            </select>
-                            @error('status')
-                            <span class="invalid-feedback" role="alert">
-                                **{{ $message }}
-                            </span>
-                            @enderror
+                            <div class="form-group col-md-4">
+                                <label for="vehicleType">Vehicle Type</label>
+                                <select name="vehicleType" id="vehicleType" class="form-control @error('vehicleType') is-invalid @enderror">
+                                    @foreach($vehicleTypes as $type)
+                                        <option value="{{ $type->vehicle_Type_ID }}">{{ $type->vehicle_Type }}</option>
+                                    @endforeach
+                                </select>
+                                @error('vehicleType')
+                                <span class="invalid-feedback" role="alert">
+                                    **{{ $message }}
+                                </span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-2" style="padding: 10px">
+                                <a href="{{route ('vehicleTypes.view')}}" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> Add New Type
+                                </a>
+                            </div>
+                            
                         </div>
 
                         <div class="form-group">
@@ -116,5 +137,3 @@
     }
 </script>
 @endsection
-
-

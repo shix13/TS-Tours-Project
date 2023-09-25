@@ -42,7 +42,7 @@
                             <div class="col-md-6 pr-1">
                                 <div class="form-group">
                                     <label style="color: black;">Client Name</label>
-                                    <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value='{{$bookings[0]->customer->firstName}} {{$bookings[0]->customer->lastName}}' readonly>
+                                    <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value='' readonly>
                                 </div>
                             </div>
                             <div class="col-md-6 pl-1">

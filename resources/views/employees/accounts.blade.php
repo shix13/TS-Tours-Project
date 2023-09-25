@@ -14,10 +14,10 @@
         </div>
         <div class="col-md-8">
             <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px; margin-right: -180px; border-radius: 5px; margin-bottom: 20px;">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-8">
                     <input type="text" id="nameSearch" class="form-control" placeholder="Enter Name">
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <select id="companyRoleFilter" class="form-control">
                         <option value="All">All Roles</option>
                         <option value="Manager">Manager</option>
@@ -26,13 +26,6 @@
                         <option value="Mechanic">Mechanic</option>
                     </select>
                 </div>
-                <div class="form-group col-md-3">
-                    <select id="tableFilter" class="form-control">
-                        <option value="All">All</option>
-                        <option value="Employee">Employee</option>
-                        <option value="Customer">Customer</option>
-                    </select>
-                </div>   
             </div>
                   
         </div>
@@ -153,69 +146,7 @@
                 {{ $employees -> links() }}
             </div>
         </div>
-    </div>
-
-    <div id="customerCard" class="card">
-        <div class="card-header">
-            <h4 class="card-title">Customer Accounts</h4>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="custtable" class="table table-hover table-striped">
-                    <thead class="text-primary font-montserrat">
-                        <th class="bold-text">
-                            <strong>#</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Profile</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Name</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Mobile Number</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Email</strong>
-                        </th>
-                    </thead>
-                    <tbody>
-                        @php
-                            $counter = 1; // Initialize a counter variable
-                        @endphp
-
-                        @if ($customers !== null && $customers->count() > 0)
-                        @foreach ($customers as $customer)
-                        <tr>
-                            <td>{{ $counter++ }}</td>
-                            <td class="text-center">
-                                @if ($customer->profile_img)
-                                <img src="{{ asset('storage/'. $customer->profile_img) }}" alt="Profile Image" width="100">
-                            @else
-                                <!-- If there is no profile image, display a default image -->
-                                <img src="{{ asset('storage/profile_images/def.png') }}" alt="Default Image" width="100">
-                            @endif
-                            
-                            </td>
-                            
-                            <td>{{ $customer->firstName }} {{ $customer->lastName }}</td>
-                            <td>{{ $customer->mobileNum }}</td>
-                            <td>{{ $customer->email }}</td>
-                        </tr>
-                        @endforeach
-                        @else
-                            <tr>
-                                <td colspan="12">No accounts available.</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
-                {{ $customers -> links() }}
-            </div>
-        </div>
-    </div>
-
-    
+    </div>    
 </div>
 
 @endsection

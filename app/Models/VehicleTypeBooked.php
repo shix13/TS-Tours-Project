@@ -33,6 +33,6 @@ class VehicleTypeBooked extends Model
      */
     public function vehicleType()
     {
-        return $this->hasOne(VehicleType::class, 'vehicle_Type_ID');
+        return $this->belongsTo(VehicleType::class, 'vehicle_Type_ID');
     }
 }

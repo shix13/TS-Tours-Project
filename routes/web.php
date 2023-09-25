@@ -64,15 +64,15 @@ Route::prefix('employee')->group(function(){
      Route::get('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'showLoginForm'])->name('employee.login');
      Route::post('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'login'])->name('employee.login.submit');
 
-    Route::middleware('auth:employee')->group(function () {
+    //Route::middleware('auth:employee')->group(function () {
     //ACCOUNTS
-        Route::middleware(['manager'])->group(function (){
+        //Route::middleware(['manager'])->group(function (){
            Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
            Route::get('/account/{empID}/edit', [EmployeeController::class, 'edit'])->name('employee.edit');
            Route::put('/account/{empID}', [EmployeeController::class, 'update'])->name('employee.update');
            Route::get('/account', [AccountsController::class, 'accountIndex'])->name('employee.accounts');
            Route::delete('/employee/{empID}', [EmployeeController::class, 'delete'])->name('employee.delete');
-        });
+       // });
 
         Route::post('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'register'])->name('employee.register.submit');
         Route::get('/profile', [EmployeeController::class, 'profile'])->name('employee.profile');
@@ -88,6 +88,11 @@ Route::prefix('employee')->group(function(){
         Route::get('/vehicles/{id}/edit', [VehicleController::class, 'edit'])->name('vehicles.edit');
         Route::delete('/vehicles/{id}', [VehicleController::class, 'destroy'])->name('vehicles.destroy');
         Route::put('/vehicles/{id}', [VehicleController::class, 'update'])->name('vehicles.update');
+        Route::get('/vehicle-typesView', [VehicleController::class, 'newVType'])->name('vehicleTypes.view');
+        Route::get('/vehicle-typesCreate', [VehicleController::class, 'VtypeCreate'])->name('vehicleTypes.create');
+        Route::post('/vehicle-types/store', [VehicleController::class, 'VtypeStore'])->name('vehicleTypes.store');
+        Route::delete('/vehicle-types/{vehicle_type}', [VehicleController::class, 'VtypeDestroy'])->name('vehicleTypes.destroy');
+
 
     //--Tariffs
         Route::get('/tariff', [TariffController::class, 'tariffIndex'])->name('employee.tariff'); 
@@ -112,6 +117,10 @@ Route::prefix('employee')->group(function(){
         Route::put('/deny-booking/{bookingId}', [BookingRentalController::class, 'denyBooking'])->name('employee.denyBooking');
         Route::get('/rentalView{id}', [BookingRentalController::class, 'rentalView'])->name('employee.rentalView');
         Route::put('/rental/{id}', [BookingRentalController::class, 'update'])->name('rental.update');
+        Route::get('/PreApproved', [BookingRentalController::class, 'preApproved'])->name('employee.preapproved');
+
+
+        Route::get('/bookingAssign{bookingId}', [BookingRentalController::class, 'bookAssign'])->name('booking.Assign');
 
     //REMITTANCE
         Route::get('/remittance', [RemittanceController::class, 'remittanceIndex'])->name('employee.remittance');
@@ -125,5 +134,5 @@ Route::prefix('employee')->group(function(){
     //DASHBOARD
         Route::get('/', [App\Http\Controllers\Auth\EmployeeController::class, 'showDashboard'])->name('employee.dashboard');
 
-    });
+    //});
 });
