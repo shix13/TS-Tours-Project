@@ -60,7 +60,6 @@ class MaintenanceController extends Controller
             ],
         ]);
         
-        
         // Create a new maintenance record
         Maintenance::create($validatedData);
        

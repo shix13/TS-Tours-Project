@@ -52,5 +52,8 @@ class Employee extends Authenticatable
         'password' => 'hashed',
     ];
 
-    
+    public function rents()
+    {
+        return $this->belongsToMany(Rent::class, 'vehicles_assigned', 'empID');
+    }
 }

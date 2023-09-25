@@ -113,14 +113,15 @@ Route::prefix('employee')->group(function(){
     //BOOKING AND RENTAL
         Route::get('/booking', [BookingRentalController::class, 'bookIndex'])->name('employee.booking'); //BOOKING LIST
         Route::get('/rents', [BookingRentalController::class, 'rentIndex'])->name('employee.rental');
-        Route::put('/approve-booking/{bookingId}', [BookingRentalController::class, 'approveBooking'])->name('employee.approveBooking');
-        Route::put('/deny-booking/{bookingId}', [BookingRentalController::class, 'denyBooking'])->name('employee.denyBooking');
+        Route::get('/approve-booking/{bookingId}', [BookingRentalController::class, 'approveBooking'])->name('employee.approveBooking');
+        Route::get('/deny-booking/{bookingId}', [BookingRentalController::class, 'denyBooking'])->name('employee.denyBooking');
         Route::get('/rentalView{id}', [BookingRentalController::class, 'rentalView'])->name('employee.rentalView');
         Route::put('/rental/{id}', [BookingRentalController::class, 'update'])->name('rental.update');
         Route::get('/PreApproved', [BookingRentalController::class, 'preApproved'])->name('employee.preapproved');
 
 
         Route::get('/bookingAssign{bookingId}', [BookingRentalController::class, 'bookAssign'])->name('booking.Assign');
+        Route::post('/storeAssign}', [BookingRentalController::class, 'storeAssigned'])->name('booking.storeAssign');
 
     //REMITTANCE
         Route::get('/remittance', [RemittanceController::class, 'remittanceIndex'])->name('employee.remittance');

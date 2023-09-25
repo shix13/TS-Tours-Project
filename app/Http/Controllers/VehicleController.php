@@ -152,7 +152,7 @@ public function VtypeStore(Request $request)
 
     // Create and store the new vehicle type in the database
     VehicleType::create([
-        'vehicle_type' => $request->input('vehicle_type'),
+        'vehicle_Type' => $request->input('vehicle_type'),
     ]);
 
     // Redirect back to the form page with a success message

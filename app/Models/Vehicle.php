@@ -51,6 +51,6 @@ class Vehicle extends Authenticatable
 
     public function vehicleType()
     {
-        return $this->hasMany(VehicleType::class, 'vehicle_Type_ID');
+        return $this->hasOne(VehicleType::class, 'vehicle_Type_ID');
     }
 }

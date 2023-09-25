@@ -33,9 +33,9 @@
         <hr>
         <div class="container">
             <h2>Assign Fleet</h2>
-            <form method="POST" action="">
+            <form method="POST" action="{{ route('booking.storeAssign') }}">
                 @csrf
-
+                <input type="hidden" name="reserveID" value="{{ $pendingBooking->reserveID }}">
                 <!-- Dynamic fleet assignment rows -->
                 <div id="fleet-assignment-container">
                     <!-- You can use JavaScript to add/remove rows dynamically -->
@@ -70,7 +70,7 @@
                 <select name="unitID[]" id="unitID${assignmentCount}" class="form-control" required>
                     <option value="" selected disabled>Select Unit ID</option>
                     @foreach($vehicles as $vehicle)
-                        <option value="{{ $vehicle->unitID }}">{{ $vehicle->unitName }} ({{ $vehicle->vehicleType}})</option>
+                        <option value="{{ $vehicle->unitID }}">{{ $vehicle->unitName }} ({{ $vehicle->vehicleType->vehicle_Type}})</option>
                     @endforeach
                 </select>
             </div>

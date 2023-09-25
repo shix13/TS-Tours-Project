@@ -44,7 +44,7 @@ class Rent extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
+    
     /**
      * Get the reservation associated with the rental.
      */
@@ -59,5 +59,10 @@ class Rent extends Authenticatable
     public function driver()
     {
         return $this->belongsTo(Employee::class, 'driverID');
+    }
+
+    public function assignments()
+    {
+        return $this->hasMany(VehicleAssigned::class, 'rentID');
     }
 }

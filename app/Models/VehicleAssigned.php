@@ -17,7 +17,7 @@ class VehicleAssigned extends Model
     protected $table = 'vehicles_assigned';
     protected $primaryKey = 'assignedID'; 
     protected $fillable = [
-        'unitID', 'rentID', 'empID',
+        'unitID', 'rentID', 'empID', 'reserveID',
     ];
 
     public function rent()
@@ -25,12 +25,17 @@ class VehicleAssigned extends Model
         return $this->belongsTo(Rent::class, 'rentID');
     }
 
+    public function booking()
+    {
+        return $this->belongsTo(Booking::class, 'reserveID');
+    }
+
     public function vehicle()
     {
         return $this->belongsTo(Vehicle::class, 'unitID');
     }
 
-    public function driver()
+    public function employee()
     {
         return $this->belongsTo(Employee::class, 'empID');
     }

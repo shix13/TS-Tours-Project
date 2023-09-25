@@ -50,7 +50,10 @@ class BookingRentalController extends Controller
     public function rentIndex()
     {
         // Retrieve a list of rentals from the database 
-        $rents = Rent::with('driver')->paginate(10);
+        //$rents = Rent::with('driver')->paginate(10);
+        $rents = Rent::with([
+            'assignments.employee'
+        ])->paginate(10);
 
         // Pass the data to the Blade view
         return view('employees.rent', compact('rents'));
@@ -60,7 +63,7 @@ class BookingRentalController extends Controller
 {
     try {
         $booking = Booking::findOrFail($bookingId);
-
+        /*
         $validatedData = request()->validate([
             'driverID' => 'required|integer', 
             'extraHours' => 'nullable|numeric', 
@@ -68,22 +71,32 @@ class BookingRentalController extends Controller
             'totalPrice' => 'numeric',
             'balance' => 'numeric', 
         ]);
+        */
         // Update the status to "Approved"
         $booking->status = 'Approved';
         $booking->save();
 
         //Change vehicle status to "Booked"
         // Create a new record in the 'rent' table
-        Rent::create([
+        $balance = $booking->subtotal - $booking->downpayment_Fee;
+        $rent = new Rent([
             'reserveID' => $booking->reserveID,
-            'driverID' => $validatedData['driverID'],
             'rent_Period_Status' => 'Booked',
-            'extra_Hours' => $validatedData['extraHours'],
-            'payment_Status' => $validatedData['paymentStatus'],
-            'total_Price' => $validatedData['totalPrice'],
-            'balance' => $validatedData['balance'],
+            'payment_Status' => 'Pending',
+            'total_Price' => $booking->subtotal,
+            'balance' => $balance,
         ]);
+        $rent->save();
 
+        //Assign the rent to vehicles assigned
+        $vehiclesAssigned = VehicleAssigned::where('reserveID', $booking->reserveID)->get();
+        //dd($booking->reserveID);
+        foreach($vehiclesAssigned as $vehicleAssigned){
+            $vehicleAssigned->update([
+                'rentID' => $rent->rentID,
+            ]);
+        }
+        
         return redirect()->back()->with('success', 'Booking has been approved and saved as a rent.');
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'An error occurred while approving the booking: ' . $e->getMessage());
@@ -119,16 +132,17 @@ public function rentalView($id)
     }
 
     // Retrieve a list of bookings related to this rental
-    $bookings = Booking::with('customer','vehicle','tariff')->where('reserveID', $rental->reserveID)->get();
+    $bookings = Booking::with('vehicleTypesBooked', 'tariff')->where('reserveID', $rental->reserveID)->get();
     $drivers = Employee::where('accountType', 'Driver')->get();
-
+    
     // Retrieve a list of rents with related driver information
     $rents = Rent::with('driver')->where('rentID', $rental->rentID)->get();
     $availableVehicles = Vehicle::where('status', 'Available')->get();
 
     // Retrieve a list of tariff locations
     $tariffs = Tariff::All();
-    
+
+
     // Pass the data to the Blade view
     return view('employees.rentalView', compact('rental', 'bookings', 'rents','drivers', 'availableVehicles','tariffs'));
 }
@@ -231,14 +245,14 @@ public function bookAssign($id)
 {
     // Retrieve data from the 'booking' table where status is 'Pending' and reserveID matches $id
     $pendingBooking = Booking::where('status', 'Pending')->where('reserveID', $id)->first();
-
+    //dd($pendingBooking->reserveID);
     // Retrieve data from the 'vehicle_types_booked' table
-    $bookedTypes = VehicleTypeBooked::whereIn('reserveID', $pendingBooking->pluck('reserveID'))->get();
-
+    $bookedTypes = VehicleTypeBooked::where('reserveID', $pendingBooking->reserveID)->get();
+    //dd($bookedTypes);
     // Retrieve the list of available vehicles and employees
-    $vehicles = Vehicle::with('vehicleType')->get(); // Eager load the 'vehicleType' relationship
+    $vehicles = Vehicle::where('status', 'Available')->with('vehicleType')->get(); // Eager load the 'vehicleType' relationship
 
-    $employees = Employee::all();
+    $employees = Employee::where('accountType', 'Driver')->get();
 
     // Pass the filtered data, vehicles, and employees to the view
     return view('employees.bookAssignments', [
@@ -247,6 +261,34 @@ public function bookAssign($id)
         'vehicles' => $vehicles,
         'employees' => $employees,
     ]);
+}
+
+public function storeAssigned(Request $request){
+    $unitIDs = $request->input('unitID');
+    $empIDs = $request->input('empID');
+    $reserveID = $request->input('reserveID');
+    foreach($unitIDs as $unitID){
+        $i = 0;
+        VehicleAssigned::create([
+            'unitID' => $unitID,
+            'empID' => $empIDs[$i],
+            'reserveID' => $reserveID,
+        ]);
+
+        $vehicle = Vehicle::where('unitID', $unitID)->first();
+        $vehicle->update([
+            'status' => 'Unavailable'
+        ]);
+        $i++;
+    }
+
+    $booking = Booking::where('reserveID', $reserveID)->first();
+
+    $booking->update([
+        'status' => 'Pre-approved',
+    ]);
+
+    return redirect()->route('employee.booking')->with('success'.'Vehicles assigned successfully.');
 }
 
 public function preApproved(){
