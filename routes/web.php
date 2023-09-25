@@ -13,7 +13,7 @@ use App\Http\Controllers\BookingRentalController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\RemittanceController;
 use App\Http\Controllers\ReportsController;
-
+use App\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -136,3 +136,13 @@ Route::prefix('employee')->group(function(){
 
     //});
 });
+
+//Route::prefix('test')->group(function(){
+    Route::get('/selectvehicles', [TestController::class, 'getVehicles'])->name('selectvehicles');
+    Route::post('/createbooking', [TestController::class, 'proceedBooking'])->name('createbooking');
+    Route::post('/processbookingreq', [TestController::class, 'processBooking'])->name('processbookingreq');
+    Route::get('/search', [TestController::class, 'searchView'])->name('search');
+    Route::post('/search/booking', [TestController::class, 'processSearch'])->name('searchbooking');
+    Route::get('/checkbookingstatus{booking}', [TestController::class, 'bookingStatus'])->name('checkbookingstatus');
+    Route::post('/checkoutbooking', [TestController::class, 'checkout'])->name('checkoutbooking');
+    //});

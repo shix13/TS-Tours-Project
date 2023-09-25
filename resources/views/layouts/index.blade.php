@@ -41,47 +41,15 @@
         <div class="collapse navbar-collapse justify-content-end" id="navigation"
             data-nav-image="">
             <ul class="navbar-nav ms-auto">
-              @guest
-              <li class="nav-item custom-nav-item {{ Request::is('home') ? 'active' : '' }}"><a class="nav-link"
-                      href="{{ route('home') }}">Home</a></li>
-              <li class="nav-item custom-nav-item {{ Request::is('aboutus') ? 'active' : '' }}"><a class="nav-link"
-                      href="{{ route('aboutus') }}">About Us</a></li>
-              <li class="nav-item custom-nav-item {{ Request::is('fleet') ? 'active' : '' }}"><a class="nav-link"
-                      href="{{ route('fleet') }}">Vehicles</a></li>
+            
+              <li class="nav-item custom-nav-item {{ Request::is('selectvehicles') ? 'active' : '' }}"><a class="nav-link"
+                      href="{{ route('selectvehicles') }}">Vehicles</a></li>
+              <li class="nav-item custom-nav-item {{ Request::is('search') ? 'active' : '' }}"><a class="nav-link"
+                      href="{{ route('search') }}">Bookings</a></li>
               <li class="nav-item custom-nav-item {{ Request::is('contactus') ? 'active' : '' }}"><a class="nav-link"
                       href="{{ route('contactus') }}">Contact Us</a></li>
-              @if (Route::has('login'))
-              <li class="nav-item custom-nav-item {{ Request::is('login') ? 'active' : '' }}"><a class="nav-link"
-                      href="login">Login</a></li>
-              @endif
-              @else
-            
-              <li class="nav-item custom-nav-item {{ Request::is('browsevehicles') ? 'active' : '' }}"><a class="nav-link"
-                      href="{{ route('browsevehicles') }}">Vehicles</a></li>
-              <li class="nav-item custom-nav-item {{ Request::is('contactus') ? 'active' : '' }}"><a class="nav-link"
-                        href="{{ route('contactus') }}">Contact Us</a></li>
-              <li class="nav-item dropdown custom-nav-item" >
-                  <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink1" data-toggle="dropdown">
-                     Account
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{{ route('profile') }}">
-                      {{ __('Profile') }}
-                  </a>
-                      <a class="dropdown-item" href="{{ route('bookingdashboard') }}">
-                          {{ __('My Bookings') }}
-                      </a>
-                      <a class="dropdown-item" href="{{ route('user.logout') }}"
-                          onclick="event.preventDefault();
-                              document.getElementById('logout-form').submit();">
-                          {{ __('Logout') }}
-                      </a>
-                      <form id="logout-form" action="{{ route('user.logout') }}" method="get" class="d-none">
-                          @csrf
-                      </form>
-                  </div>
-              </li>
-              @endguest
+              <li class="nav-item custom-nav-item {{ Request::is('aboutus') ? 'active' : '' }}"><a class="nav-link"
+                      href="{{ route('aboutus') }}">About Us</a></li>
           </ul>
           
         </div>

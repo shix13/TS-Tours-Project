@@ -7321,5 +7321,7 @@ img {
     margin-top: -330px;
   }
 }
-
+.hidden {
+  display: none;
+}
 /*# sourceMappingURL=kit-free.css.map */
