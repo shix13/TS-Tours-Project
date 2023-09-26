@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div>
+<div class="container1">
     <div class="col">
         <h1 style="text-align: center;font-size: 30px; font-weight: 700">Enter Booking ID</h1>
     </div>
