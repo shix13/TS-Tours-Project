@@ -25,7 +25,7 @@
     <div class="sidebar" data-color="dark-blue">
       <div class="logo">
         <a href="{{ url('/employee/vehicles') }}" class="simple-text logo-normal">
-            <img src="{{ asset('storage/images/amvtsuKUK8PKSpZz1LvfqSL13YIbJSCv90KPx7kG.jpg') }}" alt="TS Tours | Rental Services Logo" class="img-fluid" style="max-width: 200px; max-height: 100px;">
+            <img src="{{ asset('images/amvtsuKUK8PKSpZz1LvfqSL13YIbJSCv90KPx7kG.jpg') }}" alt="TS Tours | Rental Services Logo" class="img-fluid" style="max-width: 200px; max-height: 100px;">
             TS tours
         </a>
     </div>

@@ -114,7 +114,7 @@ Route::prefix('employee')->group(function(){
         Route::get('/booking', [BookingRentalController::class, 'bookIndex'])->name('employee.booking'); //BOOKING LIST
         Route::get('/rents', [BookingRentalController::class, 'rentIndex'])->name('employee.rental');
         Route::get('/approve-booking/{bookingId}', [BookingRentalController::class, 'approveBooking'])->name('employee.approveBooking');
-        Route::get('/deny-booking/{bookingId}', [BookingRentalController::class, 'denyBooking'])->name('employee.denyBooking');
+        Route::put('/deny-booking/{bookingId}', [BookingRentalController::class, 'denyBooking'])->name('employee.denyBooking');
         Route::get('/rentalView{id}', [BookingRentalController::class, 'rentalView'])->name('employee.rentalView');
         Route::put('/rental/{id}', [BookingRentalController::class, 'update'])->name('rental.update');
         Route::get('/PreApproved', [BookingRentalController::class, 'preApproved'])->name('employee.preapproved');

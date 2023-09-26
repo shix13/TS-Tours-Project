@@ -62,6 +62,26 @@
                             </div>
                         </div>
                         
+                        <div class="row mb-3" style="justify-content: center">
+                            <label for="AccountType" class="col-md-4 col-form-label text-md-end"><i class="fas fa-user-tag"></i> {{ __('Account Type') }}</label>
+
+                            <div class="col-md-6">
+                                <select id="AccountType" class="form-control @error('AccountType') is-invalid @enderror" name="AccountType" required> 
+                                    <option value="">--Select Account Type--</option>
+                                    <option value="Manager">Manager</option>
+                                    <option value="Clerk">Clerk</option>
+                                    <option value="Driver">Driver</option>
+                                    <option value="Mechanic">Mechanic</option>
+                                </select>
+
+                                @error('AccountType')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
                         <!-- Email -->
                         <div class="row mb-3"  style="justify-content: center">
                             <label for="Email" class="col-md-4 col-form-label text-md-end"><i class="fas fa-envelope"></i> {{ __('Email Address') }}</label>

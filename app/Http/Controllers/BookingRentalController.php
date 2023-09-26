@@ -251,7 +251,11 @@ public function bookAssign($id)
     //dd($bookedTypes);
     // Retrieve the list of available vehicles and employees
     $vehicles = Vehicle::where('status', 'Available')->with('vehicleType')->get(); // Eager load the 'vehicleType' relationship
-
+    /*
+    foreach($vehicles as $vehicle){
+        dd($vehicle->vehicleType->vehicle_Type);
+    }
+    */
     $employees = Employee::where('accountType', 'Driver')->get();
 
     // Pass the filtered data, vehicles, and employees to the view

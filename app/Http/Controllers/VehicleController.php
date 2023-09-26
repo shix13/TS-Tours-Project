@@ -82,9 +82,8 @@ public function store(Request $request)
     public function edit($id)
     {
     // Retrieve the vehicle record by ID and pass it to the edit view
-    $vehicleTypes = VehicleType::all();
     $vehicle = Vehicle::findOrFail($id);
-    return view('employees.vehicleedit', compact('vehicle','vehicleTypes'));
+    return view('employees.vehicleedit', compact('vehicle'));
     }
 
     public function destroy($id)
@@ -97,43 +96,38 @@ public function store(Request $request)
 
 
     public function update(Request $request, $id)
-{
-    // Validate the form data
-    $request->validate([
-        'pic' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        'unitname' => 'required|string',
-        'pax' => 'required|integer|min:1',
-        'specification' => 'nullable|string',
-        'status' => 'required|in:Available,Booked,Maintenance',
-        'vehicleType' => 'required|exists:vehicle_types,vehicle_Type_ID', 
-    ]);
-    
-    // Find the vehicle by ID
-    $vehicle = Vehicle::findOrFail($id);
+    {
+        // Validate the form data
+        $request->validate([
+            'pic' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Add your validation rules for pic here
+            'unitname' => 'required|string',
+            'pax' => 'required|integer|min:1',
+            'specification' => 'nullable|string',
+            'status' => 'required|in:Available,Booked,Maintenance',
+        ]);
 
-    // Update the vehicle attributes based on the request data
-    $vehicle->unitname = $request->input('unitname');
-    $vehicle->pax = $request->input('pax');
-    $vehicle->specification = $request->input('specification');
-    $vehicle->status = $request->input('status');
-    
-    // Update the vehicle type
-    $vehicle->vehicle_Type_ID = $request->input('vehicleType');
+        // Find the vehicle by ID
+        $vehicle = Vehicle::findOrFail($id);
 
-    // Handle the image upload if a new image is provided
-    if ($request->hasFile('pic')) {
-        $imagePath = $request->file('pic')->store('vehicle_images', 'public');
-        $vehicle->pic = $imagePath;
+        // Update the vehicle attributes based on the request data
+        $vehicle->unitname = $request->input('unitname');
+        $vehicle->pax = $request->input('pax');
+        $vehicle->specification = $request->input('specification');
+        $vehicle->status = $request->input('status');
+
+        // Handle the image upload if a new image is provided
+        if ($request->hasFile('pic')) {
+            $imagePath = $request->file('pic')->store('vehicle_images', 'public');
+            $vehicle->pic = $imagePath;
+        }
+
+        // Save the updated vehicle
+        $vehicle->save();
+
+        // Redirect to the vehicle details page or wherever you want
+        return redirect()->route('employee.vehicle', $vehicle->unitID)
+            ->with('success', 'Vehicle updated successfully');
     }
-
-    // Save the updated vehicle
-    $vehicle->save();
-
-    // Redirect to the vehicle details page or wherever you want
-    return redirect()->route('employee.vehicle', $vehicle->unitID)
-        ->with('success', 'Vehicle updated successfully');
-}
-
 
     public function newVType()
 {
@@ -158,7 +152,7 @@ public function VtypeStore(Request $request)
 
     // Create and store the new vehicle type in the database
     VehicleType::create([
-        'vehicle_Type' => $request->input('vehicle_type'),
+        'vehicle_type' => $request->input('vehicle_type'),
     ]);
 
     // Redirect back to the form page with a success message
