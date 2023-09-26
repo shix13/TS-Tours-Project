@@ -61,10 +61,10 @@ Route::get('/bookingdashboard', [App\Http\Controllers\CustomerController::class,
 
 Route::prefix('employee')->group(function(){
     //LOGIN ACCOUNT
-     Route::get('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'showLoginForm'])->name('employee.login');
-     Route::post('/loginsubmit', [App\Http\Controllers\Auth\EmployeeController::class, 'login'])->name('employee.login.submit');
+     Route::get('/login', [EmployeeController::class, 'showLoginForm'])->name('employee.login');
+     Route::post('/loginsubmit', [EmployeeController::class, 'login'])->name('employee.login.submit');
 
-    //Route::middleware('auth:employee')->group(function () {
+    Route::middleware('auth:employee')->group(function () {
     //ACCOUNTS
         //Route::middleware(['manager'])->group(function (){
            Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
@@ -74,7 +74,7 @@ Route::prefix('employee')->group(function(){
            Route::delete('/employee/{empID}', [EmployeeController::class, 'delete'])->name('employee.delete');
        // });
 
-        Route::post('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'register'])->name('employee.register.submit');
+        Route::post('/register', [EmployeeController::class, 'register'])->name('employee.register.submit');
         Route::get('/profile', [EmployeeController::class, 'profile'])->name('employee.profile');
     
     //LOGOUT
@@ -135,7 +135,7 @@ Route::prefix('employee')->group(function(){
     //DASHBOARD
         Route::get('/', [App\Http\Controllers\Auth\EmployeeController::class, 'showDashboard'])->name('employee.dashboard');
 
-    //});
+    });
 });
 
 //Route::prefix('test')->group(function(){
