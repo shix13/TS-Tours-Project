@@ -4,8 +4,8 @@
 <div class="container">
 <h2>BOOKING</h2>
     <div class="row container">
-        <div class="container1" style="display: inline-block;max-height:680px;">
-            <h4>Booking Details</h4>
+        <div class="container1" style="display: inline-block;">
+            <h4 style="font-weight: 700">Booking Details</h4> <br>
             <form method="POST" action="{{ route('processbookingreq') }}">
             @csrf
             <div class="container">
@@ -23,7 +23,7 @@
                         {{ $vehicleType->vehicle_Type }}
                     </div>
                     <div class="col" style="padding: 5px;">
-                        <input type="number" name="TypeQuantity[{{ $vehicleType->vehicle_Type_ID }}]" value="1">
+                        <input type="number" name="TypeQuantity[{{ $vehicleType->vehicle_Type_ID }}]" value="1" min="1">
                     </div>
                 </div>
                 @endforeach
@@ -107,7 +107,7 @@
                 <br>
                 <div class="row">
                     <div class="col text-center">
-                        <button type="submit" class="btn btn-primary">Book Now</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-bookmark"></i> <strong>Book Now </strong></button>
                     </div>
                 </div>
                 <div class="row">

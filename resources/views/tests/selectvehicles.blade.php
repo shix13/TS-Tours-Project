@@ -9,7 +9,8 @@
   <div class="row">
   <!-- Browse Vehicle text on the left -->
   <div class="col">
-    <h1 style="text-align: center;font-size: 30px; font-weight: 700">Vehicles We Offer</h1>
+    <h1 style="text-align: center;font-size: 40px; font-weight: 700">Vehicles We Offer</h1>
+    <p style="font-weight: 400">Please select the types of vehicles you want to book </p>
   </div>
 
   <!-- Search bar on the right >
@@ -30,13 +31,13 @@
         <div class="vehicle-card" data-id="{{ $v->vehicle_Type_ID }}" style="width: 18rem;border-radius:10px;height:380px;background-color:white"
             data-id="{{ $v->id }}">
 
-            <div style="max-height: 250px; overflow: hidden;" >
-                <img class="card-img-top" src="{{ asset('images/' ) }}" alt="Card image cap" style="width: 100%;" height="auto" >
-            </div>
-            <div class="card-content" style="height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
-                <br>
-                <h5 class="card-title" style="font-size: 30px;"><strong>{{ $v->vehicle_Type }}</strong></h5>
+            <div style="max-height: 250px; overflow: hidden;">
+              <img class="card-img-top" src="{{ asset('storage/' . $v['pic']) }}" alt="Card image cap" style="height: 100%;" height="auto">
+          </div>
+          
+            <div class="card-content">
                 
+                <h5 class="card-title" style="font-size: 30px;margin-top:50px"><strong>{{ $v->vehicle_Type }}</strong></h5>
             </div>
         </div>
     </div>
@@ -45,7 +46,7 @@
 <form id="vehicleSelectionForm" action="{{ route('createbooking') }}" method="POST">
     @csrf
     <input type="hidden" id="selectedVehicleTypes" name="selectedVehicleTypes" value="">
-    <button type="button" id="submitSelectionButton" class="btn btn-primary"  style="margin-top: 10px">Submit Selection</button>
+    <button type="button" id="submitSelectionButton" class="btn btn-primary"  style="margin-top: 10px;font-weight:700;border-radius:10px;padding:15px 20px">Proceed to Booking</button>
 </form>
 
 </div>
