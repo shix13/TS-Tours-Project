@@ -6,6 +6,7 @@
 
 @section('content')
 <div class="container">
+    
     <div class="row">
         <div class="col-md-12 offset-md-0">
             <div class="card">
@@ -70,16 +71,49 @@
                             @enderror
                         </div>
 
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <input type="text" id="status" name="status" class="form-control" value="{{ $vehicle->status }}" disabled>
-                            <input type="hidden" name="status" value="{{ $vehicle->status }}">
-                            @error('status')
-                            <span class="invalid-feedback" role="alert">
-                                {{ $message }}
-                            </span>
-                            @enderror
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="status">Status</label>
+                                <select name="status" id="status" class="form-control @error('status') is-invalid @enderror">
+                                    <option value="Available">Available</option>
+                                    <option value="Booked">Booked</option>
+                                    <option value="Maintenance">Maintenance</option>
+                                </select>
+                                @error('status')
+                                <span class="invalid-feedback" role="alert">
+                                    **{{ $message }}
+                                </span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label for="vehicleType">Vehicle Type</label>
+                                <select name="vehicleType" id="vehicleType" class="form-control @error('vehicleType') is-invalid @enderror">
+                                    @foreach($vehicleTypes as $type)
+                                        @if ($type->vehicle_Type_ID == $vehicle->vehicle_Type_ID)
+                                            <option value="{{ $type->vehicle_Type_ID }}" selected>{{ $type->vehicle_Type }}</option>
+                                        @else
+                                            <option value="{{ $type->vehicle_Type_ID }}">{{ $type->vehicle_Type }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                @error('vehicleType')
+                                <span class="invalid-feedback" role="alert">
+                                    **{{ $message }}
+                                </span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-2" style="padding: 10px">
+                                <a href="{{route ('vehicleTypes.view')}}" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> Add New Type
+                                </a>
+                            </div>
+                            
                         </div>
+
+                        
+
                         
 
                         <div class="form-group">

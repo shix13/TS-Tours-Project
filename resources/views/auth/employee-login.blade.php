@@ -6,7 +6,7 @@
     <div class="row justify-content-center" >
         <div class="col-md-8" >
             <div class="card" >
-                <div class="card-header" style="background-color: #122E50;color:white;">{{ __('Employee Login') }}</div>
+                <div class="card-header" style="background-color: #122E50;color:white;">Employee Login</div>
                 <div class="card-body" style="background-color: #ffffffa9;color:rgb(0, 0, 0);">
                     <form method="POST" action="{{ route('employee.login.submit') }}">
                         @csrf
@@ -66,7 +66,7 @@
                         </div>
                         <br>
                         <div style="text-align: center;">
-                            <a href="{{ route('register') }}" style="color:orangered;text-decoration::none">Create An Account?</a>
+                            <a href="{{ route('employee.register') }}" style="color:orangered;text-decoration::none">Create An Account?</a>
                         </div> 
                     </form>
                 </div>

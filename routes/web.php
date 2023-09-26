@@ -62,7 +62,7 @@ Route::get('/bookingdashboard', [App\Http\Controllers\CustomerController::class,
 Route::prefix('employee')->group(function(){
     //LOGIN ACCOUNT
      Route::get('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'showLoginForm'])->name('employee.login');
-     Route::post('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'login'])->name('employee.login.submit');
+     Route::post('/loginsubmit', [App\Http\Controllers\Auth\EmployeeController::class, 'login'])->name('employee.login.submit');
 
     //Route::middleware('auth:employee')->group(function () {
     //ACCOUNTS
