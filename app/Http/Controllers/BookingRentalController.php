@@ -142,9 +142,23 @@ public function rentalView($id)
     // Retrieve a list of tariff locations
     $tariffs = Tariff::All();
 
+    $booking = Booking::find($bookings[0]->reserveID);
+    // Retrieve the vehicle types assigned to this booking with their details
+    $vehicleTypesBooked = $booking->vehicleTypesBooked()->with('vehicleType')->get();
 
+    $rent = Rent::find($rents[0]->rentID);
+    $vehiclesAssigned = $rent->assignments()->with('vehicle')->get();
+
+    /*/ Now, you can access the vehicle types and their details like this:
+    foreach ($vehicleTypesBooked as $typesBooked) {
+    $vehicleTypes = $typesBooked->vehicleType;
+    // Access vehicle type details, e.g., $vehicleType->name, $vehicleType->description, etc.
+    }
+    dd($vehicleTypes);*/
     // Pass the data to the Blade view
-    return view('employees.rentalView', compact('rental', 'bookings', 'rents','drivers', 'availableVehicles','tariffs'));
+
+    
+    return view('employees.rentalView', compact('rental', 'vehiclesAssigned', 'bookings', 'rents','drivers', 'vehicleTypesBooked',  'availableVehicles','tariffs'));
 }
 
 public function update(Request $request, $id)

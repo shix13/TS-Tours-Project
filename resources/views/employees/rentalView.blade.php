@@ -39,26 +39,13 @@
                         @csrf
                         @method('PUT')
                         <div class="row">
-                            <div class="col-md-6 pr-1">
+                            <div class="col">
                                 <div class="form-group">
-                                    <label style="color: black;">Client Name</label>
-                                    <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value='' readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-6 pl-1">
-                                <div class="form-group">
-                                    <label style="color: black">Fleet</label>
-                                    <select class="form-control" name="vehicle_id">
-                                        @foreach($availableVehicles as $vehicle)
-                                        <option value="{{ $vehicle->unitID }}" {{ $vehicle->unitID === $bookings[0]->unitID ? 'selected' : '' }}>
-                                            {{ $vehicle->unitName }} - {{ $vehicle->registrationNumber }}
-                                        </option>
-                                        @endforeach
-                                    </select>
+                                    <label style="color: black;">Customer Name</label>
+                                    <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value='{{ $bookings[0]->cust_first_name }} {{ $bookings[0]->cust_last_name }}' readonly>
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="col-md-8 pr-1">
                                 <div class="form-group">
@@ -162,33 +149,21 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-3 pr-1">
-                                <div class="form-group">
-                                    <label style="color: black;">Driver Assigned</label>
-                                    <select class="form-control" name="driver_assigned">
-                                        @foreach($drivers as $driver)
-                                        <option value="{{ $driver->empID }}" {{ $driver->empID === $rents[0]->driver->empID ? 'selected' : '' }}>
-                                            {{ $driver->firstName }} {{ $driver->lastName }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
 
-                            <div class="col-md-3 pr-1">
+                            <div class="col-md-4 pr-1">
                                 <div class="form-group">
                                     <label style="color: black;">Downpayment Amount</label>
                                     <input style="color: black;background-color: white" type="text" class="form-control" value="{{$bookings[0]->downpayment_Fee}}" readonly>
                                 </div>
                             </div>
 
-                            <div class="col-md-3 pr-1">
+                            <div class="col-md-4 pr-1">
                                 <div class="form-group">
                                     <label style="color: black;">Extra Hours</label>
                                     <input id="extra_hours" type="number" class="form-control" min="0" name="extra_hours" min='0' value="{{ $rents[0]->extra_Hours ?? 0 }}">
                                 </div>
                             </div>                            
-                            <div class="col-md-3 pl-1">
+                            <div class="col-md-4 pl-1">
                                 <div class="form-group">
                                     <label style="color: black;">Balance</label>
                                     <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value="{{$rents[0]->balance}}" id="balance" name='balance' readonly>
@@ -228,7 +203,52 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="row">
+                            <div class="col-md-12">    
+                                Vehicles Booked
+                            </div>
+                            <div class="col-md-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Vehicle Type</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($vehicleTypesBooked as $vehicleTypeBooked)
+                                    <tr>
+                                        <td>{{ $vehicleTypeBooked->vehicleType->vehicle_Type }}</td>
+                                        <td>{{ $vehicleTypeBooked->quantity }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">    
+                                Vehicles Assigned
+                            </div>
+                            <div class="col-md-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Vehicle</th>
+                                        <th>Driver</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($vehiclesAssigned as $vehicleAssigned)
+                                        <tr>
+                                            <td>{{ $vehicleAssigned->vehicle->unitName }}</td>
+                                            <td>{{ $vehicleAssigned->employee->firstName }} {{ $vehicleAssigned->employee->lastName }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                         <button type="button" class="btn btn-danger" onclick="goBack()">Back</button>
                     </form>

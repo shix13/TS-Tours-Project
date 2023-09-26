@@ -65,4 +65,13 @@ class Rent extends Authenticatable
     {
         return $this->hasMany(VehicleAssigned::class, 'rentID');
     }
+    public function vehicles()
+    {
+        return $this->hasManyThrough(Vehicle::class, VehicleAssigned::class, 'rentID', 'rentID', 'assignedID', 'unitID');
+    }
+
+    public function employees()
+    {
+        return $this->hasManyThrough(Employee::class, VehicleAssigned::class, 'rentID', 'rentID', 'assignedID', 'empID');
+    }
 }
