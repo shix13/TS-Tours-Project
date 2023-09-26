@@ -24,8 +24,16 @@ class RemittanceController extends Controller
         return view('employees.remittance', compact('remittance'));
     }
 
-    public function create(){
-        $drivers = Employee::where('accountType', 'Driver')->get();
+    public function create($id){
+
+        $rent = Rent::find($id);
+        
+        $drivers = $rent->employees()->where('accountType', 'Driver')->get();
+
+        /*
+        $drivers = Employee::where('accountType', 'Driver')
+            ->get();
+        */
         return view('employees.remittancecreate', compact('drivers'));
     }
 
@@ -62,7 +70,7 @@ class RemittanceController extends Controller
     public function rentIndex()
     {
         // Retrieve a list of rentals from the database 
-        $rents = Rent::with('driver')
+        $rents = Rent::with('assignments')
             ->where('payment_Status','=','Pending')
             ->get();
 

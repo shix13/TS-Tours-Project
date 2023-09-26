@@ -56,9 +56,6 @@
                             <strong>Booking ID</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Driver Assigned</strong>
-                        </th>
-                        <th class="bold-text">
                             <strong>Rent Status</strong>
                         </th>
                         <th class="bold-text">
@@ -87,7 +84,6 @@
                                 <tr class="text-center">
                                     <td>{{ $counter++ }}</td>
                                     <td><strong>{{ $rent->reserveID }}</strong></td>
-                                    <td>{{ $rent->driver->firstName }} {{ $rent->driver->lastName }}</td>
                                     <td style="color: {{ $rent->rent_Period_Status === 'In Progress' ? 'orange' : ($rent->rent_Period_Status === 'Booked' ? 'blue' : ($rent->rent_Period_Status === 'Completed' ? 'green' : 'black')) }}">
                                         <strong>{{ $rent->rent_Period_Status }} </strong>
                                     </td>                                    

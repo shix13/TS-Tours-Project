@@ -133,21 +133,44 @@ public function rentalView($id)
 
     // Retrieve a list of bookings related to this rental
     $bookings = Booking::with('vehicleTypesBooked', 'tariff')->where('reserveID', $rental->reserveID)->get();
-    $drivers = Employee::where('accountType', 'Driver')->get();
+    $drivers = Employee::withTrashed()
+        ->where('accountType', 'Driver')
+        ->get();
     
     // Retrieve a list of rents with related driver information
     $rents = Rent::with('driver')->where('rentID', $rental->rentID)->get();
-    $availableVehicles = Vehicle::where('status', 'Available')->get();
+    $availableVehicles = Vehicle::withTrashed()
+        ->where('status', 'Available')
+        ->get();
 
     // Retrieve a list of tariff locations
     $tariffs = Tariff::All();
 
-    $booking = Booking::find($bookings[0]->reserveID);
+    //$booking = Booking::find($bookings[0]->reserveID);
     // Retrieve the vehicle types assigned to this booking with their details
-    $vehicleTypesBooked = $booking->vehicleTypesBooked()->with('vehicleType')->get();
-
-    $rent = Rent::find($rents[0]->rentID);
-    $vehiclesAssigned = $rent->assignments()->with('vehicle')->get();
+    /*
+    $vehicleTypesBooked = $booking->vehicleTypesBooked()
+        ->with('vehicleType')
+        //->withTrashed()
+        ->get();
+    */
+    $vehicleTypesBooked = VehicleTypeBooked::with(['vehicleType' => function ($query) {
+        $query->withTrashed();
+    }])
+    ->where('reserveID', $bookings[0]->reserveID)
+    ->get();
+    //$rent = Rent::find($rents[0]->rentID);
+    /*
+    $vehiclesAssigned = $rent->assignments()
+        ->with('vehicle')
+        //->withTrashed()
+        ->get();
+    */
+    $vehiclesAssigned = VehicleAssigned::with(['vehicle' => function ($query) {
+        $query->withTrashed();
+    }])
+    ->where('rentID', $rents[0]->rentID)
+    ->get();
 
     /*/ Now, you can access the vehicle types and their details like this:
     foreach ($vehicleTypesBooked as $typesBooked) {
@@ -163,7 +186,6 @@ public function rentalView($id)
 
 public function update(Request $request, $id)
 {   
-    
     // Validate the form data if needed
     $request->validate([
         'pickup_date' => 'required|date',
@@ -171,15 +193,16 @@ public function update(Request $request, $id)
         'dropoff_date' => 'required|date',
         'dropoff_time' => 'required|date_format:H:i',
         'pickup_address'=> 'required',
-        'vehicle_id' => 'required|exists:vehicles,unitID', 
+        //'vehicle_id' => 'required|exists:vehicles,unitID', 
         'tariff_id' => 'required|exists:tariffs,tariffID', 
-        'driver_assigned' => 'required|exists:employees,empID', 
+        //'driver_assigned' => 'required|exists:employees,empID', 
         'extra_hours' => 'numeric|min:0',
         'status' => 'required|in:Approved,Canceled', 
         'pickup_address' => 'required|string',
         'note' => 'nullable|string',
     ]);
-
+    
+    //dd($request);   
     // Find the rental by ID
     $rental = Rent::find($id);
 
@@ -241,7 +264,7 @@ public function update(Request $request, $id)
         
         // Attempt to update the rental information based on the form input
         $rental->update([
-            'driverID' => $request->input('driver_assigned'),
+            //'driverID' => $request->input('driver_assigned'),
             'rent_Period_Status' => $request->input('rental_status'),
             'extra_Hours' => $request->input('extra_hours'),
             'total_Price' => $newTotalPrice, 
@@ -259,7 +282,7 @@ public function bookAssign($id)
 {
     // Retrieve data from the 'booking' table where status is 'Pending' and reserveID matches $id
     $pendingBooking = Booking::where('status', 'Pending')->where('reserveID', $id)->first();
-    //dd($pendingBooking->reserveID);
+    //dd($pendingBooking->vehicle_Type_ID);
     // Retrieve data from the 'vehicle_types_booked' table
     $bookedTypes = VehicleTypeBooked::where('reserveID', $pendingBooking->reserveID)->get();
     //dd($bookedTypes);
@@ -273,12 +296,14 @@ public function bookAssign($id)
     $employees = Employee::where('accountType', 'Driver')->get();
 
     // Pass the filtered data, vehicles, and employees to the view
-    return view('employees.bookAssignments', [
+    return view('employees.bookAssignments', compact('pendingBooking', 'bookedTypes', 'vehicles', 'employees')
+    /*[
         'pendingBooking' => $pendingBooking,
         'bookedTypes' => $bookedTypes,
         'vehicles' => $vehicles,
         'employees' => $employees,
-    ]);
+    ]*/
+);
 }
 
 public function storeAssigned(Request $request){
@@ -314,6 +339,7 @@ public function preApproved(){
         $drivers = Employee::where('accountType', 'Driver')->get();
 
     $preApprovedBookings = Booking::where('status', 'Pre-Approved')->get();
+
     return view('employees.preApproved', compact('preApprovedBookings','drivers'));
 }
 }

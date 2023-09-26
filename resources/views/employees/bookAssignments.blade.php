@@ -70,7 +70,7 @@
                 <select name="unitID[]" id="unitID${assignmentCount}" class="form-control" required>
                     <option value="" selected disabled>Select Unit ID</option>
                     @foreach($vehicles as $vehicle)
-                        <option value="{{ $vehicle->unitID }}">{{ $vehicle->unitName }} </option>
+                        <option value="{{ $vehicle->unitID }}">{{ $vehicle->unitName }} ({{ $vehicle->vehicleType->vehicle_Type }})</option>
                     @endforeach
                 </select>
             </div>

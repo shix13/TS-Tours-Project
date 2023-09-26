@@ -62,8 +62,25 @@
                             @foreach ($vehicleTypes as $type)
                                 <tr>
                                     <td>{{ $counter++ }}</td>
-                                    <td>{{ $type->vehicle_Type }}</td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-md-4 text-center">
+                                                <div style="width: 200px; height: 150px; overflow: hidden; margin: 0 auto;">
+                                                    <img src="{{ asset('storage/' . $type->pic) }}" alt="Vehicle Image" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+                                                </div>
+                                                <h5><strong>{{ $type->vehicle_Type }}</strong></h5>
+                                            </div>
+                                            
+                                            <div class="col-md-8">
+                                                <p>
+                                                    <strong>Description:</strong> {{ $type->description ?? 'None' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td class="text-center col-3">
+                                        <a href="{{ route('vehicleTypes.edit', $type->vehicle_Type_ID) }}" class="btn btn-primary  col-4">EDIT</a>
+
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $type->vehicle_Type_ID }}">
                                             <strong>DELETE</strong>
                                         </button>

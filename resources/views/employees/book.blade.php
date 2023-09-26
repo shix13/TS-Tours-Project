@@ -174,7 +174,7 @@
         </div>
     </div>
 
-    <div class="card " style="left:-50px;width: 110%;">
+    <div class="card hidden" style="left:-50px;width: 110%;">
         <div class="card-header">
             <h4 class="card-title" style="font-weight: 700">Pre-Approved Bookings</h4>
         </div>

@@ -53,14 +53,14 @@ class Rent extends Authenticatable
         return $this->belongsTo(Booking::class, 'reserveID');
     }
 
-    /**
-     * Get the driver (associated with the rental) information.
-     */
+    /*
+     Get the driver (associated with the rental) information.
+    */
     public function driver()
     {
         return $this->belongsTo(Employee::class, 'driverID');
     }
-
+    
     public function assignments()
     {
         return $this->hasMany(VehicleAssigned::class, 'rentID');
@@ -69,9 +69,15 @@ class Rent extends Authenticatable
     {
         return $this->hasManyThrough(Vehicle::class, VehicleAssigned::class, 'rentID', 'rentID', 'assignedID', 'unitID');
     }
-
+/*
     public function employees()
     {
         return $this->hasManyThrough(Employee::class, VehicleAssigned::class, 'rentID', 'rentID', 'assignedID', 'empID');
+    }
+    */
+
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'vehicles_assigned', 'rentID', 'empID');
     }
 }

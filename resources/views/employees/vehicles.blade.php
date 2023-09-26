@@ -86,7 +86,7 @@
                                                 <div style="width: 200px; height: 150px; overflow: hidden; margin: 0 auto;">
                                                     <img src="{{ asset('storage/' . $vehicle->pic) }}" alt="Vehicle Image" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
                                                 </div>
-                                                <h5><strong>{{ $vehicle->unitName }}</strong></h5>
+                                                <h5><strong>{{ $vehicle->unitName }} ({{ $vehicle->vehicleType->vehicle_Type }})</strong></h5>
                                             </div>
                                             
                                             <div class="col-md-8">

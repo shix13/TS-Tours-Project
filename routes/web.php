@@ -92,7 +92,8 @@ Route::prefix('employee')->group(function(){
         Route::get('/vehicle-typesCreate', [VehicleController::class, 'VtypeCreate'])->name('vehicleTypes.create');
         Route::post('/vehicle-types/store', [VehicleController::class, 'VtypeStore'])->name('vehicleTypes.store');
         Route::delete('/vehicle-types/{vehicle_type}', [VehicleController::class, 'VtypeDestroy'])->name('vehicleTypes.destroy');
-
+        Route::get('/vehicle-types/{vehicle_type}/edit', [VehicleController::class, 'VtypeEdit'])->name('vehicleTypes.edit');
+        Route::put('/vehicles-types/{vehicle_type}', [VehicleController::class, 'VtypeUpdate'])->name('vehiclesTypes.update');
 
     //--Tariffs
         Route::get('/tariff', [TariffController::class, 'tariffIndex'])->name('employee.tariff'); 

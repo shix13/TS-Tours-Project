@@ -105,7 +105,7 @@
                                 <tr class="text-center">
                                     <td>{{ $counter++ }}</td>
                                     <td><strong>{{ $rent->reserveID }}</strong></td>
-                                    <td style="color: {{ $rent->rent_Period_Status === 'In Progress' ? 'orange' : ($rent->rent_Period_Status === 'Booked' ? 'blue' : ($rent->rent_Period_Status === 'Completed' ? 'green' : 'black')) }}">
+                                    <td style="color: {{ $rent->rent_Period_Status === 'In Progress' ? 'orange' : ($rent->rent_Period_Status === 'Scheduled' ? 'blue' : ($rent->rent_Period_Status === 'Completed' ? 'green' : 'black')) }}">
                                         <strong>{{ $rent->rent_Period_Status }} </strong>
                                     </td>                                    
                                     <td>{{ $rent->payment_Status }}</td>

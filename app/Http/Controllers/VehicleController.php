@@ -109,7 +109,8 @@ public function store(Request $request)
     {
     // Retrieve the vehicle record by ID and pass it to the edit view
     $vehicle = Vehicle::findOrFail($id);
-    return view('employees.vehicleedit', compact('vehicle'));
+    $vehicleTypes = VehicleType::all();
+    return view('employees.vehicleedit', compact('vehicle', 'vehicleTypes'));
     }
 
     public function destroy($id)
@@ -140,6 +141,7 @@ public function store(Request $request)
         $vehicle->pax = $request->input('pax');
         $vehicle->specification = $request->input('specification');
         $vehicle->status = $request->input('status');
+        $vehicle->vehicle_Type_ID = $request->input('vehicleType');
 
         // Handle the image upload if a new image is provided
         if ($request->hasFile('pic')) {
@@ -207,4 +209,37 @@ public function VtypeDestroy(VehicleType $vehicle_type)
     }
 }
 
+public function VtypeEdit($vehicle_type){
+    // Retrieve the vehicle record by ID and pass it to the edit view
+    $vehicleType = VehicleType::findOrFail($vehicle_type);
+    //dd($vehicleType);
+    return view('employees.vehicle_types_edit', compact('vehicleType'));
+}
+
+public function VtypeUpdate(Request $request){
+    // Validate the form data
+    $request->validate([
+        'pic' => 'image|mimes:jpeg,png,jpg,gif|max:2048', 
+        'description' => 'required|string',
+    ]);
+
+    // Find the vehicle type by ID
+    $vehicleType = VehicleType::findOrFail($id);
+
+    // Update the vehicle attributes based on the request data
+    $vehicleType->description = $request->input('description');
+
+    // Handle the image upload if a new image is provided
+    if ($request->hasFile('pic')) {
+        $imagePath = $request->file('pic')->store('vehicle_images', 'public');
+        $vehicleType->pic = $imagePath;
+    }
+
+    // Save the updated vehicle
+    $vehicleType->save();
+
+    // Redirect to the vehicle details page or wherever you want
+    return redirect()->route('vehicleTypes.view')
+        ->with('success', 'Vehicle updated successfully');
+}
 }

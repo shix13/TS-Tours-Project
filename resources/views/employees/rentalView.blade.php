@@ -176,7 +176,7 @@
                                 <div class="form-group">
                                     <label style="color: black;">Rental Status</label>
                                     <select class="form-control" name="rental_status">
-                                        <option value="Booked" {{ $rents[0]->rent_Period_Status === 'Booked' ? 'selected' : '' }}>Booked</option>
+                                        <option value="Booked" {{ $rents[0]->rent_Period_Status === 'Scheduled' ? 'selected' : '' }}>Scheduled</option>
                                         <option value="Ongoing" {{ $rents[0]->rent_Period_Status === 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
                                         <option value="Completed" {{ $rents[0]->rent_Period_Status === 'Completed' ? 'selected' : '' }}>Completed</option>
                                     </select>
