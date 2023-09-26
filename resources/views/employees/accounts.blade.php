@@ -98,7 +98,7 @@
                                     <img src="{{ asset('storage/' . $employee->profile_img) }}" alt="Profile Image" width="100">
                                 @else
                                     <!-- If there is no profile image, display a default image -->
-                                    <img src="{{ asset('storage/profile_images/def.png') }}" alt="Default Image" width="100">
+                                     <img src="{{ asset('images/TsTours.jpg') }}" alt="Default Image" width="100">
                                 @endif
                             </td>
                             <td>{{ $employee->firstName }} {{ $employee->lastName }}</td>
