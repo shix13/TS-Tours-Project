@@ -11,6 +11,7 @@ use App\Models\Vehicle;
 use App\Models\Maintenance;
 use App\Models\VehicleType;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class VehicleController extends Controller
 {
@@ -56,6 +57,33 @@ public function store(Request $request)
         'vehicleType' => 'required|exists:vehicle_types,vehicle_Type_ID', // Validate that the selected type exists in the vehicle_types table
     ]);
 
+    // Check if a soft-deleted record with the same registration number exists
+    $existingVehicle = Vehicle::onlyTrashed()->where('registrationNumber', $data['registrationNumber'])->first();
+
+    if ($existingVehicle) {
+        // Restore and update the soft-deleted record
+        $existingVehicle->restore();
+
+        // Handle vehicle image upload
+        if ($request->hasFile('pic')) {
+            // Delete the old profile image if it exists
+            if ($existingVehicle->pic) {
+                Storage::disk('public')->delete($existingVehicle->pic);
+            }
+            // Store the new profile image
+            $existingVehicle->pic = $request->file('pic')->store('profile_images', 'public');
+        }
+
+        $existingVehicle->update([
+            'unitName' => $data['unitName'],
+            'pax' => $data['pax'],
+            'specification' => $data['specification'],
+            'status' => $data['status'],
+        ]);
+
+        return redirect()->route('employee.vehicle')->with('success', 'Vehicle added successfully.');
+    } 
+    else {
     // Upload the image and store it in the 'public/vehicle' directory
     if ($request->hasFile('pic')) {
         $imagePath = $request->file('pic')->store('public/vehicle');
@@ -74,10 +102,8 @@ public function store(Request $request)
     ]);
 
     return redirect()->route('employee.vehicle')->with('success', 'Vehicle added successfully.');
+    }
 }
-
-
-
 
     public function edit($id)
     {
@@ -146,13 +172,24 @@ public function VtypeCreate()
 public function VtypeStore(Request $request)
 {
     // Validate the incoming request data
-    $request->validate([
+    $data = $request->validate([
         'vehicle_type' => 'required|string|max:255',
+        'pic' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        'description' => 'required|string',
     ]);
 
+    // Upload the image and store it in the 'public/vehicle' directory
+    if ($request->hasFile('pic')) {
+        $imagePath = $request->file('pic')->store('public/vehicle');
+        $data['pic'] = str_replace('public/', '', $imagePath); // Remove 'public/' from the image path
+    }
+    //dd($data['vehicle_type'], $data['pic'], $data['description']);
+    $imagePath = $data['pic'];
     // Create and store the new vehicle type in the database
     VehicleType::create([
-        'vehicle_type' => $request->input('vehicle_type'),
+        'vehicle_Type' => $data['vehicle_type'],
+        'pic' => $imagePath,
+        'description' => $data['description'],
     ]);
 
     // Redirect back to the form page with a success message

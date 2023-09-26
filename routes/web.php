@@ -64,7 +64,7 @@ Route::prefix('employee')->group(function(){
      Route::get('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'showLoginForm'])->name('employee.login');
      Route::post('/loginsubmit', [App\Http\Controllers\Auth\EmployeeController::class, 'login'])->name('employee.login.submit');
 
-    //Route::middleware('auth:employee')->group(function () {
+    Route::middleware('auth:employee')->group(function () {
     //ACCOUNTS
         //Route::middleware(['manager'])->group(function (){
            Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
@@ -135,7 +135,7 @@ Route::prefix('employee')->group(function(){
     //DASHBOARD
         Route::get('/', [App\Http\Controllers\Auth\EmployeeController::class, 'showDashboard'])->name('employee.dashboard');
 
-    //});
+    });
 });
 
 //Route::prefix('test')->group(function(){
