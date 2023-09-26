@@ -3,27 +3,27 @@
 @section('content')
 <div class="container">
 <div id="pendingMessage" class="row" style="display: none;">
-        <h1 style="font-weight: 700;">Booking Under Review</h1>
+        <h1  style="font-weight: 700;width:100%">Booking Under Review</h1>
     <div class="row" style="padding: 10px;">
-        <p style="font-weight:700;font-size:20px">Your booking is currently under review. </p>
+        <p style="font-weight:700;font-size:20px">Your booking is currently under Review. </p>
             <p><hr>You can check your email to be notified regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.</p>
         <p style="margin-top:30px;font-weight:700">Thank You for choosing TS Tours Services!</p>
     </div>
 </div>
 
 <div id="deniedMessage" class="row" style="display: none;padding: 10px;">
-    <h1 style="font-weight: 700;">Booking Denied</h1>
+    <h1 style="font-weight: 700;width:100%">Booking Denied</h1>
     <div class="row" style="padding: 10px;">
-        <p style="font-weight:700;font-size:20px">Your booking has been denied. </p>
+        <p style="font-weight:700;font-size:20px">Your booking has been Denied. </p>
             <p><hr>We are sorry for this inconvenience, it seems there were some unforeseen problems. You can contact our team for any concern or assistance on this matter.</p>
         <p style="margin-top:30px;font-weight:700">Thank You for choosing TS Tours Services!</p>
     </div>
 </div>
 
 <div id="prePay" class="row" style="display: none;">
-    <h1 style="font-weight: 700;text-align: center;">Booking Approved</h1>
+    <h1 style="font-weight: 700;width:100%">Proceed to Payment</h1>
     <div class="row" style="padding: 10px;">
-        <p style="font-weight:700;font-size:20px">Your booking has been approved. </p>
+        <p style="font-weight:700;font-size:20px">Your booking has been Pre-Approved. </p>
         <p><hr>You can check your email regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.</p>
         <p style="margin-top:30px;font-weight:700">Thank You for choosing TS Tours Services!</p>
     </div>
@@ -64,7 +64,7 @@
 </div>
 
 <div id="postPay" class="row" style="display: none;padding: 10px;">
-    <h1 style="font-weight: 700;text-align: center;">Payment Under Review</h1>
+    <h1 style="font-weight: 700;width:100%">Payment Under Review</h1>
     <div class="row" style="padding: 10px;">
         <p style="font-weight:700;font-size:20px">Your downpayment is being reviewed. </p>
         <p><hr>You can check your email regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.</p>
@@ -73,9 +73,9 @@
 </div>
 
 <div id="approved" class="row" style="display: none;padding: 10px;">
-    <h1 style="font-weight: 700;text-align: center;">Payment is approved</h1>
+    <h1 style="font-weight: 700;width:100%">Payment Approved</h1>
     <div class="row" style="padding: 10px;">
-        <p style="font-weight:700;font-size:20px">Your downpayment is being reviewed. </p>
+        <p style="font-weight:700;font-size:20px">Your booking has been approved. </p>
         <p><hr>You can check your email regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.</p>
         <p style="margin-top:30px;font-weight:700">Thank You for choosing TS Tours Services!</p>
     </div>
@@ -83,7 +83,7 @@
 
 <div class="row">
         <div class="col">
-            <h4>Booking Details</h4>
+            <h4><strong>Booking Details</strong> | Tracking Number: {{ $booking['reserveID'] }}</h4> 
             <div class="container">
                 <div class="row">
                     <div class="col">
@@ -120,6 +120,14 @@
                                 {{ $booking['endDate'] }}
                             </div>
                         </div><hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <i class="fas fa-map-marker-alt"></i>  Location
+                    </div>
+                    <div class="col">
+                        {{ $booking->tariff->location }}
                     </div>
                 </div>
                 <div class="row">
@@ -161,21 +169,22 @@
 <script>
     // Assuming you have a variable or way to determine the booking status
     var bookingStatus = "{{ $booking->status }}"; // Change this to the actual booking status
-    var bookingGcash = "{{ $booking->gcash_RefNum }}";
+var bookingGcash = "{{ $booking->gcash_RefNum }}";
 
-    // Show the appropriate message based on the booking status
-    if (bookingStatus === "Pending") {
-        document.getElementById("pendingMessage").style.display = "flex";
-    } else if (bookingStatus === "Denied") {
-        document.getElementById("deniedMessage").style.display = "flex";
-    } else if (bookingStatus === "Pre-approved" && bookingGcash === null) {
-        document.getElementById("prePay").style.display = "flex";
-        document.getElementById("paymentForm").style.display = "flex";
-    } else if (bookingStatus === "Pre-approved" && bookingGcash !== null) {
-        document.getElementById("postPay").style.display = "flex";
-    } else if (bookingStatus === "Approved") {
-        document.getElementById("approved").style.display = "flex";
-    }
+// Show the appropriate message based on the booking status
+if (bookingStatus === "Pending") {
+    document.getElementById("pendingMessage").style.display = "flex";
+} else if (bookingStatus === "Denied") {
+    document.getElementById("deniedMessage").style.display = "flex";
+} else if (bookingStatus === "Pre-approved" && (bookingGcash === null || bookingGcash.trim() === "")) {
+    document.getElementById("prePay").style.display = "flex";
+    document.getElementById("paymentForm").style.display = "flex";
+} else if (bookingStatus === "Pre-approved" && bookingGcash !== null) {
+    document.getElementById("postPay").style.display = "flex";
+} else if (bookingStatus === "Approved") {
+    document.getElementById("approved").style.display = "flex";
+}
 </script>
+
 
 @endsection

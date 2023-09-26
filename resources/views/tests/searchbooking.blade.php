@@ -4,7 +4,7 @@
 
 <div>
     <div class="col">
-        <h1 style="text-align: center;font-size: 30px; font-weight: 700">Vehicles We Offer</h1>
+        <h1 style="text-align: center;font-size: 30px; font-weight: 700">Enter Booking ID</h1>
     </div>
 
     <form method="POST" action="{{ route('searchbooking') }}">
