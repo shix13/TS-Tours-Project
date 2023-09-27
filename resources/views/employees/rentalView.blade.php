@@ -50,13 +50,7 @@
                             <div class="col-md-8 pr-1">
                                 <div class="form-group">
                                     <label style="color: black;">Location</label>
-                                    <select class="form-control" name="tariff_id" id="tariff_id">
-                                        @foreach($tariffs as $tariff)
-                                        <option value="{{ $tariff->tariffID}}" data-rent-per-hour="{{ $tariff->rent_Per_Hour }}" {{ $tariff->tariffID === $bookings[0]->tariffID ? 'selected' : '' }}>
-                                            {{ $tariff->location }}
-                                        </option>
-                                        @endforeach
-                                    </select>
+                                    <input style="color: black; background-color: white" type="text" class="form-control" name="tariff_id" value="{{ $bookings[0]->tariff->location }}" readonly>
                                 </div>
                             </div>
 
@@ -119,7 +113,7 @@
                         <div class="row">
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Status</label>
+                                    <label style="color: black;">Booking Status</label>
                                     <select class="form-control" id="status" name="status">
                                         <option value="Approved" {{ $bookings[0]->status === 'Approved' ? 'selected' : '' }}>Approved</option>
                                         <option value="Canceled" {{ $bookings[0]->status === 'Canceled' ? 'selected' : '' }}>Cancel</option>
