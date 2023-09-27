@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\Tariff;
+use Illuminate\Support\Facades\Storage;
 
 class TariffController extends Controller
 {

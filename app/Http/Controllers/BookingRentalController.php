@@ -15,6 +15,7 @@ use App\Models\Tariff;
 use App\Models\Vehicle;
 use App\Models\VehicleTypeBooked;
 use App\Models\VehicleAssigned;
+use Illuminate\Support\Facades\Storage;
 
 class BookingRentalController extends Controller
 {

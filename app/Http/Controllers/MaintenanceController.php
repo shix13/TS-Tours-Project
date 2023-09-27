@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\Maintenance;
 use App\Models\Vehicle;
 use App\Models\Employee;
+use Illuminate\Support\Facades\Storage;
 
 class MaintenanceController extends Controller
 {

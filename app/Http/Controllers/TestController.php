@@ -10,6 +10,7 @@ use App\Models\VehicleType;
 use App\Models\VehicleTypeBooked;
 use App\Models\Tariff;
 use App\Models\Booking;
+use Illuminate\Support\Facades\Storage;
 
 class TestController extends Controller
 {

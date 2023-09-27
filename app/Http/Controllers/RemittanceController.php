@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Remittance;
 use App\Models\Rent;
 use App\Models\Employee;
+use Illuminate\Support\Facades\Storage;
 
 class RemittanceController extends Controller
 {

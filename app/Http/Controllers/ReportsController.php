@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Rent;
+use Illuminate\Support\Facades\Storage;
 
 class ReportsController extends Controller
 {

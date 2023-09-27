@@ -9,6 +9,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\Employee;
 use App\Models\Rent;
+use Illuminate\Support\Facades\Storage;
 
 class PaymentController extends Controller
 {
