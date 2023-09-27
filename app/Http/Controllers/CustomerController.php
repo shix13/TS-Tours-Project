@@ -9,7 +9,7 @@ use App\Models\Tariff;
 use App\Models\Booking;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+
 
 class CustomerController extends Controller
 {   
