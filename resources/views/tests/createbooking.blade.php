@@ -101,7 +101,7 @@
                         <i class="fas fa-sticky-note"></i> Additional Notes
                     </div>
                     <div class="col-md-12">
-                        <textarea class="form-control" rows="5" name='note'></textarea>
+                        <textarea class="form-control" rows="5" name='Note'></textarea>
                     </div>
                 </div>
                 <br>
