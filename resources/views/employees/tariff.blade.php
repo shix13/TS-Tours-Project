@@ -11,7 +11,7 @@
 
     <div class="row">
         <div class="col-md-2">
-            <a href="{{ route('tariffs.create') }}" class="btn btn-danger"><strong>ADD NEW TARIFF</strong></a>
+            <a href="{{ route('tariffs.create') }}" class="btn btn-success" style="padding: 15px 25px"> <i class="fas fa-plus"></i> Create Tariff</a>
         </div>
         
         <div class="col-md-8">
@@ -58,10 +58,20 @@
                             <strong>Location</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Rate / Day</strong>
+                            <strong>Rent/Day</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Rent / Hour</strong>
+                            <strong>No. of Hrs/Rent</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Rent/Hour</strong>
+                        </th>
+                        <th class="bold-text">
+                            <strong>Pick-Up / Drop-Off Rate</strong>
+                        </th>
+                        
+                        <th class="bold-text">
+                            <strong>Note</strong>
                         </th>
                         <th class="bold-text">
                             <strong>Actions</strong>
@@ -71,14 +81,36 @@
                         @php
                             $counter = 1; // Initialize a counter variable
                         @endphp
-
+                    
                         @if ($tariffs !== null && $tariffs->count() > 0)
                             @foreach ($tariffs as $tariff)
                                 <tr>
                                     <td>{{ $counter++ }}</td>
                                     <td>{{ $tariff->location }}</td>
-                                    <td>Php {{ $tariff->rate_Per_Day }}</td>
-                                    <td>Php {{ $tariff->rent_Per_Hour }}</td>
+                                    <td>
+                                        @if($tariff->rate_Per_Day > 0)
+                                            ₱{{ $tariff->rate_Per_Day }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($tariff->rentPerDayHrs > 0)
+                                            {{ $tariff->rentPerDayHrs }} Hrs
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($tariff->rent_Per_Hour > 0)
+                                            ₱{{ $tariff->rent_Per_Hour }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($tariff->do_pu > 0)
+                                            ₱{{ $tariff->do_pu }}
+                                        @endif
+                                    </td>
+                                    
+                                    
+                                    
+                                    <td>{{ $tariff->note }}</td>
                                     <td class="text-center col-3">
                                         <a href="{{ route('tariff.edit', $tariff->tariffID) }}" class="btn btn-primary col-5"><strong>EDIT</strong></a>
                                         
@@ -89,10 +121,11 @@
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="12">No tariffs available.</td>
+                                <td colspan="8">No tariffs available.</td>
                             </tr>
                         @endif
                     </tbody>
+                    
                 </table>
                 {{ $tariffs->links() }}
             </div>

@@ -9,105 +9,142 @@
         <div class="col-md-12 offset-md-0">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title" style="color: red;font-weight:700">Schedule Maintenance</h4>
+                    <h4 class="card-title" style="color: red; font-weight: 700;"><i class="fas fa-tools"></i> Schedule Maintenance</h4>
                 </div>
                 <hr>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('maintenance.store') }}" >
+                    <form method="POST" action="{{ route('maintenance.store') }}">
                         @csrf
 
                         <div class="form-row" style="justify-content: center">
-                            <!-- Unit ID (Foreign Key to Vehicles Table) -->
+                            <!-- Vehicle Field -->
                             <div class="form-group col-md-4">
-                                <label for="unitID">Vehicle (Model & Registration Number)</label>
+                                <label for="unitID" style="color:black"><i class="fas fa-car"></i> Vehicle (Model & Registration Number)</label>
                                 <select class="form-control{{ $errors->has('unitID') ? ' is-invalid' : '' }}" id="unitID" name="unitID">
-                                    <!-- Populate this dropdown with options from your vehicles table -->
+                                    <option value="" selected>--Select Vehicle--</option>
                                     @foreach ($vehicles as $vehicle)
-                                        @php
-                                            // Check if the vehicle is active
-                                            $isActive = $vehicle->status === 'Active';
-                                            // Check if the vehicle is not already scheduled with status 'Scheduled' or 'In Progress'
-                                            $isScheduled = $maintenances->where('unitID', $vehicle->unitID)
-                                                ->whereIn('status', ['Scheduled', 'In Progress'])
-                                                ->isNotEmpty();
-                                        @endphp
-                                        @if ($isActive && !$isScheduled)
-                                            <option value="{{ $vehicle->unitID }}">{{ $vehicle->unitName }} - {{ $vehicle->registrationNumber }}</option>
-                                        @endif
+                                        <option value="{{ $vehicle->unitID }}">{{ $vehicle->unitName }} - {{ $vehicle->registrationNumber }}</option>
                                     @endforeach
-                                </select>                                
-                                @if ($errors->has('unitID'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>**{{ $errors->first('unitID') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                            
-                            
-
-                            <!-- Mechanic Assigned (Foreign Key to Employees Table) -->
-                            <div class="form-group col-md-4">
-                                <label for="mechanicAssigned">Mechanic Assigned:</label>
-                                <select class="form-control{{ $errors->has('mechanicAssigned') ? ' is-invalid' : '' }}" id="mechanicAssigned" name="mechanicAssigned">
-                                    @php
-                                        $mechanicFound = false; // Initialize a flag
-                                    @endphp
-
-                                    @foreach ($employees as $employee)
-                                        @if ($employee->accountType === 'Mechanic')
-                                            <option value="{{ $employee->empID }}">{{ $employee->firstName }} {{ $employee->lastName }}</option>
-                                            @php
-                                                $mechanicFound = true; // Set the flag to true if a mechanic is found
-                                            @endphp
-                                        @endif
-                                    @endforeach
-
-                                    @if (!$mechanicFound)
-                                        <option value="" disabled selected>No Mechanic Account Exists in the Database (Ask the Manager to Assign One).</option>
-                                    @endif
                                 </select>
-                                @if ($errors->has('mechanicAssigned'))
+                                <!-- Error message -->
+                                @error('unitID')
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>**{{ $errors->first('mechanicAssigned') }}</strong>
+                                        <strong>{{ $message }}</strong>
                                     </span>
-                                @endif
+                                @enderror
                             </div>
 
-                            
-                            <div class="form-group col-md-2">
-                                <label for="scheduleDateTime">Scheduled Date and Time:</label>
-                                <input type="datetime-local" class="form-control{{ $errors->has('scheduleDateTime') ? ' is-invalid' : '' }}" 
-                                       id="scheduleDateTime" name="scheduleDateTime" min="{{ date('Y-m-d\TH:i') }}">
-                                @if ($errors->has('scheduleDateTime'))
+                            <!-- Mechanic Assigned Field -->
+                            <div class="form-group col-md-4">
+                                <label for="mechanicAssigned" style="color:black"><i class="fas fa-wrench"></i> Mechanic Assigned:</label>
+                                <select class="form-control{{ $errors->has('mechanicAssigned') ? ' is-invalid' : '' }}" id="mechanicAssigned" name="mechanicAssigned">
+                                        <option value="" selected>--Select Mechanic--</option>
+                                        @foreach ($mechanicEmployees as $employee)
+                                            <option value="{{ $employee->empID }}">{{ $employee->firstName }} {{ $employee->lastName }} - ({{ $employee->accountType }})</option>
+                                        @endforeach
+                                </select>                              
+                                <!-- Error message -->
+                                @error('mechanicAssigned')
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>**{{ $errors->first('scheduleDateTime') }}</strong>
+                                        <strong>{{ $message }}</strong>
                                     </span>
-                                @endif
+                                @enderror
                             </div>
-                            <input type="hidden" name="status" value="Scheduled">
-                            
-                            
+
+                            <!-- Scheduled Date and Time Field -->
+                            <div class="form-group col-md-3">
+                                <label for="scheduleDateTime" style="color:black"><i class="fas fa-clock"></i> Scheduled Date and Time:</label>
+                                <input type="text" class="form-control" id="scheduleDateTime" name="scheduleDateTime" placeholder="Select Date and Time" style="background: white">
+                                <!-- Error message -->
+                                @error('scheduleDateTime')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>                          
                         </div>
 
+                        <!-- Notes Field -->
                         <div class="form-group">
-                            <label for="notes">Notes:</label>
+                            <label for="notes" style="color:black"><i class="fas fa-sticky-note"></i> Notes:</label>
                             <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
                         </div>
 
+                        <!-- Scheduled By Field -->
                         <div class="form-row">
-                            <!-- Employee ID (Foreign Key to Employees Table) -->
                             <div class="form-group col-md-4">
-                                <label for="empID">Scheduled By:</label>
-                                <input style="color: black;background:white" type="text" class="form-control" id="scheduledBy" value="{{ auth()->guard('employee')->check() ? auth()->guard('employee')->user()->firstName . ' ' . auth()->guard('employee')->user()->lastName : '' }}" readonly>
+                                <label for="empID" style="color:black"><i class="fas fa-user"></i> Scheduled By:</label>
+                                <input style="color: black; background: white" type="text" class="form-control" id="scheduledBy" value="{{ auth()->guard('employee')->check() ? auth()->guard('employee')->user()->firstName . ' ' . auth()->guard('employee')->user()->lastName : '' }}" readonly>
                                 <input type="hidden" name="empID" id="empID" value="{{ auth()->guard('employee')->check() ? auth()->guard('employee')->user()->empID : '' }}">
                             </div>
                         </div>
-                        
-                        <button type="submit" class="btn btn-primary">Save</button>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    $(document).ready(function() {
+        // Get the initial selected vehicle ID
+        var selectedVehicleId = $('#unitID').val();
+        // Get the schedule data for the initial selected vehicle
+        updateDateTimeInput(selectedVehicleId);
+
+        $('#unitID').on('change', function() {
+            var selectedVehicleId = $(this).val();
+            // Get the schedule data for the selected vehicle
+            updateDateTimeInput(selectedVehicleId);
+        });
+
+        function updateDateTimeInput(selectedVehicleId) {
+            var dateTimeInput = $('#scheduleDateTime');
+            // Disable Flatpickr on first load
+            var flatpickrOptions = {
+                enableTime: true,
+                dateFormat: 'Y-m-d H:i',
+                minDate: 'today',
+                disable: true, // Disable by default
+            };
+
+            // If a vehicle is selected, enable Flatpickr and fetch schedules
+            if (selectedVehicleId) {
+                $.ajax({
+                    url: '/get-available-schedules/' + selectedVehicleId,
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(data) {                        
+                        flatpickrOptions.disable = data.map(function(schedule) {
+                            return schedule;
+                        });
+                        flatpickr(dateTimeInput, flatpickrOptions);
+                        // Enable the input field and change the background color to white
+                        dateTimeInput.prop('disabled', false);
+                        $('.flatpickr-calendar').css('background-color', 'white');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Request Error: ' + status + ' - ' + error);
+                    }
+                });
+            } else {
+                // If no vehicle is selected, keep Flatpickr disabled and disable the input field
+                flatpickr(dateTimeInput, flatpickrOptions);
+                dateTimeInput.prop('disabled', true);
+            }
+        }
+    });
+</script>
+
+
+
 @endsection

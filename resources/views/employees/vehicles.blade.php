@@ -11,12 +11,19 @@
 
     <div class="row">
         <div class="col-md-2">
-            <a href="{{ Route::currentRouteName() == 'vehicles.vehicleRetired' ? route('employee.vehicle') : route('vehicles.vehicleRetired') }}" class="btn btn-danger">
-                {{ Route::currentRouteName() == 'vehicles.vehicleRetired' ? 'VIEW ACTIVE FLEETS' : 'VIEW INACTIVE VEHICLES' }}
+            <a href="{{ Route::currentRouteName() == 'vehicles.vehicleRetired' ? route('employee.vehicle') : route('vehicles.vehicleRetired') }}" 
+               class="{{ Route::currentRouteName() == 'vehicles.vehicleRetired' ? 'btn btn-info' : 'btn btn-danger' }}">
+                @if(Route::currentRouteName() == 'vehicles.vehicleRetired')
+                    <i class="fas fa-eye"></i> View Active Vehicles
+                @else
+                    <i class="fas fa-eye-slash"></i> View Inactive Vehicles
+                @endif
             </a>
         </div>
+        
+        
         <div class="col-md-2">
-            <a href="{{ route('vehicles.create') }}" class="btn btn-success">ADD NEW VEHICLE</a>
+            <a href="{{ route('vehicles.create') }}" class="btn btn-success" style="padding: 18px 23px"><i class="fas fa-plus"></i> Add Vehicle</a>
         </div>
         <div class="col-md-8">
             <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px; margin-right:0px; border-radius: 5px; margin-bottom: 20px;">
@@ -104,34 +111,37 @@
                                     </td>
                                     <td class="status col-md-3 align-middle text-center">
                                         @php
+                                            // Filter maintenance records for the current week
                                             $maintenanceDates = $vehicle->maintenances->filter(function($maintenance) {
                                                 return in_array($maintenance->status, ['Scheduled', 'In Progress']) &&
                                                        $maintenance->status !== 'Cancelled' && // Exclude maintenance records with status 'Cancelled'
                                                        isCurrentWeek(\Carbon\Carbon::parse($maintenance->scheduleDate));
                                             });
-                                        
+                                    
+                                            // Filter vehicle assignments for the current week and where booking status is not 'Denied'
                                             $bookingDates = $vehicle->vehicleAssignments->filter(function($assignment) {
                                                 return $assignment->booking &&
+                                                       $assignment->booking->status !== 'Denied' &&
                                                        (isCurrentWeek(\Carbon\Carbon::parse($assignment->booking->startDate)) ||
                                                         isCurrentWeek(\Carbon\Carbon::parse($assignment->booking->endDate)));
                                             });
                                         @endphp
-                                        
+                                    
                                         <p><strong>Maintenance Date:</strong></p>
                                         @if($maintenanceDates->isNotEmpty())
                                             @foreach($maintenanceDates as $maintenance)
-                                            <p><strong>{{ \Carbon\Carbon::parse($maintenance->scheduleDate)->isToday() ? 'Today: ' : '' }}</strong>{{ \Carbon\Carbon::parse($maintenance->scheduleDate)->toFormattedDateString() }} ({{ \Carbon\Carbon::parse($maintenance->scheduleDate)->diffForHumans() }})</p>
+                                                <p><strong>{{ \Carbon\Carbon::parse($maintenance->scheduleDate)->isToday() ? 'Today: ' : '' }}</strong>{{ \Carbon\Carbon::parse($maintenance->scheduleDate)->toFormattedDateString() }} ({{ \Carbon\Carbon::parse($maintenance->scheduleDate)->diffForHumans() }})</p>
                                             @endforeach
                                         @else
                                             <p>No maintenance dates within the week.</p>
                                         @endif
-                                        
+                                    
                                         <hr>
-                                        
+                                    
                                         <p><strong>Booking Dates:</strong></p>
                                         @if($bookingDates->isNotEmpty())
                                             @foreach($bookingDates as $assignment)
-                                            <p><strong>{{ \Carbon\Carbon::parse($assignment->booking->startDate)->isToday() ? 'Today: ' : '' }}</strong>{{ \Carbon\Carbon::parse($assignment->booking->startDate)->toFormattedDateString() }} ({{ \Carbon\Carbon::parse($assignment->booking->startDate)->diffForHumans() }}) - {{ \Carbon\Carbon::parse($assignment->booking->endDate)->toFormattedDateString() }}</p>
+                                                <p><strong>{{ \Carbon\Carbon::parse($assignment->booking->startDate)->isToday() ? 'Today: ' : '' }}</strong>{{ \Carbon\Carbon::parse($assignment->booking->startDate)->toFormattedDateString() }} ({{ \Carbon\Carbon::parse($assignment->booking->startDate)->diffForHumans() }}) - {{ \Carbon\Carbon::parse($assignment->booking->endDate)->toFormattedDateString() }}</p>
                                             @endforeach
                                         @else
                                             <p>No booking dates within the week.</p>
@@ -141,15 +151,11 @@
                                     
                                     
                                     
-                                    
-                                    
-                                    
-                                    
                                     <td class="status col-md-0 align-middle text-center">
                                         <span style="color: {{ $vehicle->status === 'Active' ? 'green' : 'red' }}"><strong>{{ $vehicle->status }}</strong></span>
                                     </td>
-                                    <td class="status col-md-0 align-middle text-center">
-                                        <a href="{{ route('vehicles.edit', $vehicle->unitID) }}" class="btn btn-primary">EDIT</a>
+                                    <td class="status col-md-1 align-middle text-center">
+                                        <a href="{{ route('vehicles.edit', $vehicle->unitID) }}" class="btn btn-primary"> <i class="fas fa-edit"></i>EDIT</a>
                                         
                                        <!-- <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $vehicle->unitID }}">DELETE</button>
                                         @include('employees.vehiclemodal') -->

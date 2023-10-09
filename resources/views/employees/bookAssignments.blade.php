@@ -8,27 +8,36 @@
 <br>
 <br>
 <div class="card">
-    <div class="card-header">
-        <h4 class="card-title" style="font-weight: 700">Customer Request</h4>
+    <div class="card-header" style="color: red">
+        <h5 class="card-title"><i class="fas fa-calendar-check"></i> Booking Request</h5>
     </div>
+    
+    <div class="card-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Booking Info:</h6> <hr>
+                    <strong><i class="fas fa-map-marker-alt"></i> Pick-Up Address:</strong> {{ $pendingBooking->pickUp_Address }}<br>
+                    <strong><i class="far fa-calendar"></i> Pick up Date:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->format('F j, Y') }}<br>
+                    <strong><i class="far fa-clock"></i> Pickup Time:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->format('g:i A') }}<br>
+                    <strong><i class="far fa-calendar-alt"></i> Return Date:</strong> {{ \Carbon\Carbon::parse($pendingBooking->endDate)->format('F j, Y') }}<br>
+                    <strong><i class="fas fa-calendar-day"></i> Number of Days:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->diffInDays($pendingBooking->endDate) }} days<br>
+                    <strong><i class="fas fa-sticky-note"></i> Notes:</strong> {{ $pendingBooking->note }}
+                </div>
+                <div class="col-md-6">
+                    <h6>Customer Info:</h6> <hr>
+                    <strong><i class="fas fa-user"></i> Customer Name:</strong> {{ $pendingBooking->cust_first_name }} {{ $pendingBooking->cust_last_name }}<br>
+                    <strong><i class="fas fa-envelope"></i> Email:</strong> {{ $pendingBooking->cust_email }}<br>
+                    <strong><i class="fas fa-mobile-alt"></i> Mobile Number:</strong> {{ $pendingBooking->mobileNum }}<br>       
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="card-body">
         <div class="container1">
-
-            <div class="mb-4">
-                <strong><i class="fas fa-user"></i> Customer Name:</strong> {{ $pendingBooking->cust_first_name }} {{ $pendingBooking->cust_last_name }}<br>
-                <strong><i class="fas fa-envelope"></i> Email:</strong> {{ $pendingBooking->cust_email }}<br>
-                <strong><i class="fas fa-mobile-alt"></i> Mobile Number:</strong> {{ $pendingBooking->mobileNum }}<br>
-                <strong><i class="fas fa-map-marker-alt"></i> Address:</strong> {{ $pendingBooking->pickUp_Address }}<br>
-                <strong><i class="far fa-calendar"></i> Pick up Date:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->format('F j, Y') }}<br>
-                <strong><i class="far fa-clock"></i> Pickup Time:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->format('g:i A') }}<br>
-                <strong><i class="far fa-calendar-alt"></i> Return Date:</strong> {{ \Carbon\Carbon::parse($pendingBooking->endDate)->format('F j, Y') }}<br>
-                <strong><i class="fas fa-calendar-day"></i> Number of Days:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->diffInDays($pendingBooking->endDate) }} days<br>
-                <strong><i class="fas fa-sticky-note"></i> Notes:</strong> {{ $pendingBooking->note }}
-            </div>
             
-            
-            
-
+           
             <table class="table">
                 <thead>
                     <tr>

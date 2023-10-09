@@ -107,6 +107,7 @@ Route::prefix('employee')->group(function(){
     //--Maintenance
         // Routes for viewing the maintenance records
         Route::get('/maintenance', [MaintenanceController::class, 'maintenanceIndex'])->name('employee.maintenance');
+        
         Route::get('/maintenance/updateMechanic/{id}/{mechanic_id}', [MaintenanceController::class, 'updateMechanic'])->name('maintenance.updateMechanic');
         Route::get('/maintenanceHistory', [MaintenanceController::class, 'history'])->name('maintenance.history');
         Route::get('/maintenanceCreate', [MaintenanceController::class, 'create'])->name('maintenance.create');
@@ -151,3 +152,5 @@ Route::prefix('employee')->group(function(){
     Route::get('/checkbookingstatus{booking}', [TestController::class, 'bookingStatus'])->name('checkbookingstatus');
     Route::post('/checkoutbooking', [TestController::class, 'checkout'])->name('checkoutbooking');
     //});
+
+    Route::get('/get-available-schedules/{vehicleId}', [MaintenanceController::class, 'getAvailableSchedules'])->name('get-available-schedules');

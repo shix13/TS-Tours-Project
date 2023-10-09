@@ -10,7 +10,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-2">
-            <a href="{{ route('employee.register') }}" class="btn btn-danger">ADD NEW ACCOUNT</a>
+            <a href="{{ route('employee.register') }}" class="btn btn-success"><i class="fas fa-plus"></i> Create Account</a>
         </div>
         <div class="col-md-8">
             <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px; margin-right: -180px; border-radius: 5px; margin-bottom: 20px;">
@@ -71,10 +71,7 @@
                             <strong>Profile</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Name</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Company Role</strong>
+                            <strong>Job</strong>
                         </th>
                         <th class="bold-text">
                             <strong>Mobile Number</strong>
@@ -95,23 +92,24 @@
                         @foreach ($employees as $employee)
                         <tr>
                             <td>{{ $counter++ }}</td>
-                            <td class="text-center">
+                            <td class="text-center col-md-3">
                                 @if ($employee->profile_img)
-                                    <img src="{{ asset('storage/' . $employee->profile_img) }}" alt="Profile Image" width="100">
+                                    <img src="{{ asset('storage/' . $employee->profile_img) }}" alt="Profile Image" width="200"> <br>
+                                <span style="font-size: 20px"> <strong>  {{ $employee->firstName }} {{ $employee->lastName }} </strong> </span>
                                 @else
                                     <!-- If there is no profile image, display a default image -->
-                                     <img src="{{ asset('images/TsTours.jpg') }}" alt="Default Image" width="100">
+                                     <img src="{{ asset('images/TsTours.jpg') }}" alt="Default Image" width="200"> <br>
+                                   <span style="font-size: 20px"><strong> {{ $employee->firstName }} {{ $employee->lastName }} </strong></span> 
                                 @endif
                             </td>
-                            <td>{{ $employee->firstName }} {{ $employee->lastName }}</td>
-                            <td>{{ $employee->accountType }}</td>
-                            <td>{{ $employee->mobileNum }}</td>
-                            <td>{{ $employee->email }}</td>
+                            <td style="font-size:18px;text-align:center">{{ $employee->accountType }}</td>
+                            <td style="font-size:16px;text-align:center">{{ $employee->mobileNum }}</td>
+                            <td style="font-size:16px;text-align:center">{{ $employee->email }}</td>
                             <td class="text-center">
-                                <a href="{{ route('employee.edit', $employee->empID) }}" class="btn btn-primary" style="padding: 10px 32px;margin:5px">EDIT</a>
+                                <a href="{{ route('employee.edit', $employee->empID) }}" class="btn btn-primary" style="padding: 10px 32px;margin:5px"><i class="fas fa-edit"></i> EDIT</a>
                                 
                                 <br>
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $employee->empID }}">DELETE</button>
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $employee->empID }}"> <i class="fas fa-trash"></i> DELETE</button>
                                 <div class="modal fade" id="deleteModal{{ $employee->empID }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">

@@ -22,8 +22,9 @@ class Tariff extends Authenticatable
 
     protected $primaryKey = 'tariffID';
     protected $fillable = [
-        'location', 'rate_Per_Day', 'rent_Per_Hour'
+        'location', 'rate_Per_Day', 'rent_Per_Hour', 'note', 'do_pu', 'rentPerDayHrs',
     ];
+    
 
     /**
      * The attributes that should be hidden for serialization.

@@ -31,7 +31,11 @@ class MaintenanceController extends Controller
             ->select('maintenances.*', 'vehicles.pic', 'mechanics.firstName as mechanic_firstName', 'mechanics.lastName as mechanic_lastName', 'scheduledBy.firstName as scheduled_by_firstName', 'scheduledBy.lastName as scheduled_by_lastName')
             ->orderBy('scheduleDate')->paginate(10);
     
-        $mechanics = Employee::where('accountType', 'Mechanic')->get();
+            $mechanics = Employee::where(function($query) {
+                $query->where('accountType', 'Mechanic')
+                      ->orWhere('accountType', 'Mechanic Outsourced');
+            })->get();
+            
     
         return view('employees.maintenance', compact('maintenances', 'mechanics'));
     }
@@ -52,12 +56,16 @@ public function history()
 
 public function create()
 {
-    $activeVehicles = Vehicle::where('status', 'Active')->get();
-    $employees = Employee::all();
+    $activeVehicles = Vehicle::where('status', 'Active')
+                                    ->where('ownership_type', 'Owned')
+                                    ->get();
+    $mechanicEmployees = Employee::where('accountType', 'Mechanic')
+                                  ->orWhere('accountType', 'Mechanic Outsourced')
+                                  ->get();
     $now = now(); // Get the current date and time
-
-    // Exclude completed maintenance records and ongoing schedules
-    $vehicles = $activeVehicles->filter(function ($vehicle) use ($now) {
+    
+    // Exclude vehicles that have active schedules
+    $vehicles = $activeVehicles->reject(function ($vehicle) use ($now) {
         $isScheduled = Maintenance::where('unitID', $vehicle->unitID)
             ->where(function ($query) use ($now) {
                 $query->where('scheduleDate', '>=', $now)
@@ -68,18 +76,20 @@ public function create()
             })
             ->whereIn('status', ['Scheduled', 'In Progress'])
             ->exists();
-        return !$isScheduled;
+        return $isScheduled;
     });
 
     $maintenances = Maintenance::all();
 
-    return view('employees.maintenanceCreate', compact('vehicles', 'employees','maintenances'));
+    // Pass the next available schedule to the view
+    return view('employees.maintenanceCreate', compact('vehicles', 'mechanicEmployees', 'maintenances'));
 }
+
 
 
     // Handle the form submission
     public function store(Request $request)
-    {   
+    {    //dd($request);
         // Validate the form data
         $validatedData = $request->validate([
             'unitID' => 'required|integer',  
@@ -87,28 +97,12 @@ public function create()
             'mechanicAssigned' => 'required|integer',
             'scheduleDateTime' => [
                 'required',
-                'date',
-                'after_or_equal:yesterday', // Ensures the date is after or current date 
+                'after_or_equal:yesterday', 
             ],
-            'notes' => 'nullable|string',
-            'status' => 'required|string',
-            
+            'notes' => 'nullable|string',            
         ]);
         
-        // Check for conflicting schedules
-        $conflictingSchedules = Maintenance::where('unitID', $validatedData['unitID'])
-            ->where(function ($query) use ($validatedData) {
-                $query->where('scheduleDate', '<=', $validatedData['scheduleDateTime'])
-                    ->where('endDate', '>=', $validatedData['scheduleDateTime']);
-            })
-            ->whereIn('status', ['Scheduled', 'In Progress'])
-            ->exists();
         
-        if ($conflictingSchedules) {
-            // Redirect back with an error message if there is a scheduling conflict
-            return redirect()->back()->with('error', 'Selected vehicle has a conflicting maintenance schedule.');
-        }
-    
         // Create a new maintenance record
         Maintenance::create([
             'unitID' => $validatedData['unitID'],
@@ -116,7 +110,7 @@ public function create()
             'mechanicAssigned' => $validatedData['mechanicAssigned'],
             'scheduleDate' => $validatedData['scheduleDateTime'],
             'notes' => $validatedData['notes'],
-            'status' => $validatedData['status'],
+            'status' => 'Scheduled',
         ]);
     
         // Redirect back with a success message
@@ -201,5 +195,41 @@ public function create()
 
     return view('partials.maintenance-table', compact('maintenances'))->render();
 }
+
+public function getAvailableSchedules($vehicleId) {
+    // Get the vehicle based on the provided ID
+    $vehicle = Vehicle::findOrFail($vehicleId);
+
+    // Get all maintenance records for the vehicle
+    $maintenanceDates = $vehicle->maintenances->filter(function($maintenance) {
+        return in_array($maintenance->status, ['Scheduled', 'In Progress']) &&
+            $maintenance->status !== 'Cancelled';
+    })->pluck('scheduleDate');
+
+    // Get all booking records for the vehicle
+    $bookingDates = $vehicle->vehicleAssignments->filter(function($assignment) {
+        return $assignment->booking &&
+            $assignment->booking->status !== 'Denied';
+    })->flatMap(function($assignment) {
+        $startDate = \Carbon\Carbon::parse($assignment->booking->startDate);
+        $endDate = \Carbon\Carbon::parse($assignment->booking->endDate);
+
+        // Generate all dates in between startDate and endDate (inclusive)
+        $datesInRange = [];
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $datesInRange[] = $date->toDateString();
+        }
+
+        return $datesInRange;
+    });
+
+    // Merge and unique dates
+    $availableSchedules = $maintenanceDates->merge($bookingDates)->unique()->values();
+
+    // Return the available schedules as JSON response
+    return response()->json($availableSchedules);
+}
+
+
 
 }

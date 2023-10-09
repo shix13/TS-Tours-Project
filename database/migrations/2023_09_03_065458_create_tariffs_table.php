@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('tariffID'); // Auto-incrementing primary key
             $table->string('location');
             $table->decimal('rate_Per_Day', 10, 2); // Decimal column with 10 total digits and 2 decimal places
-            $table->decimal('rent_Per_Hour', 10, 2); // Decimal column with 10 total digits and 2 decimal places
+            $table->decimal('rent_Per_Hour', 10, 2)->nullable(); // Decimal column with 10 total digits and 2 decimal places
             $table->timestamps();
         });
     }

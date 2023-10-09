@@ -12,14 +12,19 @@
     <div class="row">
         <div class="col-md-2">
             @if(request()->route()->getName() == 'maintenance.history')
-                <a href="{{ route('employee.maintenance') }}" class="btn btn-danger">View Active Maintenance</a>
+                <a href="{{ route('employee.maintenance') }}" class="btn btn-info">
+                    <i class="fas fa-list"></i> View Active Maintenance
+                </a>
             @else
-                <a href="{{ route('maintenance.history') }}" class="btn btn-danger">Maintenance History</a>
+                <a href="{{ route('maintenance.history') }}" class="btn btn-info">
+                    <i class="fas fa-history"></i> Maintenance History
+                </a>
             @endif
         </div>
         
+        
         <div class="col-md-2">
-            <a href="{{ route('maintenance.create') }}" class="btn btn-success">Schedule Maintenance</a>
+            <a href="{{ route('maintenance.create') }}" class="btn btn-success" style="padding: 11px 25px"><i class="fas fa-plus"></i> Add Schedule</a>
         </div>
         
         <div class="col-md-6">
@@ -63,7 +68,7 @@
     <!-- Table for Scheduled and In Progress Maintenance Records -->
     <div class="card">
         <div class="card-header">
-            <h4 class="card-title">Maintenance Schedule</h4>
+            <h4 class="card-title">Maintenance History</h4>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -79,7 +84,7 @@
                             <strong>Mechanic</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Scheduled Date</strong>
+                            <strong>Start Date</strong>
                         </th>
                         <th class="bold-text col-md-3">
                             <strong>Notes</strong>
@@ -88,7 +93,7 @@
                             <strong>Status</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Finished Date</strong>
+                            <strong>Completion Date</strong>
                         </th>
                         <th class="bold-text">
                             <strong>Scheduled By</strong>

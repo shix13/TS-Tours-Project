@@ -11,11 +11,16 @@
 <div class="container">
     <div class="row">
         <div class="col-md-2">
-            <a href="{{ route('maintenance.history') }}" class="btn btn-danger">Maintenance History</a>
+            <a href="{{ route('maintenance.history') }}" class="btn btn-info">
+                <i class="fas fa-history"></i> Maintenance History
+            </a>
         </div>
         <div class="col-md-2">
-            <a href="{{ route('maintenance.create') }}" class="btn btn-success">Schedule Maintenance</a>
+            <a href="{{ route('maintenance.create') }}" class="btn btn-success" style="padding: 11px 25px">
+                <i class="fas fa-plus"></i> Add Schedule
+            </a>
         </div>
+        
         
         <div class="col-md-6">
             <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
@@ -104,7 +109,7 @@
                                <span id="mechanicAssigned"> <strong>Mechanic: </strong>{{ $maintenance->mechanic_firstName }} {{ $maintenance->mechanic_lastName }} <br> </span>
                                 
                                 
-                               <span id="scheduledate"> <strong>Schedule Date: </strong>{{ date('M d, Y h:i A', strtotime($maintenance->scheduleDate)) }}</span> <hr>
+                               <span id="scheduledate"> <strong>Start Date: </strong>{{ date('M d, Y h:i A', strtotime($maintenance->scheduleDate)) }}</span> <hr>
                                 
                             <span class="{{ $maintenance->notes === null ? 'text-center' : '' }}">
                                 @if ($maintenance->notes === null)
@@ -114,12 +119,12 @@
                                 @endif
                             </span>  <hr>
                             <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="changeMechanicButton">
-                                Change Mechanic
+                                <i class="fas fa-wrench"></i> Change Mechanic
                             </button>  
                             <div class="dropdown-menu" aria-labelledby="changeMechanicButton">
                                 @foreach($mechanics as $mechanic)
                                     <a class="dropdown-item" href="{{ route('maintenance.updateMechanic', ['id' => $maintenance->maintID, 'mechanic_id' => $mechanic->empID]) }}">
-                                        {{ $mechanic->firstName }} {{ $mechanic->lastName }}
+                                        {{ $mechanic->firstName }} {{ $mechanic->lastName }} - ({{ $mechanic->accountType }})
                                     </a>
                                 @endforeach
                             </div>
@@ -262,10 +267,10 @@
     });
 });
 
- // Prevent dropdown from closing when selecting a status
- $('#statusSelect').on('click', function (e) {
-        e.stopPropagation();
-    });
+$(document).on('click', '#statusSelect', function (e) {
+    e.stopPropagation();
+});
+
 
 </script>
 @endsection

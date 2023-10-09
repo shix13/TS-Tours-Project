@@ -22,6 +22,14 @@ Licensed under the MIT license - http://opensource.org/licenses/MIT
 
 Copyright (c) 2015 Daniel Eden
 */
+.flatpickr-calendar {
+  background-color: white !important;
+}
+
+.disabled-date.flatpickr-day.disabled {
+    background-color: #f2f2f2; /* Change this to your desired background color */
+    color: #999; /* Change this to your desired text color */
+}
 
 .animated {
   -webkit-animation-duration: 1s;
