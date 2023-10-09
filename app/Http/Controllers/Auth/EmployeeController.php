@@ -28,11 +28,22 @@ class EmployeeController extends Controller
             'ProfileImage' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the image validation rules
             'FirstName' => 'required|string|max:255',
             'LastName' => 'required|string|max:255',
-            'AccountType' => 'required|string|in:Manager,Clerk,Driver,Mechanic',
-            'Email' => 'required|email', Rule::unique('employees')->ignore($request->id)->whereNull('deleted_at'),
-            'MobileNum' => 'required|string|min:11|max:11',
+            'AccountType' => 'required|string|in:Manager,Clerk,Driver,Mechanic,Driver Outsourced,Mechanic Outsourced',
+            'Email' => [
+                'required',
+                'email',
+                Rule::unique('employees')->ignore($request->id)->whereNull('deleted_at'),
+            ],
+            'MobileNum' => [
+                'required',
+                'string',
+                'min:11',
+                'max:11',
+                Rule::unique('employees')->ignore($request->id)->whereNull('deleted_at'),
+            ],
             'password' => 'required|string|min:8|confirmed',
         ]);
+        
 
         // Check if a soft-deleted record with the same email exists
         $existingAccount = Employee::onlyTrashed()->where('email', $validatedData['Email'])->first();
@@ -88,7 +99,7 @@ class EmployeeController extends Controller
         ]);
 
         // Redirect or respond as needed
-        return redirect()->route('employee.dashboard'); // Redirect to login page after registration
+        return redirect()->route('employee.accounts'); // Redirect to login page after registration
         }
     }
 

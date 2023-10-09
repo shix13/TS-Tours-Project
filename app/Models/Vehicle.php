@@ -21,7 +21,7 @@ class Vehicle extends Authenticatable
     protected $table = 'vehicles';
     protected $primaryKey = 'unitID'; 
     protected $fillable = [
-        'pic', 'registrationNumber', 'unitName', 'pax', 'specification', 'status', 'vehicle_Type_ID'
+        'pic', 'registrationNumber', 'unitName', 'pax', 'specification', 'status', 'vehicle_Type_ID','yearModel', 'color', 'ownership_type', 'outsourced_from'
     ];
 
     /**
@@ -44,6 +44,8 @@ class Vehicle extends Authenticatable
         'password' => 'hashed',
     ];
 
+    
+
     public function maintenances()
     {
         return $this->hasMany(Maintenance::class, 'unitID');
@@ -52,5 +54,15 @@ class Vehicle extends Authenticatable
     public function vehicleType()
     {
         return $this->belongsTo(VehicleType::class, 'vehicle_Type_ID');
+    }
+
+    public function booking()
+    {
+        return $this->hasMany(Booking::class, 'reserveID');
+    }
+
+    public function vehicleAssignments()
+    {
+        return $this->hasMany(VehicleAssigned::class, 'unitID');
     }
 }

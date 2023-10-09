@@ -9,13 +9,14 @@
         <div class="col-md-12 offset-md-0">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title" style="color: red;">Schedule Maintenance</h4>
+                    <h4 class="card-title" style="color: red;font-weight:700">Schedule Maintenance</h4>
                 </div>
+                <hr>
                 <div class="card-body">
                     <form method="POST" action="{{ route('maintenance.store') }}" >
                         @csrf
 
-                        <div class="form-row">
+                        <div class="form-row" style="justify-content: center">
                             <!-- Unit ID (Foreign Key to Vehicles Table) -->
                             <div class="form-group col-md-4">
                                 <label for="unitID">Vehicle (Model & Registration Number)</label>
@@ -23,16 +24,18 @@
                                     <!-- Populate this dropdown with options from your vehicles table -->
                                     @foreach ($vehicles as $vehicle)
                                         @php
+                                            // Check if the vehicle is active
+                                            $isActive = $vehicle->status === 'Active';
                                             // Check if the vehicle is not already scheduled with status 'Scheduled' or 'In Progress'
                                             $isScheduled = $maintenances->where('unitID', $vehicle->unitID)
                                                 ->whereIn('status', ['Scheduled', 'In Progress'])
                                                 ->isNotEmpty();
                                         @endphp
-                                        @if ($vehicle->status !== 'Maintenance' && !$isScheduled)
+                                        @if ($isActive && !$isScheduled)
                                             <option value="{{ $vehicle->unitID }}">{{ $vehicle->unitName }} - {{ $vehicle->registrationNumber }}</option>
                                         @endif
                                     @endforeach
-                                </select>
+                                </select>                                
                                 @if ($errors->has('unitID'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong>**{{ $errors->first('unitID') }}</strong>
@@ -70,15 +73,20 @@
                                 @endif
                             </div>
 
-                            <div class="form-group col-md-4">
-                                <label for="scheduleDate">Schedule Date:</label>
-                                <input type="date" class="form-control{{ $errors->has('scheduleDate') ? ' is-invalid' : '' }}" id="scheduleDate" name="scheduleDate">
-                                @if ($errors->has('scheduleDate'))
+                            
+                            <div class="form-group col-md-2">
+                                <label for="scheduleDateTime">Scheduled Date and Time:</label>
+                                <input type="datetime-local" class="form-control{{ $errors->has('scheduleDateTime') ? ' is-invalid' : '' }}" 
+                                       id="scheduleDateTime" name="scheduleDateTime" min="{{ date('Y-m-d\TH:i') }}">
+                                @if ($errors->has('scheduleDateTime'))
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>**{{ $errors->first('scheduleDate') }}</strong>
+                                        <strong>**{{ $errors->first('scheduleDateTime') }}</strong>
                                     </span>
                                 @endif
                             </div>
+                            <input type="hidden" name="status" value="Scheduled">
+                            
+                            
                         </div>
 
                         <div class="form-group">
@@ -90,13 +98,8 @@
                             <!-- Employee ID (Foreign Key to Employees Table) -->
                             <div class="form-group col-md-4">
                                 <label for="empID">Scheduled By:</label>
-                                <input type="text" class="form-control" id="scheduledBy" value="{{ auth()->guard('employee')->check() ? auth()->guard('employee')->user()->firstName . ' ' . auth()->guard('employee')->user()->lastName : '' }}" readonly>
+                                <input style="color: black;background:white" type="text" class="form-control" id="scheduledBy" value="{{ auth()->guard('employee')->check() ? auth()->guard('employee')->user()->firstName . ' ' . auth()->guard('employee')->user()->lastName : '' }}" readonly>
                                 <input type="hidden" name="empID" id="empID" value="{{ auth()->guard('employee')->check() ? auth()->guard('employee')->user()->empID : '' }}">
-                            </div>
-
-                            <div class="form-group col-md-4">
-                                <label for="status">Status:</label>
-                                <input type="text" class="form-control" id="status" name="status" value="Scheduled" readonly>
                             </div>
                         </div>
                         

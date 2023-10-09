@@ -67,7 +67,9 @@
                             </div>
                         </div>
                         <br>
-                                             
+                        <div style="text-align: center;">
+                            <a href="{{ route('register') }}">Create An Account?</a>
+                        </div>                        
                     </form>
                 </div>
             </div>

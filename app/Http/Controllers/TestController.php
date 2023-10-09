@@ -70,8 +70,9 @@ class TestController extends Controller
         $currentDate = Carbon::now();
         $formattedDate = $currentDate->format('d-m-Y H:i:s');
         
-        //dd($request->get('FirstName'), $request->get('LastName'));
-        //dd($request->all());
+        $pickupTime = $request->input('PickupTime'); // Get pickup time from the request
+        // Concatenate pickup time with start date to create the full start date and time
+        $startDateTime = $startDate . ' ' . $pickupTime;
         
         $bookingData = [
             "cust_first_name" => $request->input('FirstName'),
@@ -81,13 +82,13 @@ class TestController extends Controller
             "startDate" => $startDate,
             "endDate" => $endDate,
             "mobileNum" => $request->input('MobileNum'),
-            "pickUp_Address" => $request->input('PickUpAddress'),
+            "pickUp_Address" => $request->input('PickUpAddress'),         
             "note" => $request->input('Note'),
             "downpayment_Fee" => $downpayment,
             "subtotal" => $subtotal,
             "status" => "Pending",
         ];
-        //dd($bookingData);
+       
 
         $booking = new Booking();
 
@@ -96,7 +97,6 @@ class TestController extends Controller
         $booking->cust_last_name = $request->get('LastName');
         $booking->cust_email = $request->get('Email');
         $booking->tariffID = $tariffID;
-        $booking->startDate = $startDate;
         $booking->endDate = $endDate;
         $booking->mobileNum = $request->get('MobileNum');
         $booking->pickUp_Address = $request->get('PickUpAddress');
@@ -104,6 +104,8 @@ class TestController extends Controller
         $booking->downpayment_Fee = $downpayment;
         $booking->subtotal = $subtotal;
         $booking->status = "Pending";
+        $booking->startDate = $startDateTime;
+  
 
         $booking->save();
 
@@ -189,4 +191,6 @@ class TestController extends Controller
         $booking->save();
         return redirect()->route('checkbookingstatus', $booking);
     }
+
+    
 }

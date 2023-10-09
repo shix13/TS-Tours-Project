@@ -83,6 +83,7 @@ Route::prefix('employee')->group(function(){
     //PAGES
     //--Vehicle
         Route::get('/vehicles', [VehicleController::class, 'vehicleIndex'])->name('employee.vehicle');
+        Route::get('/retiredvehicles', [VehicleController::class, 'retiredIndex'])->name('vehicles.vehicleRetired');
         Route::get('/vehiclescreate', [VehicleController::class, 'create'])->name('vehicles.create');
         Route::post('/vehicles/save', [VehicleController::class, 'store'])->name('vehicles.save');
         Route::get('/vehicles/{id}/edit', [VehicleController::class, 'edit'])->name('vehicles.edit');
@@ -106,6 +107,8 @@ Route::prefix('employee')->group(function(){
     //--Maintenance
         // Routes for viewing the maintenance records
         Route::get('/maintenance', [MaintenanceController::class, 'maintenanceIndex'])->name('employee.maintenance');
+        Route::get('/maintenance/updateMechanic/{id}/{mechanic_id}', [MaintenanceController::class, 'updateMechanic'])->name('maintenance.updateMechanic');
+        Route::get('/maintenanceHistory', [MaintenanceController::class, 'history'])->name('maintenance.history');
         Route::get('/maintenanceCreate', [MaintenanceController::class, 'create'])->name('maintenance.create');
         Route::post('/maintenance/store', [MaintenanceController::class, 'store'])->name('maintenance.store');
         Route::put('/maintenance/{id}/update', [MaintenanceController::class, 'update'])->name('maintenance.update');

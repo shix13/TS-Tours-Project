@@ -11,9 +11,13 @@
 <div class="container">
     <div class="row">
         <div class="col-md-2">
-            <a href="{{ route('maintenance.create') }}" class="btn btn-danger">Schedule Maintenance</a>
+            <a href="{{ route('maintenance.history') }}" class="btn btn-danger">Maintenance History</a>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-2">
+            <a href="{{ route('maintenance.create') }}" class="btn btn-success">Schedule Maintenance</a>
+        </div>
+        
+        <div class="col-md-6">
             <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
                 <div class="form-group col-md-8">
                     <input type="text" id="search" class="form-control" placeholder="Search by Fleet, Mechanic, Notes, Scheduled By">
@@ -23,8 +27,6 @@
                         <option value="">All</option>
                         <option value="Scheduled">Scheduled</option>
                         <option value="In Progress">In Progress</option>
-                        <option value="Cancelled">Cancelled</option>
-                        <option value="Completed">Completed</option>
                     </select>
                 </div>
             </div>
@@ -54,7 +56,7 @@
     <!-- Table for Scheduled and In Progress Maintenance Records -->
     <div class="card">
         <div class="card-header">
-            <h4 class="card-title">Scheduled and In Progress Maintenance</h4>
+            <h4 class="card-title">Maintenance Schedule</h4>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -67,23 +69,16 @@
                             <strong>Fleet</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Mechanic</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Scheduled Date</strong>
-                        </th>
-                        <th class="bold-text col-md-3">
-                            <strong>Notes</strong>
+                            <strong>Information</strong>
                         </th>
                         <th class="bold-text">
                             <strong>Status</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Finished Date</strong>
-                        </th>
-                        <th class="bold-text">
                             <strong>Scheduled By</strong>
                         </th>
+
+                        
                         <th class="bold-text">
                             <strong>Action</strong>
                         </th>
@@ -95,74 +90,79 @@
 
                         @if ($maintenances !== null && $maintenances->count() > 0)
                         @foreach ($maintenances as $maintenance)
-                        @if ($maintenance->status === 'Scheduled' || $maintenance->status === 'In Progress')
+                        
                         <tr>
                             <td>{{ $counter++ }}</td>
                             <td class="text-center">
                                 <div style="width: 200px; height: 150px; overflow: hidden; margin: 0 auto;">
                                     <img src="{{ asset('storage/' . $maintenance->vehicle->pic) }}" alt="Vehicle Image" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
-                                <strong>{{$maintenance->vehicle->unitName}} - {{$maintenance->vehicle->registrationNumber}}</strong>
+                                <span id="unitname"><strong>{{$maintenance->vehicle->unitName}} - {{$maintenance->vehicle->registrationNumber}}</strong></span>
                             </td>
-                            <td class="text-center"> {{ $maintenance->mechanic_firstName }} {{ $maintenance->mechanic_lastName }}</td>
-                            <td class="text-center">{{ date('M d, Y', strtotime($maintenance->scheduleDate)) }}</td>
-                            <td class="{{ $maintenance->notes === null ? 'text-center' : '' }}">
+                            <td> 
+                               
+                               <span id="mechanicAssigned"> <strong>Mechanic: </strong>{{ $maintenance->mechanic_firstName }} {{ $maintenance->mechanic_lastName }} <br> </span>
+                                
+                                
+                               <span id="scheduledate"> <strong>Schedule Date: </strong>{{ date('M d, Y h:i A', strtotime($maintenance->scheduleDate)) }}</span> <hr>
+                                
+                            <span class="{{ $maintenance->notes === null ? 'text-center' : '' }}">
                                 @if ($maintenance->notes === null)
-                                    <strong>--No Notes--</strong>
+                                    <div style="text-align: center" id="notes"><strong>--No Notes--</strong></div>
                                 @else
-                                    {!! $maintenance->notes !!}
+                                  <span id="notes"> Note: {!! $maintenance->notes !!}</span>
                                 @endif
-                            </td>   
+                            </span>  <hr>
+                            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="changeMechanicButton">
+                                Change Mechanic
+                            </button>  
+                            <div class="dropdown-menu" aria-labelledby="changeMechanicButton">
+                                @foreach($mechanics as $mechanic)
+                                    <a class="dropdown-item" href="{{ route('maintenance.updateMechanic', ['id' => $maintenance->maintID, 'mechanic_id' => $mechanic->empID]) }}">
+                                        {{ $mechanic->firstName }} {{ $mechanic->lastName }}
+                                    </a>
+                                @endforeach
+                            </div>
                             </td>
                             <td class="status col-md-0 align-middle text-center">
-                                <span
+                                <span id="status"
                                     style="color: {{ $maintenance->status === 'Scheduled' ? 'blue' : ($maintenance->status === 'In Progress' ? 'orange' : ($maintenance->status === 'Cancelled' ? 'red' : ($maintenance->status === 'Completed' ? 'green' : ''))) }}">
                                     <strong>{{ $maintenance->status }}</strong>
                                 </span>
                             </td>
-                            <td class="text-center">{{ $maintenance->endDate ? $maintenance->endDate : 'Not Completed' }}</td>
-                            <td class="text-center"> {{ $maintenance->scheduled_by_firstName }} {{ $maintenance->scheduled_by_lastName }}</td>
+                            <td id="scheduledby" class="text-center"> {{ $maintenance->scheduled_by_firstName }} {{ $maintenance->scheduled_by_lastName }}</td>
                             <td>
                                 <div class="text-center">
                                     <div class="btn-group">
-                                        @if($maintenance->status !== 'Completed' && $maintenance->vehicle->status !== 'Booked')
-                                        <button type="button" class="btn btn-primary dropdown-toggle"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Update Status
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <form
-                                                action="{{ route('maintenance.update', ['id' => $maintenance->maintID]) }}"
-                                                method="POST">
-                                                @csrf
-                                                @method('PUT')
-                                                <div class="form-group">
-                                                    <select class="form-control" name="status"
-                                                        onclick="event.stopPropagation();">
-                                                        <option value="In Progress"
-                                                            @if($maintenance->status === 'In Progress') selected
-                                                            @endif>In Progress</option>
-                                                        <option value="Cancelled"
-                                                            @if($maintenance->status === 'Cancelled') selected
-                                                            @endif>Cancelled</option>
-                                                        <option value="Completed"
-                                                            @if($maintenance->status === 'Completed') selected
-                                                            @endif>Completed</option>
-                                                    </select>
-                                                </div>
-                                                <button type="submit"
-                                                    class="btn btn-primary btn-block">Save</button>
-                                            </form>
-                                        </div>
+                                        @if($maintenance->status === 'Completed' || $maintenance->status === 'Cancelled')
+                                            <button type="button" class="btn btn-primary" disabled>
+                                                Update Status
+                                            </button>
                                         @else
-                                        <button type="button" class="btn btn-primary" disabled>Vehicle is still
-                                            booked</button>
+                                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="updateStatusButton">
+                                                Update Status
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="updateStatusButton">
+                                                <form id="statusForm" action="{{ route('maintenance.update', ['id' => $maintenance->maintID]) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="form-group">
+                                                        <select class="form-control" name="status" id="statusSelect">
+                                                            <option value="In Progress" @if($maintenance->status === 'In Progress') selected @endif>In Progress</option>
+                                                            <option value="Cancelled" @if($maintenance->status === 'Cancelled') selected @endif>Cancelled</option>
+                                                            <option value="Completed" @if($maintenance->status === 'Completed') selected @endif>Completed</option>
+                                                        </select>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary btn-block">Save</button>
+                                                </form>
+                                            </div>                                            
                                         @endif
-                                    </div>
+                                    </div>                                                                      
                                 </div>
                             </td>
+                            
                         </tr>
-                        @endif
+                        
                         @endforeach
                         @else
                         <tr>
@@ -176,172 +176,98 @@
     </div>
 
     <!-- Table for Completed and Cancelled Maintenance Records -->
-    <div class="card">
-        <div class="card-header">
-            <h4 class="card-title">Completed and Cancelled Maintenance</h4>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="completedCancelledTable" class="table table-hover table-striped">
-                    <thead class="text-primary font-montserrat">
-                        <th class="bold-text">
-                            <strong>#</strong>
-                        </th>
-                        <th class="bold-text col-md-2 ">
-                            <strong>Fleet</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Mechanic</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Scheduled Date</strong>
-                        </th>
-                        <th class="bold-text col-md-3">
-                            <strong>Notes</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Status</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Finished Date</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Scheduled By</strong>
-                        </th>
-                        </thead>
-                    <tbody>
-                        @php
-                        $counter = 1; // Initialize a counter variable
-                        @endphp
-
-                        @if ($maintenances !== null && $maintenances->count() > 0)
-                        @foreach ($maintenances as $maintenance)
-                        @if ($maintenance->status === 'Completed' || $maintenance->status === 'Cancelled')
-                        <tr>
-                            <td>{{ $counter++ }}</td>
-                            <td class="text-center">
-                                <div style="width: 200px; height: 150px; overflow: hidden; margin: 0 auto;">
-                                    <img src="{{ asset('storage/' . $maintenance->vehicle->pic) }}" alt="Vehicle Image" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
-                                </div>
-                                <strong>{{$maintenance->vehicle->unitName}} - {{$maintenance->vehicle->registrationNumber}}</strong>
-                            </td>
-                            <td class="text-center"> {{ $maintenance->mechanic_firstName }} {{ $maintenance->mechanic_lastName }}</td>
-                            <td class="text-center">{{ date('M d, Y', strtotime($maintenance->scheduleDate)) }}</td>
-                            <td class="{{ $maintenance->notes === null ? 'text-center' : '' }}">
-                                @if ($maintenance->notes === null)
-                                    <strong>--No Notes--</strong>
-                                @else
-                                    {!! $maintenance->notes !!}
-                                @endif
-                            </td>                                            
-                            <td class="status col-md-0 align-middle text-center">
-                                <span 
-                                    style="color: {{ $maintenance->status === 'Scheduled' ? 'blue' : ($maintenance->status === 'In Progress' ? 'orange' : ($maintenance->status === 'Cancelled' ? 'red' : ($maintenance->status === 'Completed' ? 'green' : ''))) }}">
-                                    <strong>{{ $maintenance->status }}</strong>
-                                    
-                                </span>
-                            </td>
-                            <td class="text-center">{{ $maintenance->endDate ? $maintenance->endDate : 'Not Completed' }}</td>
-                            <td class="text-center"> {{ $maintenance->scheduled_by_firstName }} {{ $maintenance->scheduled_by_lastName }}</td>
-                            
-                        </tr>
-                        @endif
-                        @endforeach
-                        @else
-                        <tr>
-                            <td colspan="12">No completed or cancelled maintenance items available.</td>
-                        </tr>
-                        @endif
-                    </tbody>
-                </table>
-                {{ $maintenances -> links() }}
-            </div>
-        </div>
-    </div>
+   
 </div>
 @endsection
 
 @section('scripts')
 <script>
     $(document).ready(function () {
-        // Function to filter the table rows based on status and search query
-        function filterAndSearchTable(tableId, status, query) {
-            var table = $('#' + tableId);
-            table.find('tbody tr').each(function () {
-                var row = $(this);
-                var rowStatusCell = row.find('td:eq(5)'); // Update the column index for Status
-                var rowStatus = rowStatusCell.text().trim();
-                var found = false;
+    // Function to filter the table rows based on status and search query
+    function filterAndSearchTable(tableId, status, query) {
+        var table = $('#' + tableId);
+        table.find('tbody tr').each(function () {
+            var row = $(this);
+            var statusCell = row.find('#status'); // Update to target element by id
+            var mechanicCell = row.find('#mechanicAssigned'); // Update to target element by id
+            var notesCell = row.find('#notes'); // Update to target element by id
+            var unitNameCell = row.find('#unitname'); // Update to target element by id
+            var scheduledByCell = row.find('#scheduledby'); // Update to target element by id
+            var scheduledDateCell = row.find('#scheduledate'); // Update to target element by id
 
-                // Condition 1: Status is null and query is null
-                if (status === '' && query === '') {
+            var rowStatus = statusCell.text().trim().toLowerCase();
+            var rowMechanic = mechanicCell.text().trim().toLowerCase();
+            var rowNotes = notesCell.text().trim().toLowerCase();
+            var rowUnitName = unitNameCell.text().trim().toLowerCase();
+            var rowScheduledBy = scheduledByCell.text().trim().toLowerCase();
+            var rowScheduledDate = scheduledDateCell.text().trim().toLowerCase();
+
+            var found = false;
+
+            // Condition 1: Status is null, mechanic name is null, notes is null, unit name is null, scheduled by is null, scheduled date is null
+            if (status === '' && query === '' && rowMechanic === '' && rowNotes === '' && rowUnitName === '' && rowScheduledBy === '' && rowScheduledDate === '') {
+                found = true;
+            }
+            // Condition 2: Check if any of the values match the search query
+            else {
+                if (
+                    (status === '' || rowStatus === status.toLowerCase()) &&
+                    (query === '' ||
+                        rowMechanic.includes(query.toLowerCase()) ||
+                        rowNotes.includes(query.toLowerCase()) ||
+                        rowUnitName.includes(query.toLowerCase()) ||
+                        rowScheduledBy.includes(query.toLowerCase()) ||
+                        rowScheduledDate.includes(query.toLowerCase())
+                    )
+                ) {
                     found = true;
-                } 
-                // Condition 2: Status is null and there is a query
-                else if (status === '' && query !== '') {
-                    if (row.text().toLowerCase().includes(query.toLowerCase())) {
-                        found = true;
-                    }
-                } 
-                // Condition 3: Status has a value and query is null
-                else if (status !== '' && query === '') {
-                    if (rowStatus === status) {
-                        found = true;
-                    }
-                } 
-                // Default condition: Both status and query have values
-                else {
-                    if ((status === '' || rowStatus === status) && (query === '' || row.text().toLowerCase().includes(query.toLowerCase()))) {
-                        found = true;
-                    }
                 }
+            }
 
-                if (found) {
-                    row.show();
-                } else {
-                    row.hide();
-                }
-            });
-        }
-
-        // Initial filter when the page loads
-        filterAndSearchTable('scheduledInProgressTable', '', '');
-        filterAndSearchTable('completedCancelledTable', '', '');
-
-        // Handle filter button change and search input keyup/change
-        $('#statusFilter, #search').on('input', function () {
-            var status = $('#statusFilter').val();
-            var query = $('#search').val();
-
-            // Check the conditions and show/hide tables and rows accordingly
-            if (status === '' && query === '') {
-                $('#scheduledInProgressTable').show();
-                $('#completedCancelledTable').show();
-                $('#scheduledInProgressTable tbody tr').show();
-                $('#completedCancelledTable tbody tr').show();
-            } else if (status === '' && query !== '') {
-                $('#scheduledInProgressTable').show();
-                $('#completedCancelledTable').show();
-                filterAndSearchTable('scheduledInProgressTable', status, query);
-                filterAndSearchTable('completedCancelledTable', status, query);
-            } else if (status !== '' && query === '') {
-                $('#scheduledInProgressTable').hide();
-                $('#completedCancelledTable').hide();
-                filterAndSearchTable('scheduledInProgressTable', status, query);
-                filterAndSearchTable('completedCancelledTable', status, query);
-                $('#' + (status === 'Completed' || status === 'Cancelled' ? 'completedCancelledTable' : 'scheduledInProgressTable')).show();
-                $('#completedCancelledTable, #scheduledInProgressTable').not('#' + (status === 'Completed' || status === 'Cancelled' ? 'completedCancelledTable' : 'scheduledInProgressTable')).hide();
+            if (found) {
+                row.show();
             } else {
-                filterAndSearchTable('scheduledInProgressTable', status, query);
-                filterAndSearchTable('completedCancelledTable', status, query);
-                $('#scheduledInProgressTable, #completedCancelledTable').hide();
-                $('#' + (status === 'Completed' || status === 'Cancelled' ? 'completedCancelledTable' : 'scheduledInProgressTable')).show();
-                $('#completedCancelledTable, #scheduledInProgressTable').not('#' + (status === 'Completed' || status === 'Cancelled' ? 'completedCancelledTable' : 'scheduledInProgressTable')).hide();
+                row.hide();
             }
         });
+    }
+
+    // Initial filter when the page loads
+    filterAndSearchTable('scheduledInProgressTable', '', '');
+
+    // Handle filter button change and search input keyup/change
+    $('#statusFilter, #search').on('input', function () {
+        var status = $('#statusFilter').val();
+        var query = $('#search').val();
+
+        // Check the conditions and show/hide tables and rows accordingly
+        if (status === '' && query === '') {
+            $('#scheduledInProgressTable, #completedCancelledTable').show();
+            $('#scheduledInProgressTable tbody tr, #completedCancelledTable tbody tr').show();
+        } else if (status === '' && query !== '') {
+            $('#scheduledInProgressTable, #completedCancelledTable').show();
+            filterAndSearchTable('scheduledInProgressTable', status, query);
+            filterAndSearchTable('completedCancelledTable', status, query);
+        } else if (status !== '' && query === '') {
+            $('#scheduledInProgressTable, #completedCancelledTable').hide();
+            filterAndSearchTable('scheduledInProgressTable', status, query);
+            filterAndSearchTable('completedCancelledTable', status, query);
+            $('#' + (status === 'completed' || status === 'cancelled' ? 'completedCancelledTable' : 'scheduledInProgressTable')).show();
+        } else {
+            $('#scheduledInProgressTable, #completedCancelledTable').hide();
+            filterAndSearchTable('scheduledInProgressTable', status, query);
+            filterAndSearchTable('completedCancelledTable', status, query);
+            $('#' + (status === 'completed' || status === 'cancelled' ? 'completedCancelledTable' : 'scheduledInProgressTable')).show();
+        }
     });
+});
+
+ // Prevent dropdown from closing when selecting a status
+ $('#statusSelect').on('click', function (e) {
+        e.stopPropagation();
+    });
+
 </script>
-
-
 @endsection
+
 

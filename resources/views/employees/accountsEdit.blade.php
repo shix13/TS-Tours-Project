@@ -88,7 +88,7 @@
                         
                             <div class="col-md-6">
                                 <select id="AccountType" class="form-control @error('AccountType') is-invalid @enderror" name="AccountType" required>
-                                    @foreach(['Manager', 'Clerk', 'Driver', 'Mechanic'] as $type)
+                                    @foreach(['Manager', 'Clerk', 'Driver', 'Mechanic', 'Driver Outsourced' , 'Mechanic Outsourced'] as $type)
                                         <option value="{{ $type }}" @if($type === $employee->accountType) selected @endif>{{ $type }}</option>
                                     @endforeach
                                 </select>

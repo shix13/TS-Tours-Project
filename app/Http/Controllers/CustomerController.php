@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {   
-    public function __construct()
+   /* public function __construct()
     {
         $this->middleware('auth')->except('logout' , 'userlogout');
-    }
+    }*/
     //
     private $sharedBooking; //Variable to be shared with other functions
 

@@ -39,4 +39,6 @@ class VehicleAssigned extends Model
     {
         return $this->belongsTo(Employee::class, 'empID');
     }
+
+    
 }

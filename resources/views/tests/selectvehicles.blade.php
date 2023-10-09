@@ -10,7 +10,7 @@
   <!-- Browse Vehicle text on the left -->
   <div class="col">
     <h1 style="text-align: center;font-size: 40px; font-weight: 700">Vehicles We Offer</h1>
-    <p style="font-weight: 400">Please select the types of vehicles you want to book </p>
+    <p style="font-weight: 400">Please select the types of vehicle(s) you want to book </p>
   </div>
 
   <!-- Search bar on the right >
@@ -27,12 +27,12 @@
 <hr>
 <div class="row mx-auto text-center">
   @foreach($vehicleTypes as $v)
-    <div class="col-md-3 mb-4">
-        <div class="vehicle-card" data-id="{{ $v->vehicle_Type_ID }}" style="width: 18rem;border-radius:10px;height:380px;background-color:white"
+    <div class="col-md-3 mb-4" >
+        <div class="vehicle-card" data-id="{{ $v->vehicle_Type_ID }}" style="width: 20rem;border-radius:10px;height:300px;background-color:white"
             data-id="{{ $v->id }}">
 
             <div style="max-height: 250px; overflow: hidden;">
-              <img class="card-img-top" src="{{ asset('storage/' . $v['pic']) }}" alt="Card image cap" style="height: 100%;" height="auto">
+              <img class="card-img-top" src="{{ asset('storage/' . $v['pic']) }}" alt="Card image cap" style="height: 100%;" height="auto" >
           </div>
           
             <div class="card-content">

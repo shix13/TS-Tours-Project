@@ -95,7 +95,7 @@
                                     <td>{{ $preApprovedBooking->subtotal }}</td>
                                     <td>{{ $preApprovedBooking->status }}</td>
                                     <td class="col-md-1">
-                                        <a href="{{ route('employee.approveBooking', ['bookingId' => $preApprovedBooking->reserveID]) }}" class="btn btn-success btn-block" style="margin-bottom: 10px;"><strong><i class="fa-solid fa-check"></i> Approve</strong></a>
+                                        <a href="{{ route('employee.approveBooking', ['bookingId' => $preApprovedBooking->reserveID]) }}" class="btn btn-success btn-block approve-btn" style="margin-bottom: 10px;"><strong><i class="fa-solid fa-check"></i> Approve</strong></a>
                                       
                                         <!-- Trigger the modal for denying the booking -->
                                         <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#denyModal{{ $preApprovedBooking->reserveID }}"><strong><i class="fa-solid fa-xmark"></i> Reject</strong></button>
@@ -139,4 +139,30 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    // Wait for the document to be ready
+    $(document).ready(function() {
+        // Add click event listener to the "Approve" button
+        $('.approve-btn').on('click', function(event) {
+            // Get the value of gcash_RefNum from the corresponding table cell
+            var gcashRefNum = $(this).closest('tr').find('td:eq(3)').text().trim();
+
+            // Check if gcash_RefNum is empty
+            if (gcashRefNum === '') {
+                // Display a confirmation dialog
+                var confirmed = confirm('The Gcash Reference Number is empty. Are you sure you want to approve this booking?');
+
+                // If user cancels the confirmation, prevent the default link behavior
+                if (!confirmed) {
+                    event.preventDefault();
+                }
+            }
+        });
+
+        
+    });
+</script>
 @endsection

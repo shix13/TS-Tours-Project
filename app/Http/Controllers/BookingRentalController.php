@@ -283,56 +283,80 @@ public function bookAssign($id)
 {
     // Retrieve data from the 'booking' table where status is 'Pending' and reserveID matches $id
     $pendingBooking = Booking::where('status', 'Pending')->where('reserveID', $id)->first();
-    //dd($pendingBooking->vehicle_Type_ID);
+
+    // Calculate start and end dates for checking availability
+    $startDate = \Carbon\Carbon::parse($pendingBooking->startDate);
+    $endDate = \Carbon\Carbon::parse($pendingBooking->endDate)->addDay(1); // Add 1 day to end date
+
+    // Check for available vehicles based on start date, end date, maintenance schedule, and existing bookings
+    $availableVehicles = Vehicle::where('status', 'Active')
+        ->whereDoesntHave('maintenances', function($query) use ($startDate, $endDate) {
+            $query->where('scheduledate', '>=', $startDate)
+                  ->where('scheduledate', '<=', $endDate);
+        })
+        ->whereDoesntHave('booking', function($query) use ($startDate, $endDate) {
+            $query->where(function($query) use ($startDate, $endDate) {
+                $query->where('startDate', '<=', $endDate)
+                      ->where('endDate', '>=', $startDate);
+            })->orWhere(function($query) use ($startDate, $endDate) {
+                // Check for bookings that start before $startDate but end during or after $endDate
+                $query->where('startDate', '<=', $endDate)
+                      ->where('endDate', '>=', $endDate);
+            });
+        })
+        ->whereDoesntHave('vehicleAssignments.booking', function($query) use ($startDate, $endDate) {
+            $query->where(function($query) use ($startDate, $endDate) {
+                $query->where('startDate', '<=', $endDate)
+                      ->where('endDate', '>=', $startDate);
+            })->orWhere(function($query) use ($startDate, $endDate) {
+                // Check for bookings that start before $startDate but end during or after $endDate
+                $query->where('startDate', '<=', $endDate)
+                      ->where('endDate', '>=', $endDate);
+            });
+        })
+        ->with('vehicleType')
+        ->get();
+
+    // Check for available drivers based on start date and end date
+    $availableDrivers = Employee::where('accountType', 'Driver')
+        ->whereDoesntHave('vehicleAssignments', function($query) use ($startDate, $endDate) {
+            $query->whereHas('booking', function($bookingQuery) use ($startDate, $endDate) {
+                $bookingQuery->where('startDate', '<=', $endDate)
+                             ->where('endDate', '>=', $startDate);
+            });
+        })
+        ->get();
+
     // Retrieve data from the 'vehicle_types_booked' table
     $bookedTypes = VehicleTypeBooked::where('reserveID', $pendingBooking->reserveID)->get();
-    //dd($bookedTypes);
-    // Retrieve the list of available vehicles and employees
-    $vehicles = Vehicle::where('status', 'Available')->with('vehicleType')->get(); // Eager load the 'vehicleType' relationship
-    /*
-    foreach($vehicles as $vehicle){
-        dd($vehicle->vehicleType->vehicle_Type);
-    }
-    */
-    $employees = Employee::where('accountType', 'Driver')->get();
 
-    // Pass the filtered data, vehicles, and employees to the view
-    return view('employees.bookAssignments', compact('pendingBooking', 'bookedTypes', 'vehicles', 'employees')
-    /*[
-        'pendingBooking' => $pendingBooking,
-        'bookedTypes' => $bookedTypes,
-        'vehicles' => $vehicles,
-        'employees' => $employees,
-    ]*/
-);
+    // Pass the filtered data, available vehicles, available drivers, bookedTypes, and employees to the view
+    return view('employees.bookAssignments', compact('pendingBooking', 'bookedTypes', 'availableVehicles', 'availableDrivers'));
 }
+
+
 
 public function storeAssigned(Request $request){
     $unitIDs = $request->input('unitID');
     $empIDs = $request->input('empID');
     $reserveID = $request->input('reserveID');
-    foreach($unitIDs as $unitID){
-        $i = 0;
+    
+    foreach($unitIDs as $i => $unitID){
         VehicleAssigned::create([
             'unitID' => $unitID,
             'empID' => $empIDs[$i],
             'reserveID' => $reserveID,
         ]);
-
-        $vehicle = Vehicle::where('unitID', $unitID)->first();
-        $vehicle->update([
-            'status' => 'Unavailable'
-        ]);
-        $i++;
     }
 
     $booking = Booking::where('reserveID', $reserveID)->first();
+    if ($booking) {
+        $booking->update([
+            'status' => 'Pre-approved',
+        ]);
+    }
 
-    $booking->update([
-        'status' => 'Pre-approved',
-    ]);
-
-    return redirect()->route('employee.booking')->with('success'.'Vehicles assigned successfully.');
+    return redirect()->route('employee.booking')->with('success', 'Vehicles assigned successfully.');
 }
 
 public function preApproved(){

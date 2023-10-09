@@ -24,6 +24,8 @@
                         <option value="Clerk">Clerk</option>
                         <option value="Driver">Driver</option>
                         <option value="Mechanic">Mechanic</option>
+                        <option value="Driver Outsourced">Driver Outsourced</option>
+                        <option value="Mechanic Outsourced">Mechanic Outsourced</option>
                     </select>
                 </div>
             </div>
@@ -106,8 +108,9 @@
                             <td>{{ $employee->mobileNum }}</td>
                             <td>{{ $employee->email }}</td>
                             <td class="text-center">
-                                <a href="{{ route('employee.edit', $employee->empID) }}" class="btn btn-primary  col-6">EDIT</a>
+                                <a href="{{ route('employee.edit', $employee->empID) }}" class="btn btn-primary" style="padding: 10px 32px;margin:5px">EDIT</a>
                                 
+                                <br>
                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $employee->empID }}">DELETE</button>
                                 <div class="modal fade" id="deleteModal{{ $employee->empID }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">

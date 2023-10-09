@@ -90,6 +90,8 @@
                                     <option value="Clerk">Clerk</option>
                                     <option value="Driver">Driver</option>
                                     <option value="Mechanic">Mechanic</option>
+                                    <option value="Driver Outsourced">Driver Outsourced</option>
+                                    <option value="Mechanic Outsourced">Mechanic Outsourced</option>
                                 </select>
 
                                 @error('AccountType')

@@ -3,7 +3,7 @@
  <style>
         /* CSS for setting the background image */
         body {
-            background-image: url('{{ asset('/storage/images/bg.jpg') }}'); 
+            background-image: url('{{ asset('images/bg.jpg') }}'); 
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;

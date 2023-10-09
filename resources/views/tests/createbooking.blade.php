@@ -33,17 +33,17 @@
                     <div class="col">
                         <i class="fas fa-map-marker-alt"></i> Location
                     </div>
-                    <div class="col">
-                        <select id="location" name="location">
+                    <div class="col" >
+                        <select id="location" name="location"  style="width: 100%">
                             @foreach($tariffData as $t)
                             <option>{{ $t -> location }}</option>
                             @endforeach
                         </select>
                     </div>
-                </div> <br>
+                </div> 
                 <div class="row container1" style="background: none;box-shadow:none;">
                     <div class="col">
-                        <i class="fas fa-calendar-alt"></i> Schedule Date <hr>
+                        <i class="fas fa-calendar-alt"></i> Schedule Date  <hr>
                         <div class="row">
                             <div class="col">
                                 Start Date <input type="date" name="StartDate" id="StartDate" required>
@@ -55,14 +55,20 @@
                     </div>
                 </div>
                 
-                <div class="row">
-                    <div class="col">First Name</div> 
-                    <div class="col">Last Name</div> 
+                <div class="row container1" style="background: none;box-shadow:none;">
+                    <div class="col">
+                        <i class="fas fa-user"></i> Full Name 
+                        <div class="row">
+                            <div class="col">
+                                First Name <input type="text" name="FirstName" required>
+                            </div>
+                            <div class="col">
+                                Last Name <input type="text" name="LastName" required>
+                            </div>
+                        </div> <hr>
+                    </div> 
                 </div>
-                <div class="row">
-                    <div class="col"><input name="FirstName" required></div> 
-                    <div class="col"><input name="LastName" required></div>
-                </div><br>
+                <br>
 
                 <div class="row">
                     <div class="col">
@@ -95,7 +101,8 @@
                     <div class="col">
                         <input type="time" name="PickupTime" style="margin-left:8px;width: 173px" required>
                     </div>
-                </div> <br>
+                </div>
+                 <br>
                 <div class="col">
                     <div class="col">
                         <i class="fas fa-sticky-note"></i> Additional Notes

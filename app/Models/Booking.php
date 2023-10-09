@@ -83,4 +83,6 @@ class Booking extends Authenticatable
     {
         return $this->hasMany(VehicleTypeBooked::class, 'reserveID');
     }
+
+    
 }

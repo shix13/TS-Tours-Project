@@ -56,4 +56,14 @@ class Employee extends Authenticatable
     {
         return $this->belongsToMany(Rent::class, 'vehicles_assigned', 'empID');
     }
+
+    public function booking()
+    {
+        return $this->hasMany(Booking::class, 'reserveID');
+    }
+
+    public function vehicleAssignments()
+    {
+        return $this->hasMany(VehicleAssigned::class, 'empID');
+    }
 }

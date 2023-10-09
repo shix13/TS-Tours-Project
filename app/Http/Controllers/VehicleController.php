@@ -12,6 +12,7 @@ use App\Models\Maintenance;
 use App\Models\VehicleType;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class VehicleController extends Controller
 {
@@ -20,8 +21,18 @@ class VehicleController extends Controller
         $this->middleware('employee')->except('logout');
     }
     public function vehicleIndex()
+    {
+        // Retrieve all vehicles
+        $vehicles = Vehicle::with(['maintenances', 'booking','vehicleAssignments'])
+            ->where('status', '!=', 'Inactive')
+            ->paginate(5);
+    
+        return view('employees.vehicles', compact('vehicles'));
+    }
+    
+    public function retiredIndex()
 {
-    $vehicles = Vehicle::paginate(5);
+    $vehicles = Vehicle::where('status', 'Inactive')->paginate(5);
     return view('employees.vehicles', compact('vehicles'));
 }
 
@@ -40,70 +51,60 @@ public function create()
 }
 
 public function store(Request $request)
-{
-    // Validate the form data
-    $data = $request->validate([
-        'pic' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'registrationNumber' => [
-            'required',
-            'string',
-            'max:255',
-            Rule::unique('vehicles')->ignore($request->id)->whereNull('deleted_at'),
-        ],
-        'unitName' => 'required|string|max:255',
-        'pax' => 'required|integer|min:1',
-        'specification' => 'nullable|string',
-        'status' => 'required|string|in:Available,Booked,Maintenance',
-        'vehicleType' => 'required|exists:vehicle_types,vehicle_Type_ID', // Validate that the selected type exists in the vehicle_types table
-    ]);
+{  
+    try {
+        // Validate the form data
+        $data = $request->validate([
+            'pic' => 'required|image|max:10000',
+            'registrationNumber' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('vehicles')->whereNull('deleted_at'),
+            ],
+            'unitName' => 'required|string|max:255',
+            'pax' => 'required|integer|min:1',
+            'yearModel' => 'required|integer|min:1900', // Example validation for yearModel, adjust as needed
+            'color' => 'required|string|max:255',
+            'ownership_type' => 'required|string|in:Owned,Outsourced',
+            'outsourced_from' => 'nullable|required_if:ownership_type,Outsourced|string|max:255',
+            'specification' => 'nullable|string',
+            'status' => 'required|string|in:Active',
+            'vehicleType' => 'required|exists:vehicle_types,vehicle_Type_ID',
+        ]);
+       
+        // Upload the image and store it in the 'public/vehicle' directory
+        $imagePath = $request->file('pic')->store('public/vehicle');
+        $data['pic'] = str_replace('public/', '', $imagePath); // Remove 'public/' from the image path
 
-    // Check if a soft-deleted record with the same registration number exists
-    $existingVehicle = Vehicle::onlyTrashed()->where('registrationNumber', $data['registrationNumber'])->first();
-
-    if ($existingVehicle) {
-        // Restore and update the soft-deleted record
-        $existingVehicle->restore();
-
-        // Handle vehicle image upload
-        if ($request->hasFile('pic')) {
-            // Delete the old profile image if it exists
-            if ($existingVehicle->pic) {
-                Storage::disk('public')->delete($existingVehicle->pic);
-            }
-            // Store the new profile image
-            $existingVehicle->pic = $request->file('pic')->store('profile_images', 'public');
+        // Determine if outsourced_from should be stored based on ownership_type
+        if ($data['ownership_type'] === 'Owned') {
+            // If owned, set outsourced_from to null
+            $data['outsourced_from'] = null;
         }
 
-        $existingVehicle->update([
+        // Create a new vehicle record with the validated data
+        Vehicle::create([
+            'pic' => $data['pic'],
+            'registrationNumber' => $data['registrationNumber'],
             'unitName' => $data['unitName'],
             'pax' => $data['pax'],
+            'yearModel' => $data['yearModel'],
+            'color' => $data['color'],
+            'ownership_type' => $data['ownership_type'],
+            'outsourced_from' => $data['outsourced_from'],
             'specification' => $data['specification'],
             'status' => $data['status'],
+            'vehicle_Type_ID' => $data['vehicleType'],
         ]);
 
         return redirect()->route('employee.vehicle')->with('success', 'Vehicle added successfully.');
-    } 
-    else {
-    // Upload the image and store it in the 'public/vehicle' directory
-    if ($request->hasFile('pic')) {
-        $imagePath = $request->file('pic')->store('public/vehicle');
-        $data['pic'] = str_replace('public/', '', $imagePath); // Remove 'public/' from the image path
-    }
-
-    // Create a new vehicle record with the validated data
-    Vehicle::create([
-        'pic' => $data['pic'],
-        'registrationNumber' => $data['registrationNumber'],
-        'unitName' => $data['unitName'],
-        'pax' => $data['pax'],
-        'specification' => $data['specification'],
-        'status' => $data['status'],
-        'vehicle_Type_ID' => $data['vehicleType'], // Assign the selected vehicle type
-    ]);
-
-    return redirect()->route('employee.vehicle')->with('success', 'Vehicle added successfully.');
+    } catch (ValidationException $e) {
+        return redirect()->back()->withErrors($e->errors())->withInput();
     }
 }
+
+
 
     public function edit($id)
     {
@@ -121,41 +122,53 @@ public function store(Request $request)
     return redirect()->route('employee.vehicle')->with('success', 'Vehicle deleted successfully.');
     }
 
-
     public function update(Request $request, $id)
-    {
-        // Validate the form data
-        $request->validate([
-            'pic' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Add your validation rules for pic here
-            'unitname' => 'required|string',
-            'pax' => 'required|integer|min:1',
-            'specification' => 'nullable|string',
-            'status' => 'required|in:Available,Booked,Maintenance',
-        ]);
+{   
+    // Validate the form data
+    $request->validate([
+        'pic' => 'image|mimes:jpeg,png,jpg,gif|max:10000',
+        'unitName' => 'required|string|max:255',
+        'pax' => 'required|integer|min:1',
+        'specification' => 'nullable|string',
+        'status' => 'required|in:Active,Inactive',
+        'ownership_type' => 'required|in:Owned,Outsourced',
+        'outsourced_from' => 'nullable|required_if:ownership_type,Outsourced|string|max:255',
+        'color' => 'required|string|max:255',
+        'yearModel' => 'required|integer|min:1950', // Add validation rule for yearModel
+        'vehicleType' => 'required|exists:vehicle_types,vehicle_Type_ID',
+    ]);
 
-        // Find the vehicle by ID
-        $vehicle = Vehicle::findOrFail($id);
+    // Find the vehicle by ID
+    $vehicle = Vehicle::findOrFail($id);
 
-        // Update the vehicle attributes based on the request data
-        $vehicle->unitname = $request->input('unitname');
-        $vehicle->pax = $request->input('pax');
-        $vehicle->specification = $request->input('specification');
-        $vehicle->status = $request->input('status');
-        $vehicle->vehicle_Type_ID = $request->input('vehicleType');
+    // Update the vehicle attributes based on the request data
+    $vehicle->unitName = $request->input('unitName');
+    $vehicle->pax = $request->input('pax');
+    $vehicle->specification = $request->input('specification');
+    $vehicle->status = $request->input('status');
+    $vehicle->vehicle_Type_ID = $request->input('vehicleType');
+    $vehicle->ownership_type = $request->input('ownership_type');
+    $vehicle->outsourced_from = ($request->input('ownership_type') === 'Outsourced') ? $request->input('outsourced_from') : null;
+    $vehicle->color = $request->input('color');
+    $vehicle->yearModel = $request->input('yearModel'); // Set the yearModel attribute
 
-        // Handle the image upload if a new image is provided
-        if ($request->hasFile('pic')) {
-            $imagePath = $request->file('pic')->store('vehicle_images', 'public');
-            $vehicle->pic = $imagePath;
-        }
-
-        // Save the updated vehicle
-        $vehicle->save();
-
-        // Redirect to the vehicle details page or wherever you want
-        return redirect()->route('employee.vehicle', $vehicle->unitID)
-            ->with('success', 'Vehicle updated successfully');
+    // Handle the image upload if a new image is provided
+    if ($request->hasFile('pic')) {
+        $imagePath = $request->file('pic')->store('public/vehicle_images');
+        $vehicle->pic = str_replace('public/', '', $imagePath);
     }
+
+    // Save the updated vehicle
+    $vehicle->save();
+
+    // Redirect to the vehicle details page or wherever you want
+    return redirect()->route('employee.vehicle', $vehicle->unitID)
+        ->with('success', 'Vehicle updated successfully');
+}
+
+
+    
+
 
     public function newVType()
 {
