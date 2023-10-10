@@ -2,7 +2,8 @@
 
 @section('content')
 <div class="container">
-<h2>BOOKING</h2>
+<img src="{{ asset('images/input-booking.png') }}" style="border-radius: 10px;">
+<hr>
     <div class="row container">
         <div class="container1" style="display: inline-block;">
             <h4 style="font-weight: 700">Booking Details</h4> <br>

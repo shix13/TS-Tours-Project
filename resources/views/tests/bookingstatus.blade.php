@@ -22,11 +22,12 @@
 
 <div id="prePay" class="row" style="display: none;">
     <h1 style="font-weight: 700;width:100%">Proceed to Payment</h1>
-    <div class="row" style="padding: 10px;">
+    <!--div class="row" style="padding: 10px;">
         <p style="font-weight:700;font-size:20px">Your booking has been Pre-Approved. </p>
         <p><hr>You can check your email regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.</p>
         <p style="margin-top:30px;font-weight:700">Thank You for choosing TS Tours Services!</p>
-    </div>
+    </div-->
+    <img src="{{ asset('images/confirm-booking-payment.png') }}" style="border-radius: 10px;">
 </div>
 
 <div id="paymentForm" class="row" style="display: none;padding: 10px;">
