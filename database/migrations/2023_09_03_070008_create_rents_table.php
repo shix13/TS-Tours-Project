@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('rents', function (Blueprint $table) {
             $table->id('rentID'); // Auto-incrementing primary key
             $table->unsignedBigInteger('reserveID'); // Foreign key to reservations table
-            $table->unsignedBigInteger('driverID')->nullable(); // Foreign key to employees table (driver)
+            $table->unsignedBigInteger('empID')->nullable(); // Foreign key to employees table (driver)
             $table->string('rent_Period_Status');
             $table->integer('extra_Hours')->nullable();
             $table->string('payment_Status');
@@ -24,7 +24,7 @@ return new class extends Migration
 
             // Define foreign key constraints
             $table->foreign('reserveID')->references('reserveID')->on('booking');
-            $table->foreign('driverID')->references('empID')->on('employees');
+            $table->foreign('empID')->references('empID')->on('employees');
         });
     }
 

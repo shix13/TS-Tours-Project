@@ -243,7 +243,9 @@
                             </table>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        @if ($rents[0]->rent_Period_Status !== 'Completed')
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        @endif
                         <button type="button" class="btn btn-danger" onclick="goBack()">Back</button>
                     </form>
                 </div>

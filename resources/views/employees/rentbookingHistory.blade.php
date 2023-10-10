@@ -35,6 +35,7 @@
                                 <option value="">All</option>
                                 <option value="Scheduled">Scheduled</option>
                                 <option value="Ongoing">Ongoing</option>
+                                <option value="Completed">Completed</option>
                             </select>
                         </div>
                     </div>

@@ -160,8 +160,8 @@
         var empTable = $('#emptable'); // Update the table ID to 'emptable'
         empTable.find('tbody tr').each(function () {
             var row = $(this);
-            var nameCell = row.find('td:nth-child(3)'); // Adjust the column index if needed
-            var roleCell = row.find('td:nth-child(4)'); // Adjust the column index if needed
+            var nameCell = row.find('td:nth-child(2)'); // Adjust the column index if needed
+            var roleCell = row.find('td:nth-child(3)'); // Adjust the column index if needed
             var name = nameCell.text().trim();
             var employeeRole = roleCell.text().trim();
             var found = false;

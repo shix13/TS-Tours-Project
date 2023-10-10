@@ -7,9 +7,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12 offset-md-0">
-            <div class="card">
+            <div class="card" >
                 <div class="card-header">
-                    <h4 class="card-title" style="color: red; font-weight: 700;"><i class="fas fa-tools"></i> Schedule Maintenance</h4>
+                    <h4 class="card-title" style="color: red; "><i class="fas fa-tools"></i> Schedule Maintenance</h4>
                 </div>
                 <hr>
                 <div class="card-body">
@@ -20,7 +20,7 @@
                             <!-- Vehicle Field -->
                             <div class="form-group col-md-4">
                                 <label for="unitID" style="color:black"><i class="fas fa-car"></i> Vehicle (Model & Registration Number)</label>
-                                <select class="form-control{{ $errors->has('unitID') ? ' is-invalid' : '' }}" id="unitID" name="unitID">
+                                <select class="form-control{{ $errors->has('unitID') ? ' is-invalid' : '' }}" id="unitID" name="unitID" style="font-size:18px">
                                     <option value="" selected>--Select Vehicle--</option>
                                     @foreach ($vehicles as $vehicle)
                                         <option value="{{ $vehicle->unitID }}">{{ $vehicle->unitName }} - {{ $vehicle->registrationNumber }}</option>
@@ -37,7 +37,7 @@
                             <!-- Mechanic Assigned Field -->
                             <div class="form-group col-md-4">
                                 <label for="mechanicAssigned" style="color:black"><i class="fas fa-wrench"></i> Mechanic Assigned:</label>
-                                <select class="form-control{{ $errors->has('mechanicAssigned') ? ' is-invalid' : '' }}" id="mechanicAssigned" name="mechanicAssigned">
+                                <select class="form-control{{ $errors->has('mechanicAssigned') ? ' is-invalid' : '' }}" id="mechanicAssigned" name="mechanicAssigned" style="font-size:18px">
                                         <option value="" selected>--Select Mechanic--</option>
                                         @foreach ($mechanicEmployees as $employee)
                                             <option value="{{ $employee->empID }}">{{ $employee->firstName }} {{ $employee->lastName }} - ({{ $employee->accountType }})</option>
@@ -54,7 +54,7 @@
                             <!-- Scheduled Date and Time Field -->
                             <div class="form-group col-md-3">
                                 <label for="scheduleDateTime" style="color:black"><i class="fas fa-clock"></i> Scheduled Date and Time:</label>
-                                <input type="text" class="form-control" id="scheduleDateTime" name="scheduleDateTime" placeholder="Select Date and Time" style="background: white">
+                                <input type="text" class="form-control" id="scheduleDateTime" name="scheduleDateTime" placeholder="Select Date and Time" style="background: white;  cursor: default;font-size:18px">
                                 <!-- Error message -->
                                 @error('scheduleDateTime')
                                     <span class="invalid-feedback" role="alert">
@@ -66,8 +66,8 @@
 
                         <!-- Notes Field -->
                         <div class="form-group">
-                            <label for="notes" style="color:black"><i class="fas fa-sticky-note"></i> Notes:</label>
-                            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                            <label for="notes" style="color:black"><i class="fas fa-sticky-note" ></i> Notes:</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3" style="font-size:15px"></textarea>
                         </div>
 
                         <!-- Scheduled By Field -->
@@ -94,55 +94,60 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     $(document).ready(function() {
-        // Get the initial selected vehicle ID
-        var selectedVehicleId = $('#unitID').val();
-        // Get the schedule data for the initial selected vehicle
+    var flatpickrInstance; // Declare the Flatpickr instance variable
+
+    // Initialize Flatpickr without any options
+    flatpickrInstance = flatpickr('#scheduleDateTime', {});
+
+    // Get the initial selected vehicle ID
+    var selectedVehicleId = $('#unitID').val();
+    // Get the schedule data for the initial selected vehicle
+    updateDateTimeInput(selectedVehicleId);
+
+    $('#unitID').on('change', function() {
+        var selectedVehicleId = $(this).val();
+        // Get the schedule data for the selected vehicle
         updateDateTimeInput(selectedVehicleId);
-
-        $('#unitID').on('change', function() {
-            var selectedVehicleId = $(this).val();
-            // Get the schedule data for the selected vehicle
-            updateDateTimeInput(selectedVehicleId);
-        });
-
-        function updateDateTimeInput(selectedVehicleId) {
-            var dateTimeInput = $('#scheduleDateTime');
-            // Disable Flatpickr on first load
-            var flatpickrOptions = {
-                enableTime: true,
-                dateFormat: 'Y-m-d H:i',
-                minDate: 'today',
-                disable: true, // Disable by default
-            };
-
-            // If a vehicle is selected, enable Flatpickr and fetch schedules
-            if (selectedVehicleId) {
-                $.ajax({
-                    url: '/get-available-schedules/' + selectedVehicleId,
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(data) {                        
-                        flatpickrOptions.disable = data.map(function(schedule) {
-                            return schedule;
-                        });
-                        flatpickr(dateTimeInput, flatpickrOptions);
-                        // Enable the input field and change the background color to white
-                        dateTimeInput.prop('disabled', false);
-                        $('.flatpickr-calendar').css('background-color', 'white');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX Request Error: ' + status + ' - ' + error);
-                    }
-                });
-            } else {
-                // If no vehicle is selected, keep Flatpickr disabled and disable the input field
-                flatpickr(dateTimeInput, flatpickrOptions);
-                dateTimeInput.prop('disabled', true);
-            }
-        }
     });
+
+    function updateDateTimeInput(selectedVehicleId) {
+        var dateTimeInput = $('#scheduleDateTime');
+
+        // If a vehicle is selected, enable Flatpickr and fetch schedules
+        if (selectedVehicleId) {
+            $.ajax({
+                url: '/get-available-schedules/' + selectedVehicleId,
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    // Destroy the existing Flatpickr instance
+                    flatpickrInstance.destroy();
+                    // Re-initialize Flatpickr with new disable dates
+                    flatpickrInstance = flatpickr('#scheduleDateTime', {
+                        enableTime: true,
+                        dateFormat: 'Y-m-d H:i',
+                        minDate: 'today',
+                        disable: data,
+                    });
+                    // Enable the input field and change the background color to white
+                    dateTimeInput.prop('disabled', false);
+                    $('.flatpickr-calendar').css('background-color', 'white');
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Request Error: ' + status + ' - ' + error);
+                }
+            });
+        } else {
+            // If no vehicle is selected, keep Flatpickr disabled and disable the input field
+            dateTimeInput.prop('disabled', true);
+            flatpickrInstance.clear();
+        }
+    }
+});
+
+
 </script>
 
 

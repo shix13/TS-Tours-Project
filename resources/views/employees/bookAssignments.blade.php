@@ -21,7 +21,7 @@
                     <strong><i class="far fa-calendar"></i> Pick up Date:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->format('F j, Y') }}<br>
                     <strong><i class="far fa-clock"></i> Pickup Time:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->format('g:i A') }}<br>
                     <strong><i class="far fa-calendar-alt"></i> Return Date:</strong> {{ \Carbon\Carbon::parse($pendingBooking->endDate)->format('F j, Y') }}<br>
-                    <strong><i class="fas fa-calendar-day"></i> Number of Days:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->diffInDays($pendingBooking->endDate) }} days<br>
+                    <strong><i class="fas fa-calendar-day"></i> Number of Days:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->diffInDays($pendingBooking->endDate) }} day(s)<br>
                     <strong><i class="fas fa-sticky-note"></i> Notes:</strong> {{ $pendingBooking->note }}
                 </div>
                 <div class="col-md-6">
@@ -68,7 +68,7 @@
                 
                 <button type="button" id="add-fleet-button" class="btn btn-primary" onclick="addFleetAssignment()" disabled><i class="fa-solid fa-plus"></i>Add Fleet</button>
 
-                <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i>Save</button>
+                <button type="submit" class="btn btn-success"><i class="fa-solid fa-save"></i> Save</button>
             </form>
         </div>
     </div>
@@ -99,18 +99,18 @@
         const newRow = document.createElement('div');
         newRow.className = 'row mb-3';
         newRow.innerHTML = `
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label for="unitID${assignmentCount}">Fleet</label>
-                <select name="unitID[]" id="unitID${assignmentCount}" class="form-control  fleet-select fleet-dropdown" required>
+                <select name="unitID[]" id="unitID${assignmentCount}" class="form-control  fleet-select fleet-dropdown" required style="font-size:18px">
                     <option value="" selected disabled>Select Unit </option>
                     @foreach($availableVehicles as $vehicle)
-                        <option value="{{ $vehicle->unitID }}">{{ $vehicle->unitName }} ({{ $vehicle->vehicleType->vehicle_Type }})</option>
+                        <option value="{{ $vehicle->unitID }}">{{ $vehicle->unitName }} ({{ $vehicle->vehicleType->vehicle_Type }}) - {{ $vehicle->ownership_type }} </option>
                     @endforeach
                 </select>
             </div>
             <div class="col-md-4">
                 <label for="empID${assignmentCount}">Driver Name</label>
-                <select name="empID[]" id="empID${assignmentCount}" class="form-control driver-select driver-dropdown" required>
+                <select name="empID[]" id="empID${assignmentCount}" class="form-control driver-select driver-dropdown" required style="font-size:18px">
                     <option value="" selected disabled>Select Employee</option>
                     @foreach($availableDrivers as $employee)
                         <option value="{{ $employee->empID }}">{{ $employee->firstName}} {{ $employee->lastName }}</option>

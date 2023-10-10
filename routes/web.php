@@ -118,6 +118,7 @@ Route::prefix('employee')->group(function(){
     //BOOKING AND RENTAL
         Route::get('/booking', [BookingRentalController::class, 'bookIndex'])->name('employee.booking'); //BOOKING LIST
         Route::get('/rents', [BookingRentalController::class, 'rentIndex'])->name('employee.rental');
+        Route::get('/rentbookinghistory', [BookingRentalController::class, 'rentHistory'])->name('employee.rentalHistory');
         Route::get('/approve-booking/{bookingId}', [BookingRentalController::class, 'approveBooking'])->name('employee.approveBooking');
         Route::put('/deny-booking/{bookingId}', [BookingRentalController::class, 'denyBooking'])->name('employee.denyBooking');
         Route::get('/rentalView{id}', [BookingRentalController::class, 'rentalView'])->name('employee.rentalView');

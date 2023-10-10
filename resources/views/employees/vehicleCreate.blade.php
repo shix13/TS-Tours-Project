@@ -25,7 +25,7 @@
         <div class="col-md-12 offset-md-0">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title" style="color:red; font-weight: 700;">
+                    <h4 class="card-title" style="color:red;">
                         <i class="fas fa-car"></i> Add Vehicle
                     </h4>
                 </div>

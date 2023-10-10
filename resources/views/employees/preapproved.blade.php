@@ -10,29 +10,32 @@
 <div class="container">
     <div class="row">
         <div class="container">
-            <nav class="navbar navbar-expand-md" style="background: midnightblue; font-weight: 700">
-                <ul class="navbar-nav" style="font-size: 18px">
+            <nav class="navbar navbar-expand-md " style="background: midnightblue; font-weight: 700">
+                <ul class="navbar-nav col-md-8" style="font-size: 18px">
                     <li class="nav-item">
-                        <a class="nav-link " href="{{ route('employee.booking') }}">Bookings</a>
+                        <a class="nav-link {{ Route::is('employee.booking') ? 'active' : 'hi' }}" href="{{ route('employee.booking') }}">Bookings</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="{{ route('employee.preapproved') }}">Downpayment Review</a>
+                        <a class="nav-link {{ Route::is('employee.preapproved') ? 'active' : '' }}" href="{{ route('employee.preapproved') }}">Downpayment Review</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('employee.rental') }}">Rentals</a>
+                        <a class="nav-link {{ Route::is('employee.rental') ? 'active' : '' }}" href="{{ route('employee.rental') }}">Active Rentals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('employee.rentalHistory') ? 'active' : '' }}" href="{{ route('employee.rentalHistory') }}">Rental History</a>
                     </li>
                 </ul>
-                <div class="col-md-7" style="justify-content: flex-end">
+                <div class="col-md-5" style="justify-content: flex-end">
                     <div class="form-row" style="background-color: transparent; padding: 10px; border-radius: 5px;">
                         <div class="form-group col-md-6">
-                            <input type="text" id="search" class="form-control" placeholder="Search booking" onkeyup="searchAndFilter()" style="padding: 10px; background: white">
+                            <input type="text" id="bookingIdSearch" class="form-control" placeholder="Search Booking ID" style="padding: 10px; background: white">
                         </div>
                         <div class="col-md-4">
                             <select class="form-control" id="statusFilter" style="padding: 8px; color: black; font-weight: 400; background: white;">
                                 <option value="">All</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Approved">Approved</option>
-                                <option value="Denied">Denied</option>
+                                <option value="Scheduled">Scheduled</option>
+                                <option value="Ongoing">Ongoing</option>
+                                <option value="Completed">Completed</option>
                             </select>
                         </div>
                     </div>
@@ -68,7 +71,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="table" class="table table-hover table-striped">
+                <table id="scheduledInProgressTable" class="table table-hover table-striped">
                     <thead class="text-primary font-montserrat">
                         <tr>
                             <th class="bold-text"><strong>#</strong></th>
@@ -121,7 +124,7 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 5px;">Cancel</button>
                                                     <!-- Add a submit button to trigger the denial process -->
-                                                    <button type="submit" class="btn btn-danger">Deny</button>
+                                                    <button type="submit" class="btn btn-danger">Confirm</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -162,7 +165,62 @@
             }
         });
 
-        
+        // Add click event listener to the "Reject" button within the modal
+        $('.reject-btn').on('click', function(event) {
+            // Get the value of gcash_RefNum from the corresponding table cell
+            var gcashRefNum = $(this).closest('tr').find('td:eq(3)').text().trim();
+
+            // Check if gcash_RefNum is empty
+            if (gcashRefNum === '') {
+                // Display a confirmation dialog
+                var confirmed = confirm('The Gcash Reference Number is empty. Are you sure you want to reject this booking?');
+
+                // If user cancels the confirmation, prevent the modal from being shown
+                if (!confirmed) {
+                    event.preventDefault();
+                }
+            }
+        });
+</script>
+<script>
+    $(document).ready(function () {
+        // Function to filter the table rows based on search query
+        function filterAndSearchTable(query) {
+            var table = $('#scheduledInProgressTable');
+            table.find('tbody tr').each(function () {
+                var row = $(this);
+                var found = false;
+
+                // Check all cells in the row for the query text
+                row.find('td').each(function () {
+                    var cellText = $(this).text().toLowerCase();
+                    if (cellText.includes(query.toLowerCase())) {
+                        found = true;
+                        return false; // Break the loop if found in this row
+                    }
+                });
+
+                if (found) {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
+        }
+
+        // Initial filter when the page loads
+        filterAndSearchTable('');
+
+        // Handle search input keyup/change
+        $('#search').on('input', function () {
+            var query = $(this).val();
+            // Check the conditions and show/hide rows accordingly
+            if (query === '') {
+                $('#scheduledInProgressTable tbody tr').show();
+            } else {
+                filterAndSearchTable(query);
+            }
+        });
     });
 </script>
 @endsection

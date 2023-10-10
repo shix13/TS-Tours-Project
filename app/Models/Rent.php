@@ -21,7 +21,7 @@ class Rent extends Authenticatable
     protected $table = 'rents';
     protected $primaryKey = 'rentID';
      protected $fillable = [
-        'reserveID', 'driverID', 'rent_Period_Status', 'extra_Hours',
+        'reserveID', 'empID', 'rent_Period_Status', 'extra_Hours',
         'payment_Status', 'total_Price', 'balance'
     ];
 
@@ -56,9 +56,9 @@ class Rent extends Authenticatable
     /*
      Get the driver (associated with the rental) information.
     */
-    public function driver()
+    public function employee()
     {
-        return $this->belongsTo(Employee::class, 'driverID');
+        return $this->belongsTo(Employee::class, 'empID');
     }
     
     public function assignments()

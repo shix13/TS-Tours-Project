@@ -11,29 +11,32 @@
 
     <div class="row" >
         <div class="container">
-            <nav class="navbar navbar-expand-md " style="background: midnightblue;font-weight:700">
-                <ul class="navbar-nav" style="font-size: 18px">
-                    <li class="nav-item" >
-                        <a class="nav-link" href="{{ route('employee.booking') }}">Bookings</a>
+            <nav class="navbar navbar-expand-md " style="background: midnightblue; font-weight: 700">
+                <ul class="navbar-nav col-md-8" style="font-size: 18px">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('employee.booking') ? 'active' : 'hi' }}" href="{{ route('employee.booking') }}">Bookings</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('employee.preapproved') }}">Downpayment Review</a>
+                        <a class="nav-link {{ Route::is('employee.preapproved') ? 'active' : '' }}" href="{{ route('employee.preapproved') }}">Downpayment Review</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('employee.rental') }}">Rentals</a>
+                        <a class="nav-link {{ Route::is('employee.rental') ? 'active' : '' }}" href="{{ route('employee.rental') }}">Active Rentals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('employee.rentalHistory') ? 'active' : '' }}" href="{{ route('employee.rentalHistory') }}">Rental History</a>
                     </li>
                 </ul>
-                <div class="col-md-7" style="justify-content:flex-end">
-                    <div class="form-row" style="background-color: transparent; padding: 10px; border-radius: 5px; ">
+                <div class="col-md-5" style="justify-content: flex-end">
+                    <div class="form-row" style="background-color: transparent; padding: 10px; border-radius: 5px;">
                         <div class="form-group col-md-6">
-                            <input type="text" id="search" class="form-control" placeholder="Search booking" onkeyup="searchAndFilter()" style="padding: 10px;background:white">
+                            <input type="text" id="bookingIdSearch" class="form-control" placeholder="Search Booking ID" style="padding: 10px; background: white">
                         </div>
                         <div class="col-md-4">
-                            <select class="form-control" id="statusFilter" style="padding: 8px;color:black;font-weight:400;background:white" >
+                            <select class="form-control" id="statusFilter" style="padding: 8px; color: black; font-weight: 400; background: white;">
                                 <option value="">All</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Approved">Approved</option>
-                                <option value="Denied">Denied</option>
+                                <option value="Scheduled">Scheduled</option>
+                                <option value="Ongoing">Ongoing</option>
+                                <option value="Completed">Completed</option>
                             </select>
                         </div>
                     </div>
@@ -126,11 +129,13 @@
                                     <td>{{ $pendingBooking->note }}</td>
                                     <td>{{ $pendingBooking->status }}</td>
                                     <td>
-                                        <a href="{{ route('booking.Assign', ['bookingId' => $pendingBooking->reserveID]) }}" class="btn btn-success">Assign</a>
+                                        <a href="{{ route('booking.Assign', ['bookingId' => $pendingBooking->reserveID]) }}" class="btn btn-success">
+                                           <strong><i class="fas fa-check"></i>Assign</strong> 
+                                        </a>
                                         <br><br>
                                         <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#denyModal{{ $pendingBooking->reserveID }}">
-                                            <strong>Deny</strong>
-                                        </button>
+                                          <strong>  <i class="fas fa-times"></i> Deny</strong>
+                                        </button>                                        
                                         
                                         <!-- Deny Modal -->
                                         <div class="modal fade" id="denyModal{{ $pendingBooking->reserveID }}" tabindex="-1" role="dialog" aria-labelledby="denyModalLabel{{ $pendingBooking->reserveID }}" aria-hidden="true">
@@ -251,131 +256,46 @@
 @endsection
 
 @section('scripts')
-    
-
 <script>
-    /*
-    function searchAndFilter() {
-        // Get the input value and selected status from the filter
-        var searchText = document.getElementById('search').value.toLowerCase();
-        var selectedStatus = document.getElementById('statusFilter').value;
-        var table = document.getElementById('table');
-        var rows = table.getElementsByTagName('tr');
-
-        // Loop through all table rows, and show/hide them based on conditions
-        for (var i = 1; i < rows.length; i++) {
-            var row = rows[i];
-            var columns = row.getElementsByTagName('td');
-            var statusCell = row.getElementsByTagName('td')[12]; // Adjust the index based on your table structure
-            var found = false;
-
-            for (var j = 0; j < columns.length; j++) {
-                var cell = columns[j];
-                if (cell) {
-                    var text = cell.textContent.toLowerCase();
-                    if (text.indexOf(searchText) > -1) {
-                        found = true;
-                        break;
-                    }
-                }
-            }
-
-            if (
-                (searchText === '' && selectedStatus === '') ||
-                (searchText === '' && selectedStatus !== '' && statusCell && statusCell.textContent.trim() === selectedStatus) ||
-                (searchText !== '' && selectedStatus === '') ||
-                (searchText !== '' && selectedStatus !== '' && statusCell && statusCell.textContent.trim() === selectedStatus)
-            ) {
-                if (found) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            } else {
-                row.style.display = 'none';
-            }
-        }
-    }
-    */
-
     $(document).ready(function () {
-    // Function to filter the table rows based on status and search query
-    function filterAndSearchTable(tableId, status, query) {
-        var table = $('#' + tableId);
-        table.find('tbody tr').each(function () {
-            var row = $(this);
-            var rowStatusCell = row.find('td:eq(12)'); // Update the column index for Status
-            var rowStatus = rowStatusCell.text().trim();
-            var found = false;
+        // Function to filter the table rows based on search query
+        function filterAndSearchTable(query) {
+            var table = $('#scheduledInProgressTable');
+            table.find('tbody tr').each(function () {
+                var row = $(this);
+                var found = false;
 
-            // Condition 1: Status is null and query is null
-            if (status === '' && query === '') {
-                found = true;
-            } 
-            // Condition 2: Status is null and there is a query
-            else if (status === '' && query !== '') {
-                if (row.text().toLowerCase().includes(query.toLowerCase())) {
-                    found = true;
-                }
-            } 
-            // Condition 3: Status has a value and query is null
-            else if (status !== '' && query === '') {
-                if (rowStatus === status) {
-                    found = true;
-                }
-            } 
-            // Default condition: Both status and query have values
-            else {
-                if ((status === '' || rowStatus === status) && (query === '' || row.text().toLowerCase().includes(query.toLowerCase()))) {
-                    found = true;
-                }
-            }
+                // Check all cells in the row for the query text
+                row.find('td').each(function () {
+                    var cellText = $(this).text().toLowerCase();
+                    if (cellText.includes(query.toLowerCase())) {
+                        found = true;
+                        return false; // Break the loop if found in this row
+                    }
+                });
 
-            if (found) {
-                row.show();
+                if (found) {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
+        }
+
+        // Initial filter when the page loads
+        filterAndSearchTable('');
+
+        // Handle search input keyup/change
+        $('#search').on('input', function () {
+            var query = $(this).val();
+            // Check the conditions and show/hide rows accordingly
+            if (query === '') {
+                $('#scheduledInProgressTable tbody tr').show();
             } else {
-                row.hide();
+                filterAndSearchTable(query);
             }
         });
-    }
-
-    // Initial filter when the page loads
-    filterAndSearchTable('scheduledInProgressTable', '', '');
-    filterAndSearchTable('completedCancelledTable', '', '');
-
-    // Handle filter button change and search input keyup/change
-    $('#statusFilter, #search').on('input', function () {
-        var status = $('#statusFilter').val();
-        var query = $('#search').val();
-
-        // Check the conditions and show/hide tables and rows accordingly
-        if (status === '' && query === '') {
-            $('#scheduledInProgressTable').show();
-            $('#completedCancelledTable').show();
-            $('#scheduledInProgressTable tbody tr').show();
-            $('#completedCancelledTable tbody tr').show();
-        } else if (status === '' && query !== '') {
-            $('#scheduledInProgressTable').show();
-            $('#completedCancelledTable').show();
-            filterAndSearchTable('scheduledInProgressTable', status, query);
-            filterAndSearchTable('completedCancelledTable', status, query);
-        } else if (status !== '' && query === '') {
-            $('#scheduledInProgressTable').hide();
-            $('#completedCancelledTable').hide();
-            filterAndSearchTable('scheduledInProgressTable', status, query);
-            filterAndSearchTable('completedCancelledTable', status, query);
-            $('#' + (status === 'Approved' || status === 'Cancelled' || status === 'Denied' ? 'completedCancelledTable' : 'scheduledInProgressTable')).show();
-            $('#completedCancelledTable, #scheduledInProgressTable').not('#' + (status === 'Approved' || status === 'Cancelled' || status === 'Denied' ? 'completedCancelledTable' : 'scheduledInProgressTable')).hide();
-        } else {
-            filterAndSearchTable('scheduledInProgressTable', status, query);
-            filterAndSearchTable('completedCancelledTable', status, query);
-            $('#scheduledInProgressTable, #completedCancelledTable').hide();
-            $('#' + (status === 'Approved' || status === 'Cancelled' || status === 'Denied' ? 'completedCancelledTable' : 'scheduledInProgressTable')).show();
-            $('#completedCancelledTable, #scheduledInProgressTable').not('#' + (status === 'Approved' || status === 'Cancelled' || status === 'Denied' ? 'completedCancelledTable' : 'scheduledInProgressTable')).hide();
-        }
     });
-});
-    
 </script>
-
 @endsection
+

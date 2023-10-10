@@ -157,8 +157,18 @@ public function update(Request $request, $empID)
         'ProfileImage' => 'image|max:2048',
         'FirstName' => 'required|string|max:255',
         'LastName' => 'required|string|max:255',
-        'Email' => 'required|email|unique:employees,email,' . $empID . ',empID',
-        'MobileNum' => 'required|string|max:20',
+        'Email' => [
+            'required',
+            'email',
+            Rule::unique('employees')->ignore($request->id)->whereNull('deleted_at'),
+        ],
+        'MobileNum' => [
+            'required',
+            'string',
+            'min:11',
+            'max:11',
+            Rule::unique('employees')->ignore($request->id)->whereNull('deleted_at'),
+        ],
         'AccountType' => 'required|string',
     ]);
 
