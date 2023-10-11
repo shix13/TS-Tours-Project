@@ -30,14 +30,6 @@
                         <div class="form-group col-md-6">
                             <input type="text" id="bookingIdSearch" class="form-control" placeholder="Search Booking ID" style="padding: 10px; background: white">
                         </div>
-                        <div class="col-md-4">
-                            <select class="form-control" id="statusFilter" style="padding: 8px; color: black; font-weight: 400; background: white;">
-                                <option value="">All</option>
-                                <option value="Scheduled">Scheduled</option>
-                                <option value="Ongoing">Ongoing</option>
-                                <option value="Completed">Completed</option>
-                            </select>
-                        </div>
                     </div>
                 </div>
             </nav>
@@ -101,7 +93,7 @@
                                         <a href="{{ route('employee.approveBooking', ['bookingId' => $preApprovedBooking->reserveID]) }}" class="btn btn-success btn-block approve-btn" style="margin-bottom: 10px;"><strong><i class="fa-solid fa-check"></i> Approve</strong></a>
                                       
                                         <!-- Trigger the modal for denying the booking -->
-                                        <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#denyModal{{ $preApprovedBooking->reserveID }}"><strong><i class="fa-solid fa-xmark"></i> Reject</strong></button>
+                                        <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#denyModal{{ $preApprovedBooking->reserveID }}"><strong><i class="fa-solid fa-xmark"></i> Deny</strong></button>
                                     </td>
                                 </tr>
 
@@ -164,6 +156,7 @@
                 }
             }
         });
+    });
 
         // Add click event listener to the "Reject" button within the modal
         $('.reject-btn').on('click', function(event) {
@@ -184,43 +177,36 @@
 </script>
 <script>
     $(document).ready(function () {
-        // Function to filter the table rows based on search query
-        function filterAndSearchTable(query) {
-            var table = $('#scheduledInProgressTable');
-            table.find('tbody tr').each(function () {
-                var row = $(this);
-                var found = false;
+    // Function to filter the table rows based on search query
+    function filterAndSearchTable(query) {
+        var table = $('#scheduledInProgressTable');
+        table.find('tbody tr').each(function () {
+            var row = $(this);
+            var bookingId = row.find('td:eq(1)').text().trim(); // Get Booking ID from the second table cell
 
-                // Check all cells in the row for the query text
-                row.find('td').each(function () {
-                    var cellText = $(this).text().toLowerCase();
-                    if (cellText.includes(query.toLowerCase())) {
-                        found = true;
-                        return false; // Break the loop if found in this row
-                    }
-                });
-
-                if (found) {
-                    row.show();
-                } else {
-                    row.hide();
-                }
-            });
-        }
-
-        // Initial filter when the page loads
-        filterAndSearchTable('');
-
-        // Handle search input keyup/change
-        $('#search').on('input', function () {
-            var query = $(this).val();
-            // Check the conditions and show/hide rows accordingly
-            if (query === '') {
-                $('#scheduledInProgressTable tbody tr').show();
+            // Check if Booking ID includes the query text
+            if (bookingId.includes(query.toLowerCase())) {
+                row.show();
             } else {
-                filterAndSearchTable(query);
+                row.hide();
             }
         });
+    }
+
+    // Initial filter when the page loads
+    filterAndSearchTable('');
+
+    // Handle search input keyup/change
+    $('#bookingIdSearch').on('input', function () {
+        var query = $(this).val();
+        // Check the conditions and show/hide rows accordingly
+        if (query === '') {
+            $('#scheduledInProgressTable tbody tr').show();
+        } else {
+            filterAndSearchTable(query);
+        }
     });
+});
+
 </script>
 @endsection

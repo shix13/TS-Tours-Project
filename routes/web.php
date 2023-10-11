@@ -14,7 +14,7 @@ use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\RemittanceController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\TestController;
-
+use App\Http\Controllers\MailController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,6 +34,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::post('/contact', [TestController::class, 'sendEmail'])->name('contact.send');
 //VISITOR
 Route::get('/home', [App\Http\Controllers\VisitorController::class, 'tsdefault'])->name('home');
 Route::get('/aboutus', [App\Http\Controllers\VisitorController::class, 'tsabout'])->name('aboutus');
@@ -155,3 +156,4 @@ Route::prefix('employee')->group(function(){
     //});
 
     Route::get('/get-available-schedules/{vehicleId}', [MaintenanceController::class, 'getAvailableSchedules'])->name('get-available-schedules');
+

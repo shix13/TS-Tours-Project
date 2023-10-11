@@ -41,7 +41,7 @@
                         <div class="row">
                             <div class="col">
                                 <div class="form-group">
-                                    <label style="color: black;">Customer Name</label>
+                                    <label style="color: black;"><i class="fa-solid fa-user"></i> Customer Name</label>
                                     <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value='{{ $bookings[0]->cust_first_name }} {{ $bookings[0]->cust_last_name }}' readonly>
                                 </div>
                             </div>
@@ -49,14 +49,14 @@
                         <div class="row">
                             <div class="col-md-8 pr-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Location</label>
+                                    <label style="color: black;"><i class="fa-solid fa-location-dot"></i> Location</label>
                                     <input style="color: black; background-color: white" type="text" class="form-control" name="tariff_id" value="{{ $bookings[0]->tariff->location }}" readonly>
                                 </div>
                             </div>
 
                             <div class="col-md-4 pl-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Contact Number</label>
+                                    <label style="color: black;"><i class="fa-solid fa-phone"></i> Contact Number</label>
                                     <input type="text" style="color: black;background-color: rgb(255, 255, 255)" class="form-control" value="{{$bookings[0]->mobileNum}}" readonly>
                                 </div>
                             </div>
@@ -65,28 +65,28 @@
                         <div class="row">
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Pick-Up Date</label>
+                                    <label style="color: black;"><i class="fa-solid fa-calendar-days"></i> Schedule Date</label>
                                     <input type="date" class="form-control" name="pickup_date" value="{{ \Carbon\Carbon::parse($bookings[0]->startDate)->format('Y-m-d') }}">
                                 </div>
                             </div>
 
                             <div class="col-md-3 pl-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Pick-Up Time</label>
+                                    <label style="color: black;"><i class="fa-regular fa-clock"></i> Pick-Up Time</label>
                                     <input type="time" class="form-control" name="pickup_time" value="{{ \Carbon\Carbon::parse($bookings[0]->startDate)->format('H:i') }}">
                                 </div>
                             </div>
 
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Drop-Off Date</label>
+                                    <label style="color: black;"><i class="fa-solid fa-calendar"></i> Drop-Off Date</label>
                                     <input type="date" class="form-control" name="dropoff_date" value="{{ \Carbon\Carbon::parse($bookings[0]->endDate)->format('Y-m-d') }}">
                                 </div>
                             </div>
 
                             <div class="col-md-3 pl-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Drop-Off Time</label>
+                                    <label style="color: black;"><i class="fa-solid fa-clock"></i> Drop-Off Time</label>
                                     <input type="time" class="form-control" name="dropoff_time" value="{{ \Carbon\Carbon::parse($bookings[0]->endDate)->format('H:i') }}">
                                 </div>
                             </div>
@@ -95,7 +95,7 @@
                         <div class="row">
                             <div class="col-md-12 ">
                                 <div class="form-group">
-                                    <label style="color: black;">Pick-Up Address</label>
+                                    <label style="color: black;"><i class="fa-solid fa-map-pin"></i> Pick-Up Address</label>
                                     <input type="text" class="form-control" name="pickup_address" value="{{$bookings[0]->pickUp_Address}}">
                                 </div>
                             </div>
@@ -104,7 +104,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label style="color: black;">Note</label>
+                                    <label style="color: black;"><i class="fa-solid fa-note-sticky"></i> Note</label>
                                     <textarea class="form-control" rows="4" name='note' value="{{$bookings[0]->note}}"></textarea>
                                 </div>
                             </div>
@@ -113,90 +113,137 @@
                         <div class="row">
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Booking Status</label>
+                                    <label style="color: black;">
+                                        <i class="fas fa-cogs"></i> Booking Status
+                                    </label>
                                     <select class="form-control" id="status" name="status">
-                                        <option value="Approved" {{ $bookings[0]->status === 'Approved' ? 'selected' : '' }}>Approved</option>
-                                        <option value="Canceled" {{ $bookings[0]->status === 'Canceled' ? 'selected' : '' }}>Cancel</option>
+                                        <option value="Approved" {{ $bookings[0]->status === 'Approved' ? 'selected' : '' }}>
+                                            <i class="fas fa-check-circle"></i> Approved
+                                        </option>
+                                        <option value="Canceled" {{ $bookings[0]->status === 'Cancelled' ? 'selected' : '' }}>
+                                            <i class="fas fa-times-circle"></i> Canceled
+                                        </option>
                                     </select>
                                 </div>
                             </div>
-
+                        
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Gcash Reference No.</label>
+                                    <label style="color: black;">
+                                        <i class="fas fa-receipt"></i> Gcash Reference No.
+                                    </label>
                                     <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value="{{$bookings[0]->gcash_RefNum}}" readonly>
                                 </div>
                             </div>
-
+                        
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Rate / Additional Hour</label>
+                                    <label style="color: black;">
+                                        <i class="fas fa-clock"></i> Rate / Additional Hour
+                                    </label>
                                     <input style="color: black; background-color: white" type="text" class="form-control" id="rent_per_hour" value="{{ $bookings[0]->tariff->rent_Per_Hour }}" readonly>
                                 </div>
                             </div>
+                        
                             <div class="col-md-3 pl-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Total Price</label>
-                                    <input style="color: black; background-color: rgb(255, 255, 255)" type="text" name='total_price' id='total_price' class="form-control" min='0' value="{{$rents[0]->total_Price}}" readonly>
+                                    <label style="color: black;">
+                                        <i class="fa-solid fa-money-bill-1"></i></i> Subtotal (Fleet Only)
+                                    </label>
+                                    <input style="color: black;background-color: white" type="text" class="form-control" readonly value="{{$bookings[0]->subtotal}}">
                                 </div>
                             </div>
                         </div>
+                        
 
                         <div class="row">
-
-                            <div class="col-md-4 pr-1">
+                            <div class="col-md-3 pr-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Downpayment Amount</label>
+                                    <label style="color: black;">
+                                        <i class="fas fa-calendar-alt"></i> Rental Status
+                                    </label>
+                                    <select class="form-control" name="rental_status">
+                                        <option value="Booked" {{ $rents[0]->rent_Period_Status === 'Scheduled' ? 'selected' : '' }}>
+                                            <i class="fas fa-calendar-check"></i> Scheduled
+                                        </option>
+                                        <option value="Ongoing" {{ $rents[0]->rent_Period_Status === 'Ongoing' ? 'selected' : '' }}>
+                                            <i class="fas fa-spinner"></i> Ongoing
+                                        </option>
+                                        <option value="Completed" {{ $rents[0]->rent_Period_Status === 'Completed' ? 'selected' : '' }}>
+                                            <i class="fas fa-check-circle"></i> Completed
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3 pr-1">
+                                <div class="form-group">
+                                    <label style="color: black;">
+                                        <i class="fa-solid fa-money-bill-transfer"></i> Downpayment Amount
+                                    </label>
                                     <input style="color: black;background-color: white" type="text" class="form-control" value="{{$bookings[0]->downpayment_Fee}}" readonly>
                                 </div>
                             </div>
 
-                            <div class="col-md-4 pr-1">
+                           
+                        
+                            <div class="col-md-3 pr-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Extra Hours</label>
+                                    <label style="color: black;">
+                                        <i class="fas fa-clock"></i> Extra Hours
+                                    </label>
                                     <input id="extra_hours" type="number" class="form-control" min="0" name="extra_hours" min='0' value="{{ $rents[0]->extra_Hours ?? 0 }}">
                                 </div>
-                            </div>                            
-                            <div class="col-md-4 pl-1">
+                            </div>      
+                            
+                            <div class="col-md-3 pl-1">
                                 <div class="form-group">
-                                    <label style="color: black;">Balance</label>
+                                    <label style="color: black;">
+                                        <i class="fa-solid fa-money-bill-wave"></i> Total Price
+                                    </label>
+                                    <input style="color: black; background-color: rgb(255, 255, 255)" type="text" name='total_price' id='total_price' class="form-control" min='0' value="{{$rents[0]->total_Price}}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-3 pr-1">
+                                <div class="form-group">
+                                    <label style="color: black;">
+                                        <i class="fas fa-money-check-alt"></i> Payment Status
+                                    </label>
+                                    <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value="{{$rents[0]->payment_Status}}" readonly>
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-3 pr-1">
+                                <div class="form-group">
+                                    <label style="color: black;">
+                                        <i class="fas fa-user"></i> Booking Confirmed by:
+                                    </label>
+                                    <input style="color: black;background-color: white" type="text" class="form-control" value="{{$rents[0]->employee->firstName}} {{$rents[0]->employee->lastName}}" readonly>
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-3 pr-1">
+                                <div class="form-group">
+                                    <label style="color: black;">
+                                        <i class="fas fa-hourglass-half"></i> Extra Hour Fees
+                                    </label>
+                                    <input style="color: black;background-color: rgb(255, 255, 255)" id='compute' type="text" class="form-control" value="0" readonly>
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-3 pl-1">
+                                <div class="form-group">
+                                    <label style="color: black;">
+                                        <i class="fas fa-hand-holding-usd"></i> Balance
+                                    </label>
                                     <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value="{{$rents[0]->balance}}" id="balance" name='balance' readonly>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-3 pr-1">
-                                <div class="form-group">
-                                    <label style="color: black;">Rental Status</label>
-                                    <select class="form-control" name="rental_status">
-                                        <option value="Booked" {{ $rents[0]->rent_Period_Status === 'Scheduled' ? 'selected' : '' }}>Scheduled</option>
-                                        <option value="Ongoing" {{ $rents[0]->rent_Period_Status === 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
-                                        <option value="Completed" {{ $rents[0]->rent_Period_Status === 'Completed' ? 'selected' : '' }}>Completed</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3 pr-1">
-                                <div class="form-group">
-                                    <label style="color: black;">Subtotal (Fleet Only)</label>
-                                    <input style="color: black;background-color: white" type="text" class="form-control" readonly value="{{$bookings[0]->subtotal}}">
-                                </div>
-                            </div>
-
-                            <div class="col-md-3 pr-1">
-                                <div class="form-group">
-                                    <label style="color: black;">Extra Hour Fees</label>
-                                    <input style="color: black;background-color: rgb(255, 255, 255)" id='compute' type="text" class="form-control" value="0" readonly>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3 pl-1">
-                                <div class="form-group">
-                                    <label style="color: black;">Payment Status</label>
-                                    <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value="{{$rents[0]->payment_Status}}" readonly>
-                                </div>
-                            </div>
-                        </div>
+                        
                         <div class="row">
                             <div class="col-md-12">    
                                 Vehicles Booked

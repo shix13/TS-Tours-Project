@@ -33,29 +33,31 @@
             <h1><strong>Contact Us</strong></h1>
             <p style="font-size: 20px">We'd love to hear from you.<strong> Get in touch with us</strong>! </p>
                 <br>
-            <form action="process-form.php" method="post">
-                <div class="form-group">
-                    <label for="name">Name of Sender:</label>
-                    <input type="text" id="name" name="name" class="form-control" required placeholder="Your Name">
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email Address:</label>
-                    <input type="email" id="email" name="email" class="form-control" required placeholder="Your Email">
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">Phone Number:</label>
-                    <input type="tel" id="phone" name="phone" class="form-control" required placeholder="Your Phone">
-                </div>
-
-                <div class="form-group">
-                    <label for="message">Message:</label>
-                    <textarea id="message" name="message" class="form-control" rows="4" required placeholder="Your Message"></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Send</button>
-            </form>
+                <form action="{{ route('contact.send') }}" method="post">
+                    @csrf <!-- CSRF protection -->
+                    <div class="form-group">
+                        <label for="name">Name of Sender:</label>
+                        <input type="text" id="name" name="name" class="form-control" required placeholder="Your Name">
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="email">Email Address:</label>
+                        <input type="email" id="email" name="email" class="form-control" required placeholder="Your Email">
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="phone">Phone Number:</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="Your Phone">
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="message">Message:</label>
+                        <textarea id="message" name="message" class="form-control" rows="4" required placeholder="Your Message"></textarea>
+                    </div>
+                
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+                
         </div>
 
         <div class="col-md-4 container1" style="display: inline-block">

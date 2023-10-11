@@ -16,54 +16,51 @@ use App\Models\Vehicle;
 use App\Models\VehicleTypeBooked;
 use App\Models\VehicleAssigned;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\BookingConfirmationMail;
+use App\Mail\BookingDeniedMail;
+use App\Mail\BookingApprovedMail;
+
 
 class BookingRentalController extends Controller
 {
     public function bookIndex()
     {
-        // Retrieve a list of drivers from the employees table
-    $drivers = Employee::where('accountType', 'Driver')->get();
-
-    // Retrieve a list of pending bookings from the database
-    $pendingBookings = Booking::with(['vehicle' => function ($query) {
-        $query->withTrashed(); // Include soft-deleted 'vehicle' records
-        }, 'tariff' => function ($query){
-        $query->withTrashed(); //Include soft-deleted 'tariff' records
-        }])
-        ->where('status', 'Pending')
-        ->paginate(10, ['*'], 'pending');
     
-    // Retrieve a list of completed bookings from the database
-    $completedBookings = Booking::with(['vehicle' => function ($query) {
-        $query->withTrashed(); // Include soft-deleted 'vehicle' records
+        // Retrieve a list of pending bookings from the database and order by descending order
+        $pendingBookings = Booking::with(['vehicle' => function ($query) {
+            $query->withTrashed(); // Include soft-deleted 'vehicle' records
         }, 'tariff' => function ($query){
-        $query->withTrashed(); //Include soft-deleted 'tariff' records
+            $query->withTrashed(); // Include soft-deleted 'tariff' records
         }])
-        ->where('status', 'Approved')
-        ->orWhere('status', 'Cancelled')
-        ->orWhere('status', 'Denied')
-        ->paginate(10, ['*'], 'completed'); 
-
-    // Pass the data to the Blade view
-    return view('employees.book', compact('pendingBookings', 'completedBookings', 'drivers'));
+            ->where('status', 'Pending')
+            ->orderBy('created_at', 'desc') // Assuming you have a 'created_at' column, you can replace it with your actual timestamp column
+            ->paginate(10, ['*'], 'pending');
+    
+        // Pass the data to the Blade view
+        return view('employees.book', compact('pendingBookings'));
     }
+    
 
     public function rentIndex()
-{
-    // Retrieve a list of rentals with status "Scheduled" or "Ongoing" from the database
-    $rents = Rent::with(['assignments.employee'])
-                ->whereIn('rent_Period_Status', ['Scheduled', 'Ongoing'])
-                ->paginate(10);
-
-    // Pass the filtered data to the Blade view
-    return view('employees.rent', compact('rents'));
-}
+    {
+        // Retrieve a list of rentals with status "Scheduled" or "Ongoing" from the database and order by descending order
+        $rents = Rent::with(['assignments.employee'])
+                    ->whereIn('rent_Period_Status', ['Scheduled', 'Ongoing'])
+                    ->orderBy('created_at', 'desc') // Assuming you have a 'created_at' column, you can replace it with your actual timestamp column
+                    ->paginate(10);
+    
+        // Pass the filtered and ordered data to the Blade view
+        return view('employees.rent', compact('rents'));
+    }
+    
 
 
 public function rentHistory()
 {   
     // Retrieve a list of rentals with status "Scheduled" or "Ongoing" from the database
     $rents = Rent::with(['assignments.employee'])
+                ->orderBy('created_at', 'desc')
                 ->paginate(10);
 
     // Pass the filtered data to the Blade view
@@ -71,7 +68,7 @@ public function rentHistory()
 }
 
 
-    public function approveBooking($bookingId)
+public function approveBooking($bookingId)
 {   
     try {
         $user = Auth::user();
@@ -79,7 +76,7 @@ public function rentHistory()
         $booking->status = 'Approved';
         $booking->save();
 
-        //Change vehicle status to "Booked"
+        // Change vehicle status to "Booked"
         // Create a new record in the 'rent' table
         $balance = $booking->subtotal - $booking->downpayment_Fee;
         $rent = new Rent([
@@ -92,20 +89,37 @@ public function rentHistory()
         ]);
         $rent->save();
 
-        //Assign the rent to vehicles assigned
+        // Assign the rent to vehicles assigned
         $vehiclesAssigned = VehicleAssigned::where('reserveID', $booking->reserveID)->get();
-        //dd($booking->reserveID);
-        foreach($vehiclesAssigned as $vehicleAssigned){
+
+        foreach ($vehiclesAssigned as $vehicleAssigned) {
             $vehicleAssigned->update([
                 'rentID' => $rent->rentID,
             ]);
         }
-        
+
+        $tariff = Tariff::find($booking->tariffID);
+        //dd($drivers);
+        // Send approval email with detailed information
+        Mail::send('emails.booking-approved', [
+            'booking' => $booking,
+            'vehiclesAssigned' => $vehiclesAssigned,
+            'rent' => $rent,
+            'vehicles' => $vehiclesAssigned->pluck('vehicle'),
+            'drivers' => $vehiclesAssigned->pluck('employee'),
+            'tariff' => $tariff,
+        ], function ($message) use ($booking) {
+            $message->from('tstoursduma@gmail.com', 'TS Tours Services')
+                    ->to($booking->cust_email)
+                    ->subject('Booking Approved');
+        });
+
         return redirect()->back()->with('success', 'Booking has been approved and saved as a rent.');
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'An error occurred while approving the booking: ' . $e->getMessage());
     }
 }
+
 
 
 public function denyBooking($bookingId)
@@ -116,6 +130,9 @@ public function denyBooking($bookingId)
         // Update the status to "Denied"
         $booking->status = 'Denied';
         $booking->save();
+
+        // Send email notification
+        Mail::to($booking->cust_email)->send(new BookingDeniedMail($booking));
 
         return redirect()->back()->with('success', 'Booking has been denied.');
     } catch (\Exception $e) {
@@ -139,12 +156,13 @@ public function rentalView($id)
     $bookings = Booking::with('vehicleTypesBooked', 'tariff')->where('reserveID', $rental->reserveID)->get();
     $drivers = Employee::withTrashed()
         ->where('accountType', 'Driver')
+        ->orWhere('accountType', 'Driver Outsource')
         ->get();
     
     // Retrieve a list of rents with related driver information
     $rents = Rent::with('employee')->where('rentID', $rental->rentID)->get();
     $availableVehicles = Vehicle::withTrashed()
-        ->where('status', 'Available')
+        ->where('status', 'Active')
         ->get();
 
     // Retrieve a list of tariff locations
@@ -201,7 +219,7 @@ public function update(Request $request, $id)
         'tariff_id' => 'required|exists:tariffs,tariffID', 
         //'driver_assigned' => 'required|exists:employees,empID', 
         'extra_hours' => 'numeric|min:0',
-        'status' => 'required|in:Approved,Canceled', 
+        'status' => 'required|in:Approved,Cancelled', 
         'pickup_address' => 'required|string',
         'note' => 'nullable|string',
     ]);
@@ -293,37 +311,38 @@ public function bookAssign($id)
 
     // Check for available vehicles based on start date, end date, maintenance schedule, and existing bookings
     $availableVehicles = Vehicle::where('status', 'Active')
-    ->where(function ($query) use ($startDate, $endDate) {
-        $query->whereDoesntHave('maintenances', function ($query) use ($startDate, $endDate) {
-            $query->whereIn('status', ['In Progress', 'Scheduled'])
-                ->where('scheduleDate', '>=', $startDate)
-                ->where('scheduleDate', '<=', $endDate);
-        })->whereDoesntHave('vehicleAssignments.booking', function ($query) use ($startDate, $endDate) {
-            $query->where('status', '!=', 'Denied')
-                ->where(function ($query) use ($startDate, $endDate) {
-                    // Exclude vehicles that start before $startDate and end after $endDate
-                    $query->where('startDate', '<=', $endDate)
-                        ->where('endDate', '>=', $startDate);
-                });
-        });
+    ->whereDoesntHave('maintenances', function ($query) use ($startDate, $endDate) {
+        $query->whereIn('status', ['In Progress', 'Scheduled'])
+            ->where('scheduleDate', '>=', $startDate)
+            ->where('scheduleDate', '<=', $endDate);
+    })
+    ->whereDoesntHave('vehicleAssignments.booking', function ($query) use ($startDate, $endDate) {
+        $query->where('status', '!=', 'Denied')
+            ->where('status', '!=', 'Cancelled')
+            ->where('status', '!=', 'Completed')
+            ->where(function ($query) use ($startDate, $endDate) {
+                $query->where('startDate', '<=', $endDate)
+                    ->where('endDate', '>=', $startDate);
+            });
     })
     ->with('vehicleType')
     ->get();
 
 
-
-      
-
-    // Check for available drivers based on start date and end date
     $availableDrivers = Employee::whereIn('accountType', ['Driver', 'Driver Outsourced'])
     ->whereDoesntHave('vehicleAssignments', function($query) use ($startDate, $endDate) {
         $query->whereHas('booking', function($bookingQuery) use ($startDate, $endDate) {
             $bookingQuery->where('startDate', '<=', $endDate)
                          ->where('endDate', '>=', $startDate)
-                         ->where('status', '!=', 'Denied');
+                         ->where('status', '!=', 'Denied')
+                         ->where('status', '!=', 'Cancelled')
+                         ->where('status', '!=', 'Completed');
         });
     })
     ->get();
+
+
+
 
 
 
@@ -341,7 +360,7 @@ public function storeAssigned(Request $request){
     $unitIDs = $request->input('unitID');
     $empIDs = $request->input('empID');
     $reserveID = $request->input('reserveID');
-    
+
     foreach($unitIDs as $i => $unitID){
         VehicleAssigned::create([
             'unitID' => $unitID,
@@ -352,20 +371,26 @@ public function storeAssigned(Request $request){
 
     $booking = Booking::where('reserveID', $reserveID)->first();
     if ($booking) {
+        $customerFirstName = $booking->cust_first_name;
+        $customerLastName = $booking->cust_last_name;
         $booking->update([
             'status' => 'Pre-approved',
         ]);
+        // Send email notification to customer
+        Mail::to($booking->cust_email)->send(new BookingConfirmationMail($reserveID, $customerFirstName, $customerLastName));
+
     }
 
     return redirect()->route('employee.booking')->with('success', 'Vehicles assigned successfully.');
 }
 
 public function preApproved(){
-        // Retrieve a list of drivers from the employees table
-        $drivers = Employee::where('accountType', 'Driver')->get();
+    
+    $preApprovedBookings = Booking::where('status', 'Pre-Approved')
+    ->orderBy('created_at', 'desc') // Assuming you have a 'created_at' column, replace it with your actual timestamp column
+    ->get();
 
-    $preApprovedBookings = Booking::where('status', 'Pre-Approved')->get();
 
-    return view('employees.preApproved', compact('preApprovedBookings','drivers'));
+    return view('employees.preApproved', compact('preApprovedBookings'));
 }
 }

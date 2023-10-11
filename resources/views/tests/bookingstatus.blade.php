@@ -31,25 +31,27 @@
 </div>
 
 <div id="paymentForm" class="row" style="display: none;padding: 10px;">
-    <div class="row container1" style="text-align: justify; width: 95%;padding:10px 80px">
+    <div class="row container1" style=" width: 95%;padding:10px 80px">
         <div class="row">
             <div class="col-md-8">
-                <h2 style="margin-bottom: 0px;margin-top:20px"><strong>Secure Payment</strong></h2>
+                <h3 style="margin-bottom: 0px;margin-top:20px"><strong><i class="fas fa-lock"></i> Secure Payment</strong></h3>
                 <div class="container">
-                    <div class="row">
-                        <div class="col">
+                    <div class="row text-left" >
+                        <div class="col"> <br>
                             Subtotal: {{ $booking['subtotal']}}
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row text-left">
                         <div class="col">
                             Downpayment Fee (10%): {{ $booking['downpayment_Fee']}}
                         </div>
-                    </div>
+                    </div> <hr>
                     <form method="POST" action="{{ route('checkoutbooking') }}">
                         <input type="hidden" name="bookingID" value="{{ $booking->reserveID }}">
                         @csrf
-                        Enter GCASH reference number: <input name="gcash_RefNum" required>
+                        <i class="fas fa-money-bill-wave"></i> Enter Amount Sent: <input type="number" name="amount" required> <br> <br>
+                        
+                        <i class="fas fa-lock"></i> Enter GCASH reference number: <input name="gcash_RefNum" required>
                             <div class="col text-center"> 
                                 <button type="submit" class="btn btn-primary"  style="margin-top: 50px">Confirm Payment</button>
                             </div>

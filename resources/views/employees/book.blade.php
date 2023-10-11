@@ -12,7 +12,7 @@
     <div class="row" >
         <div class="container">
             <nav class="navbar navbar-expand-md " style="background: midnightblue; font-weight: 700">
-                <ul class="navbar-nav col-md-8" style="font-size: 18px">
+                <ul class="navbar-nav col-md-9" style="font-size: 18px">
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('employee.booking') ? 'active' : 'hi' }}" href="{{ route('employee.booking') }}">Bookings</a>
                     </li>
@@ -28,16 +28,8 @@
                 </ul>
                 <div class="col-md-5" style="justify-content: flex-end">
                     <div class="form-row" style="background-color: transparent; padding: 10px; border-radius: 5px;">
-                        <div class="form-group col-md-6">
-                            <input type="text" id="bookingIdSearch" class="form-control" placeholder="Search Booking ID" style="padding: 10px; background: white">
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-control" id="statusFilter" style="padding: 8px; color: black; font-weight: 400; background: white;">
-                                <option value="">All</option>
-                                <option value="Scheduled">Scheduled</option>
-                                <option value="Ongoing">Ongoing</option>
-                                <option value="Completed">Completed</option>
-                            </select>
+                        <div class="form-group col-md-7">
+                            <input type="text" id="bookingIdSearch" class="form-control" placeholder="Search Booking Info" style="padding: 10px; background: white">
                         </div>
                     </div>
                 </div>
@@ -257,45 +249,46 @@
 
 @section('scripts')
 <script>
-    $(document).ready(function () {
-        // Function to filter the table rows based on search query
-        function filterAndSearchTable(query) {
-            var table = $('#scheduledInProgressTable');
-            table.find('tbody tr').each(function () {
-                var row = $(this);
-                var found = false;
+   $(document).ready(function () {
+    // Function to filter the table rows based on search query
+    function filterAndSearchTable(query) {
+        var table = $('#scheduledInProgressTable');
+        table.find('tbody tr').each(function () {
+            var row = $(this);
+            var found = false;
 
-                // Check all cells in the row for the query text
-                row.find('td').each(function () {
-                    var cellText = $(this).text().toLowerCase();
-                    if (cellText.includes(query.toLowerCase())) {
-                        found = true;
-                        return false; // Break the loop if found in this row
-                    }
-                });
-
-                if (found) {
-                    row.show();
-                } else {
-                    row.hide();
+            // Check all cells in the row for the query text
+            row.find('td').each(function () {
+                var cellText = $(this).text().toLowerCase();
+                if (cellText.includes(query.toLowerCase())) {
+                    found = true;
+                    return false; // Break the loop if found in this row
                 }
             });
-        }
 
-        // Initial filter when the page loads
-        filterAndSearchTable('');
-
-        // Handle search input keyup/change
-        $('#search').on('input', function () {
-            var query = $(this).val();
-            // Check the conditions and show/hide rows accordingly
-            if (query === '') {
-                $('#scheduledInProgressTable tbody tr').show();
+            if (found) {
+                row.show();
             } else {
-                filterAndSearchTable(query);
+                row.hide();
             }
         });
+    }
+
+    // Initial filter when the page loads
+    filterAndSearchTable('');
+
+    // Handle search input keyup/change
+    $('#bookingIdSearch').on('input', function () {
+        var query = $(this).val();
+        // Check the conditions and show/hide rows accordingly
+        if (query === '') {
+            $('#scheduledInProgressTable tbody tr').show();
+        } else {
+            filterAndSearchTable(query);
+        }
     });
+});
+
 </script>
 @endsection
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Helpers;
+
 use Carbon\Carbon;
 
 if (!function_exists('isCurrentWeek')) {

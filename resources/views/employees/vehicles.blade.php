@@ -110,24 +110,16 @@
                                         </div>
                                     </td>
                                     <td class="status col-md-3 align-middle text-center">
+                                        <p><strong>Maintenance Date:</strong></p>
                                         @php
                                             // Filter maintenance records for the current week
                                             $maintenanceDates = $vehicle->maintenances->filter(function($maintenance) {
                                                 return in_array($maintenance->status, ['Scheduled', 'In Progress']) &&
                                                        $maintenance->status !== 'Cancelled' && // Exclude maintenance records with status 'Cancelled'
-                                                       isCurrentWeek(\Carbon\Carbon::parse($maintenance->scheduleDate));
-                                            });
-                                    
-                                            // Filter vehicle assignments for the current week and where booking status is not 'Denied'
-                                            $bookingDates = $vehicle->vehicleAssignments->filter(function($assignment) {
-                                                return $assignment->booking &&
-                                                       $assignment->booking->status !== 'Denied' &&
-                                                       (isCurrentWeek(\Carbon\Carbon::parse($assignment->booking->startDate)) ||
-                                                        isCurrentWeek(\Carbon\Carbon::parse($assignment->booking->endDate)));
+                                                       \Carbon\Carbon::parse($maintenance->scheduleDate)->isCurrentWeek();
                                             });
                                         @endphp
                                     
-                                        <p><strong>Maintenance Date:</strong></p>
                                         @if($maintenanceDates->isNotEmpty())
                                             @foreach($maintenanceDates as $maintenance)
                                                 <p><strong>{{ \Carbon\Carbon::parse($maintenance->scheduleDate)->isToday() ? 'Today: ' : '' }}</strong>{{ \Carbon\Carbon::parse($maintenance->scheduleDate)->toFormattedDateString() }} ({{ \Carbon\Carbon::parse($maintenance->scheduleDate)->diffForHumans() }})</p>
@@ -139,14 +131,28 @@
                                         <hr>
                                     
                                         <p><strong>Booking Dates:</strong></p>
+                                        @php
+                                            // Filter vehicle assignments for the current week and where booking status is not 'Denied'
+                                            $bookingDates = $vehicle->vehicleAssignments->filter(function($assignment) {
+                                                return $assignment->booking &&
+                                                       $assignment->booking->status !== 'Denied' &&
+                                                       $assignment->booking->status !== 'Cancelled' &&
+                                                       $assignment->booking->status !== 'Completed' &&
+                                                       (\Carbon\Carbon::parse($assignment->booking->startDate)->isCurrentWeek() ||
+                                                        \Carbon\Carbon::parse($assignment->booking->endDate)->isCurrentWeek());
+                                            });
+                                        @endphp
+                                    
                                         @if($bookingDates->isNotEmpty())
                                             @foreach($bookingDates as $assignment)
-                                                <p><strong>{{ \Carbon\Carbon::parse($assignment->booking->startDate)->isToday() ? 'Today: ' : '' }}</strong>{{ \Carbon\Carbon::parse($assignment->booking->startDate)->toFormattedDateString() }} ({{ \Carbon\Carbon::parse($assignment->booking->startDate)->diffForHumans() }}) - {{ \Carbon\Carbon::parse($assignment->booking->endDate)->toFormattedDateString() }}</p>
+                                                <p><strong><i class="fas fa-calendar"></i>
+                                                    {{ \Carbon\Carbon::parse($assignment->booking->startDate)->isToday() ? 'Today: ' : '' }}</strong>{{ \Carbon\Carbon::parse($assignment->booking->startDate)->toFormattedDateString() }}  - {{ \Carbon\Carbon::parse($assignment->booking->endDate)->toFormattedDateString() }} <br>    ID: {{ ($assignment->booking->reserveID)}} ({{ \Carbon\Carbon::parse($assignment->booking->startDate)->diffForHumans() }})</p>
                                             @endforeach
                                         @else
                                             <p>No booking dates within the week.</p>
                                         @endif
                                     </td>
+                                    
                                     
                                     
                                     

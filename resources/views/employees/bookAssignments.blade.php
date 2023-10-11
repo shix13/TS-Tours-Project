@@ -16,13 +16,24 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h6>Booking Info:</h6> <hr>
+                    <h6>Booking Info: {{ $pendingBooking->reserveID }}</h6> <hr>
                     <strong><i class="fas fa-map-marker-alt"></i> Pick-Up Address:</strong> {{ $pendingBooking->pickUp_Address }}<br>
                     <strong><i class="far fa-calendar"></i> Pick up Date:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->format('F j, Y') }}<br>
                     <strong><i class="far fa-clock"></i> Pickup Time:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->format('g:i A') }}<br>
                     <strong><i class="far fa-calendar-alt"></i> Return Date:</strong> {{ \Carbon\Carbon::parse($pendingBooking->endDate)->format('F j, Y') }}<br>
-                    <strong><i class="fas fa-calendar-day"></i> Number of Days:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->diffInDays($pendingBooking->endDate) }} day(s)<br>
+                    <strong><i class="fas fa-calendar-day"></i> Number of Days:</strong>
+                        @php
+                            $startDate = \Carbon\Carbon::parse($pendingBooking->startDate);
+                            $endDate = \Carbon\Carbon::parse($pendingBooking->endDate);
+                            $numberOfDays = $startDate->diffInDays($endDate);
+                            if ($numberOfDays == 0 && $startDate->diffInHours($endDate) < 24) {
+                                $numberOfDays = 1;
+                            }
+                            @endphp
+                        {{ $numberOfDays }} day{{ $numberOfDays != 1 ? 's' : '' }}
+                        <br>
                     <strong><i class="fas fa-sticky-note"></i> Notes:</strong> {{ $pendingBooking->note }}
+                    
                 </div>
                 <div class="col-md-6">
                     <h6>Customer Info:</h6> <hr>

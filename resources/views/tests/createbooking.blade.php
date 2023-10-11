@@ -14,15 +14,18 @@
                     <div class="col">
                         <b>Booking type</b>
                     </div>
-                    <div class="col">
+                    <div class="col text-center">
                         <div class="row">
-                            <input type="radio" id="type1" name="bookingType" value="Rent" checked="checked" onchange="toggleEndDate()"><label for="type1">Rent</label><br>
+                            <input type="radio" id="type1" name="bookingType" value="Rent" checked="checked" onchange="toggleEndDate()">
+                            <label for="type1">Rent For A Day</label>
                         </div>
                         <div class="row">
-                            <input type="radio" id="type2" name="bookingType" value="Pickup/Dropoff" onchange="toggleEndDate()"><label for="type2">Pickup/Dropoff</label>
+                            <input type="radio" id="type2" name="bookingType" value="Pickup/Dropoff" onchange="toggleEndDate()">
+                            <label for="type2">Pickup/Dropoff</label>
                         </div>
                     </div>
                 </div>
+                
                 <div class="row">
                     <div class="col">
                         <b>Vehicle Type</b>
@@ -48,11 +51,11 @@
                         <i class="fas fa-map-marker-alt"></i> Location
                     </div>
                     <div class="col" >
-                        <select id="location" name="location"  style="width: 100%">
+                        <select id="location" name="location" style="width: 100%">
                             @foreach($tariffData as $t)
-                            <option>{{ $t -> location }}</option>
+                            <option data-booking-types="{{ json_encode($t->booking_types) }}" value="{{ $t->location }}">{{ $t->location }}</option>
                             @endforeach
-                        </select>
+                        </select>                        
                     </div>
                 </div> 
                 <div class="row container1" style="background: none;box-shadow:none;">
@@ -60,10 +63,10 @@
                         <i class="fas fa-calendar-alt"></i> Schedule Date  <hr>
                         <div class="row">
                         <div class="col">
-                            Start Date <input type="date" name="StartDate" id="StartDate" required>
+                            Schedule Date <input type="date" name="StartDate" id="StartDate" required>
                         </div>
-                        <div class="col">
-                            End Date <input type="date" name="EndDate" id="EndDate" required>
+                        <div class="col" id="enddatecol">
+                            Return Date <input type="date" name="EndDate" id="EndDate" required>
                         </div>
                         </div><hr>
                     </div>
@@ -190,35 +193,52 @@
             }
         });
 
-        // Add an event listener to the form submission
-        document.querySelector('form').addEventListener('submit', function (event) {
-            if (endDateInput.value < startDateInput.value) {
-                alert('End Date cannot be earlier than Start Date');
-                event.preventDefault(); // Prevent form submission
-            }
-        });
+
 
         
     });
-    function toggleEndDate(){
-            const rentRadio = document.getElementById('type1');
-            const pickupDropoffRadio = document.getElementById('type2');
-            const endDateInput = document.getElementById('EndDate');
-            
-            if (pickupDropoffRadio.checked) {
-                // Disable the End Date input when "Pickup/Dropoff" is selected
-                endDateInput.setAttribute('disabled', true);
-                // Add an event listener to the Start Date input
-                const startDateInput = document.getElementById('StartDate');
-                startDateInput.addEventListener('change', function () {
-                    // Update the End Date input value to match the Start Date
-                    endDateInput.value = startDateInput.value;
-                });
-            } else {
-                // Enable the End Date input when "Rent" is selected
-                endDateInput.removeAttribute('disabled');
+    var tariffData = @json($tariffData);
+    function toggleEndDate() {
+    const rentRadio = document.getElementById('type1');
+    const pickupDropoffRadio = document.getElementById('type2');
+    const endDateCol = document.getElementById('enddatecol');
+    const endDateInput = document.getElementById('EndDate');
+    const locationDropdown = document.getElementById('location');
+    
+    if (pickupDropoffRadio.checked) {
+        // Hide the End Date input field and label column when "Pickup/Dropoff" is selected
+        endDateCol.style.display = 'none';
+        endDateInput.setAttribute('disabled', true);
+        endDateInput.removeAttribute('required');
+
+        // Filter and populate the location dropdown with Pickup/Dropoff category
+        locationDropdown.innerHTML = '';
+        tariffData.forEach(function(tariff) {
+            if (tariff.do_pu) {
+                const option = document.createElement('option');
+                option.text = tariff.location;
+                locationDropdown.add(option);
             }
+        });
+    } else {
+        // Show the End Date input field and label column when "Rent" is selected
+        endDateCol.style.display = 'block';
+        endDateInput.removeAttribute('disabled');
+        endDateInput.setAttribute('required', true);
+
+        // Filter and populate the location dropdown with Rent category
+        locationDropdown.innerHTML = '';
+        tariffData.forEach(function(tariff) {
+            if (tariff.rate_Per_Day) {
+                const option = document.createElement('option');
+                option.text = tariff.location;
+                locationDropdown.add(option);
+            }
+        });
     }
+}
+
+
 </script>
 
 

@@ -11,6 +11,10 @@ use App\Models\VehicleTypeBooked;
 use App\Models\Tariff;
 use App\Models\Booking;
 use Illuminate\Support\Facades\Storage;
+use App\Mail\BookingConfirmation;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactUsMail;
+
 
 class TestController extends Controller
 {
@@ -71,11 +75,13 @@ class TestController extends Controller
             }
             elseif($bookingType === 'Pickup/Dropoff'){
                 //Pickup/Dropoff's price does not need to be calculated by date anymore
+                $startDate = $request->input('StartDate');
+                $endDate = $request->input('StartDate');
                 $subtotal = $tariff->do_pu;
             }
         }
-
-        $downpayment = $this->processDownpayment($subtotal);
+        
+        $downpayment = 0; // $this->processDownpayment($subtotal);
         $currentDate = Carbon::now();
         $formattedDate = $currentDate->format('d-m-Y H:i:s');
         
@@ -135,6 +141,8 @@ class TestController extends Controller
         $bookingStatusUrl = route('checkbookingstatus', $reserveID);
         return Redirect::to($bookingStatusUrl);
         */
+        Mail::to($booking->cust_email)->send(new BookingConfirmation($booking->toArray()));
+        
         return redirect()->route('checkbookingstatus', ['booking' => $booking])->with('success', 'Your booking details have been saved successfully');
     }
 
@@ -191,12 +199,28 @@ class TestController extends Controller
     public function checkout(Request $request){
         //dd($request->input('bookingID'));
         $booking = Booking::where('reserveID', $request->input('bookingID'))->first();
-        //dd($booking);
+        ($request);
 
         $booking->gcash_RefNum = $request->input('gcash_RefNum');
-        //dd($booking);
+        $booking->downpayment_Fee = $request->input('amount');
         
         $booking->save();
         return redirect()->route('checkbookingstatus', $booking);
+    }
+
+    public function sendEmail(Request $request)
+    {
+        $data = [
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'phone' => $request->input('phone'),
+            'message' => $request->input('message'),
+        ];
+
+        // Send email
+        Mail::to('tstoursduma@gmail.com')->send(new ContactUsMail($data));
+
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Your message has been sent successfully!');
     }
 }
