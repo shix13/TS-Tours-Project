@@ -53,22 +53,6 @@ class TestController extends Controller
 
         //dd($request->all());
 
-        $bookingData = [
-            "cust_first_name" => $request->input('FirstName'),
-            "cust_last_name" => $request->input('LastName'),
-            "cust_email" => $request->input('Email'),
-            "bookingType" => $request->input('bookingType'),
-            "tariffID" => $tariffID,
-            "startDate" => $startDate,
-            "endDate" => $endDate,
-            "mobileNum" => $request->input('MobileNum'),
-            "pickUp_Address" => $request->input('PickUpAddress'),         
-            "note" => $request->input('Note'),
-            "downpayment_Fee" => $downpayment,
-            "subtotal" => $subtotal,
-            "status" => "Pending",
-        ];
-
         $location = $request->input('location');
         $tariffData = Tariff::query()
             ->where('location', 'LIKE', "%{$location}%")
@@ -100,6 +84,22 @@ class TestController extends Controller
         $startDateTime = $startDate . ' ' . $pickupTime;
     
         $booking = new Booking();
+
+        $bookingData = [
+            "cust_first_name" => $request->input('FirstName'),
+            "cust_last_name" => $request->input('LastName'),
+            "cust_email" => $request->input('Email'),
+            "bookingType" => $request->input('bookingType'),
+            "tariffID" => $tariffID,
+            "startDate" => $startDate,
+            "endDate" => $endDate,
+            "mobileNum" => $request->input('MobileNum'),
+            "pickUp_Address" => $request->input('PickUpAddress'),         
+            "note" => $request->input('Note'),
+            "downpayment_Fee" => $downpayment,
+            "subtotal" => $subtotal,
+            "status" => "Pending",
+        ];
 
         // Assign values to its attributes
         $booking->cust_first_name = $request->get('FirstName');

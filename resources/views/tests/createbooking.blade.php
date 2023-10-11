@@ -16,10 +16,10 @@
                     </div>
                     <div class="col">
                         <div class="row">
-                            <input type="radio" id="type1" name="bookingType" value="Rent"><label for="type1">Rent</label><br>
+                            <input type="radio" id="type1" name="bookingType" value="Rent" checked="checked" onchange="toggleEndDate()"><label for="type1">Rent</label><br>
                         </div>
                         <div class="row">
-                            <input type="radio" id="type2" name="bookingType" value="Pickup/Dropoff"><label for="type2">Pickup/Dropoff</label>
+                            <input type="radio" id="type2" name="bookingType" value="Pickup/Dropoff" onchange="toggleEndDate()"><label for="type2">Pickup/Dropoff</label>
                         </div>
                     </div>
                 </div>
@@ -59,12 +59,12 @@
                     <div class="col">
                         <i class="fas fa-calendar-alt"></i> Schedule Date  <hr>
                         <div class="row">
-                            <div class="col">
-                                Start Date <input type="date" name="StartDate" id="StartDate" required>
-                            </div>
-                            <div class="col">
-                                End Date <input type="date" name="EndDate" id="EndDate" required>
-                            </div>
+                        <div class="col">
+                            Start Date <input type="date" name="StartDate" id="StartDate" required>
+                        </div>
+                        <div class="col">
+                            End Date <input type="date" name="EndDate" id="EndDate" required>
+                        </div>
                         </div><hr>
                     </div>
                 </div>
@@ -197,7 +197,28 @@
                 event.preventDefault(); // Prevent form submission
             }
         });
+
+        
     });
+    function toggleEndDate(){
+            const rentRadio = document.getElementById('type1');
+            const pickupDropoffRadio = document.getElementById('type2');
+            const endDateInput = document.getElementById('EndDate');
+            
+            if (pickupDropoffRadio.checked) {
+                // Disable the End Date input when "Pickup/Dropoff" is selected
+                endDateInput.setAttribute('disabled', true);
+                // Add an event listener to the Start Date input
+                const startDateInput = document.getElementById('StartDate');
+                startDateInput.addEventListener('change', function () {
+                    // Update the End Date input value to match the Start Date
+                    endDateInput.value = startDateInput.value;
+                });
+            } else {
+                // Enable the End Date input when "Rent" is selected
+                endDateInput.removeAttribute('disabled');
+            }
+    }
 </script>
 
 
