@@ -52,32 +52,12 @@ class TestController extends Controller
         ]);*/
 
         //dd($request->all());
-        $tariffData = Tariff::query()
-            ->where('location', 'LIKE', "%{$request->get('location')}%")
-            ->get();
-        
-        foreach($tariffData as $tariff){
-            $tariffID = $tariff->tariffID;
-            $tariffRate = $tariff->rate_Per_Day;
-        }
 
-        $location = $request->input('location');
-        $startDate = $request->input('StartDate');
-        $endDate = $request->input('EndDate');
-
-        $subtotal = $this->processRate($tariffRate, $startDate, $endDate);
-        $downpayment = $this->processDownpayment($subtotal);
-        $currentDate = Carbon::now();
-        $formattedDate = $currentDate->format('d-m-Y H:i:s');
-        
-        $pickupTime = $request->input('PickupTime'); // Get pickup time from the request
-        // Concatenate pickup time with start date to create the full start date and time
-        $startDateTime = $startDate . ' ' . $pickupTime;
-        
         $bookingData = [
             "cust_first_name" => $request->input('FirstName'),
             "cust_last_name" => $request->input('LastName'),
             "cust_email" => $request->input('Email'),
+            "bookingType" => $request->input('bookingType'),
             "tariffID" => $tariffID,
             "startDate" => $startDate,
             "endDate" => $endDate,
@@ -88,16 +68,45 @@ class TestController extends Controller
             "subtotal" => $subtotal,
             "status" => "Pending",
         ];
-       
 
+        $location = $request->input('location');
+        $tariffData = Tariff::query()
+            ->where('location', 'LIKE', "%{$location}%")
+            ->get();
+
+        $bookingType = $request->input('bookingType');
+        foreach($tariffData as $tariff){
+            $tariffID = $tariff->tariffID;
+            if($bookingType === 'Rent'){
+                $tariffRate = $tariff->rate_Per_Day;
+
+                $startDate = $request->input('StartDate');
+                $endDate = $request->input('EndDate');
+
+                $subtotal = $this->processRate($tariffRate, $startDate, $endDate);
+            }
+            elseif($bookingType === 'Pickup/Dropoff'){
+                //Pickup/Dropoff's price does not need to be calculated by date anymore
+                $subtotal = $tariff->do_pu;
+            }
+        }
+
+        $downpayment = $this->processDownpayment($subtotal);
+        $currentDate = Carbon::now();
+        $formattedDate = $currentDate->format('d-m-Y H:i:s');
+        
+        $pickupTime = $request->input('PickupTime'); // Get pickup time from the request
+        // Concatenate pickup time with start date to create the full start date and time
+        $startDateTime = $startDate . ' ' . $pickupTime;
+    
         $booking = new Booking();
 
         // Assign values to its attributes
         $booking->cust_first_name = $request->get('FirstName');
         $booking->cust_last_name = $request->get('LastName');
         $booking->cust_email = $request->get('Email');
+        $booking->bookingType = $request->get('bookingType');
         $booking->tariffID = $tariffID;
-        $booking->endDate = $endDate;
         $booking->mobileNum = $request->get('MobileNum');
         $booking->pickUp_Address = $request->get('PickUpAddress');
         $booking->note = $request->get('Note');
@@ -105,8 +114,7 @@ class TestController extends Controller
         $booking->subtotal = $subtotal;
         $booking->status = "Pending";
         $booking->startDate = $startDateTime;
-  
-
+        $booking->endDate = $endDate;
         $booking->save();
 
         $reserveID = $booking->reserveID;
@@ -191,6 +199,4 @@ class TestController extends Controller
         $booking->save();
         return redirect()->route('checkbookingstatus', $booking);
     }
-
-    
 }

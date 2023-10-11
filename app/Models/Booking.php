@@ -24,7 +24,7 @@ class Booking extends Authenticatable
     
      protected $fillable = [
         'cust_first_name', 'cust_last_name', 'cust_email', 'tariffID', 'startDate', 'endDate', 'mobileNum', 'pickUp_Address',
-        'note', 'downpayment_Fee', 'gcash_RefNum', 'subtotal', 'status'
+        'note', 'downpayment_Fee', 'gcash_RefNum', 'subtotal', 'status', 'bookingType'
     ];
 
     /**

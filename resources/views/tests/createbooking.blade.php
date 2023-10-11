@@ -12,6 +12,19 @@
             <div class="container">
                 <div class="row">
                     <div class="col">
+                        <b>Booking type</b>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <input type="radio" id="type1" name="bookingType" value="Rent"><label for="type1">Rent</label><br>
+                        </div>
+                        <div class="row">
+                            <input type="radio" id="type2" name="bookingType" value="Pickup/Dropoff"><label for="type2">Pickup/Dropoff</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
                         <b>Vehicle Type</b>
                     </div>
                     <div class="col">
