@@ -1,7 +1,7 @@
 @extends('layouts.empbar')
 
 @section('title')
-    TS | Tariffs
+    TS | Assign Fleets
 @endsection
 
 @section('content')
@@ -22,15 +22,24 @@
                     <strong><i class="far fa-clock"></i> Pickup Time:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->format('g:i A') }}<br>
                     <strong><i class="far fa-calendar-alt"></i> Return Date:</strong> {{ \Carbon\Carbon::parse($pendingBooking->endDate)->format('F j, Y') }}<br>
                     <strong><i class="fas fa-calendar-day"></i> Number of Days:</strong>
-                        @php
-                            $startDate = \Carbon\Carbon::parse($pendingBooking->startDate);
-                            $endDate = \Carbon\Carbon::parse($pendingBooking->endDate);
-                            $numberOfDays = $startDate->diffInDays($endDate);
-                            if ($numberOfDays == 0 && $startDate->diffInHours($endDate) < 24) {
-                                $numberOfDays = 1;
-                            }
-                            @endphp
-                        {{ $numberOfDays }} day{{ $numberOfDays != 1 ? 's' : '' }}
+                    @php
+                    $startDate = \Carbon\Carbon::parse($pendingBooking->startDate);
+                    $endDate = \Carbon\Carbon::parse($pendingBooking->endDate);
+                    
+                    // Calculate the total duration in days, including partial days, and round it up
+                    $numberOfDays = ceil($startDate->floatDiffInDays($endDate));
+                    
+                    // Determine the label for day(s)
+                    $daysLabel = ($numberOfDays == 1) ? 'day' : 'days';
+                    
+                    // Format the end time
+                    $endTimeFormatted = $endDate->format('Y:m:d H:i:s');
+                @endphp
+                
+                {{ $numberOfDays }} {{ $daysLabel }} 
+                
+                
+                
                         <br>
                     <strong><i class="fas fa-sticky-note"></i> Notes:</strong> {{ $pendingBooking->note }}
                     
@@ -90,8 +99,6 @@
 @section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  
-
     let assignmentCount = 1; // Initialize the assignment count
 
     function enableAddFleetButton() {

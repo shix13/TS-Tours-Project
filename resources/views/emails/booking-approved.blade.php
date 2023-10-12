@@ -77,7 +77,7 @@
 </head>
 
 <body>
-    <div class="container" style="border: 1px solid black">
+    <div class="container">
         <div class="header">
             <div class="logo">
                 <img src="{{ asset('images/TsTours.jpg') }}" alt="TS Tours Logo" width="150px">
@@ -88,7 +88,7 @@
         <div class="content">
             <p>
                 Dear {{ $booking->cust_first_name }} {{ $booking->cust_last_name }},<br>
-                Your payment under booking  ID: <strong>{{ $booking->reserveID }}</strong> has been approved.
+                Your payment under booking ID: <strong>{{ $booking->reserveID }}</strong> has been approved.
                 Thank you for choosing our services.
             </p>
 
@@ -116,7 +116,6 @@
             <div class="details">
                 <h3>Driver Information:</h3>
                 @foreach($drivers as $driver)
-                    
                     <ul>
                         <li><strong>First Name:</strong> {{ $driver->firstName }}</li>
                         <li><strong>Last Name:</strong> {{ $driver->lastName }}</li>
@@ -127,6 +126,12 @@
         </div>
         
         <a href="{{ route('home') }}" class="cta-button" style="color: black;background:orangered">Explore More</a>
+
+        <div class="footer text-center">
+            <p>&copy; 2023 TS Tours Services. All rights reserved.</p>
+            <p>Dumaguete, Negros Oriental, Philippines</p>
+            <p>Follow us: <a href="https://www.facebook.com/TSTOURSSERVICES" style="color: #007bff; text-decoration: none;">Facebook</a></p>
+        </div>
     </div>
 </body>
 

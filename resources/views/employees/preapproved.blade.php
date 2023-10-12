@@ -85,9 +85,9 @@
                                 <tr class="text-center">
                                     <td>{{ $counter++ }}</td>
                                     <td><strong>{{ $preApprovedBooking->reserveID }}</strong></td>
-                                    <td>{{ $preApprovedBooking->downpayment_Fee }}</td>
+                                    <td>₱ {{ $preApprovedBooking->downpayment_Fee }}</td>
                                     <td>{{ $preApprovedBooking->gcash_RefNum }}</td>
-                                    <td>{{ $preApprovedBooking->subtotal }}</td>
+                                    <td>₱ {{ $preApprovedBooking->subtotal }}</td>
                                     <td>{{ $preApprovedBooking->status }}</td>
                                     <td class="col-md-1">
                                         <a href="{{ route('employee.approveBooking', ['bookingId' => $preApprovedBooking->reserveID]) }}" class="btn btn-success btn-block approve-btn" style="margin-bottom: 10px;"><strong><i class="fa-solid fa-check"></i> Approve</strong></a>

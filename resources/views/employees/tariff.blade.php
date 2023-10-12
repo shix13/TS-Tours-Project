@@ -58,16 +58,16 @@
                             <strong>Location</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Rent/Day</strong>
+                            <strong>Rate/Day</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>No. of Hrs/Rent</strong>
+                            <strong>Hrs/Rent</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Rent/Hour</strong>
+                            <strong>Rate/Extra-Hour</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Pick-Up / Drop-Off Rate</strong>
+                            <strong>Pick-Up/Drop-Off Rate</strong>
                         </th>
                         
                         <th class="bold-text">

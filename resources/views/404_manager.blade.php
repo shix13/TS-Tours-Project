@@ -1,13 +1,13 @@
-<!-- resources/views/404_manager.blade.php -->
 
-@extends('layouts.employee-app')
+@extends('layouts.empbar')
 
 @section('content')
-    <div class="container">
+<br><br><br>
+    <div class="container1">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Error 404</div>
+                    <h3 class="card-header" style="color: red;">Error 404</h3>
 
                     <div class="card-body">
                         <p>You are not authorized to access this page.</p>

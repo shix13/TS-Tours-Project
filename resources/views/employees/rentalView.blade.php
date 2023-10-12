@@ -45,21 +45,37 @@
                                     <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value='{{ $bookings[0]->cust_first_name }} {{ $bookings[0]->cust_last_name }}' readonly>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-8 pr-1">
-                                <div class="form-group">
-                                    <label style="color: black;"><i class="fa-solid fa-location-dot"></i> Location</label>
-                                    <input style="color: black; background-color: white" type="text" class="form-control" name="tariff_id" value="{{ $bookings[0]->tariff->location }}" readonly>
-                                </div>
-                            </div>
-
                             <div class="col-md-4 pl-1">
                                 <div class="form-group">
                                     <label style="color: black;"><i class="fa-solid fa-phone"></i> Contact Number</label>
                                     <input type="text" style="color: black;background-color: rgb(255, 255, 255)" class="form-control" value="{{$bookings[0]->mobileNum}}" readonly>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
+                            
+
+                            <div class="col-md-9 pr-1">
+                                <div class="form-group">
+                                    <label style="color: black;"><i class="fa-solid fa-location-dot"></i> Travel Location</label>
+                                    <input style="color: black; background-color: white" type="text" class="form-control" name="tariff_id" value="{{ $bookings[0]->tariff->location }}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3 pl-1">
+                                <div class="form-group">
+                                    <label style="color: black;"><i class="fa-solid fa-location-dot"></i> Rate</label>
+                                    <input style="color: black; background-color: white" type="text" class="form-control" name="tariff_id" 
+                                        @if($bookings[0]->bookingType === 'Rent')
+                                        value="{{ $bookings[0]->tariff->rate_Per_Day }}"
+                                        
+                                        @else
+                                        value="{{ $bookings[0]->tariff->do_pu }}"
+                                        @endif
+                                        readonly>
+                                </div>
+                            </div>
+
+                           
                         </div>
 
                         <div class="row">
@@ -116,16 +132,9 @@
                                     <label style="color: black;">
                                         <i class="fas fa-cogs"></i> Booking Status
                                     </label>
-                                    <select class="form-control" id="status" name="status">
-                                        <option value="Approved" {{ $bookings[0]->status === 'Approved' ? 'selected' : '' }}>
-                                            <i class="fas fa-check-circle"></i> Approved
-                                        </option>
-                                        <option value="Canceled" {{ $bookings[0]->status === 'Cancelled' ? 'selected' : '' }}>
-                                            <i class="fas fa-times-circle"></i> Canceled
-                                        </option>
-                                    </select>
+                                    <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" id="status" name="status" value="{{ $bookings[0]->status }}" readonly>
                                 </div>
-                            </div>
+                            </div>                            
                         
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
@@ -141,7 +150,7 @@
                                     <label style="color: black;">
                                         <i class="fas fa-clock"></i> Rate / Additional Hour
                                     </label>
-                                    <input style="color: black; background-color: white" type="text" class="form-control" id="rent_per_hour" value="{{ $bookings[0]->tariff->rent_Per_Hour }}" readonly>
+                                    <input style="color: black; background-color: white" type="text" class="form-control" id="rent_per_hour" value="₱ {{ $bookings[0]->tariff->rent_Per_Hour }}" readonly>
                                 </div>
                             </div>
                         
@@ -150,7 +159,7 @@
                                     <label style="color: black;">
                                         <i class="fa-solid fa-money-bill-1"></i></i> Subtotal (Fleet Only)
                                     </label>
-                                    <input style="color: black;background-color: white" type="text" class="form-control" readonly value="{{$bookings[0]->subtotal}}">
+                                    <input style="color: black;background-color: white" type="text" class="form-control" readonly value="₱ {{$bookings[0]->subtotal}}">
                                 </div>
                             </div>
                         </div>
@@ -164,13 +173,16 @@
                                     </label>
                                     <select class="form-control" name="rental_status">
                                         <option value="Booked" {{ $rents[0]->rent_Period_Status === 'Scheduled' ? 'selected' : '' }}>
-                                            <i class="fas fa-calendar-check"></i> Scheduled
+                                             Scheduled
                                         </option>
                                         <option value="Ongoing" {{ $rents[0]->rent_Period_Status === 'Ongoing' ? 'selected' : '' }}>
-                                            <i class="fas fa-spinner"></i> Ongoing
+                                           Ongoing
                                         </option>
                                         <option value="Completed" {{ $rents[0]->rent_Period_Status === 'Completed' ? 'selected' : '' }}>
-                                            <i class="fas fa-check-circle"></i> Completed
+                                             Completed
+                                        </option>
+                                        <option value="Completed" {{ $rents[0]->rent_Period_Status === 'Cancelled' ? 'selected' : '' }}>
+                                             Cancelled
                                         </option>
                                     </select>
                                 </div>
@@ -181,7 +193,7 @@
                                     <label style="color: black;">
                                         <i class="fa-solid fa-money-bill-transfer"></i> Downpayment Amount
                                     </label>
-                                    <input style="color: black;background-color: white" type="text" class="form-control" value="{{$bookings[0]->downpayment_Fee}}" readonly>
+                                    <input style="color: black;background-color: white" type="text" class="form-control" value="₱ {{$bookings[0]->downpayment_Fee}}" readonly>
                                 </div>
                             </div>
 
@@ -201,7 +213,7 @@
                                     <label style="color: black;">
                                         <i class="fa-solid fa-money-bill-wave"></i> Total Price
                                     </label>
-                                    <input style="color: black; background-color: rgb(255, 255, 255)" type="text" name='total_price' id='total_price' class="form-control" min='0' value="{{$rents[0]->total_Price}}" readonly>
+                                    <input style="color: black; background-color: rgb(255, 255, 255)" type="text" name='total_price' id='total_price' class="form-control" min='0' value="₱ {{$rents[0]->total_Price}}" readonly>
                                 </div>
                             </div>
                         </div>
@@ -230,7 +242,7 @@
                                     <label style="color: black;">
                                         <i class="fas fa-hourglass-half"></i> Extra Hour Fees
                                     </label>
-                                    <input style="color: black;background-color: rgb(255, 255, 255)" id='compute' type="text" class="form-control" value="0" readonly>
+                                    <input style="color: black;background-color: rgb(255, 255, 255)" id='compute' type="text" class="form-control" value="₱ 0" readonly>
                                 </div>
                             </div>
                         
@@ -239,7 +251,7 @@
                                     <label style="color: black;">
                                         <i class="fas fa-hand-holding-usd"></i> Balance
                                     </label>
-                                    <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value="{{$rents[0]->balance}}" id="balance" name='balance' readonly>
+                                    <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value="₱ {{$rents[0]->balance}}" id="balance" name='balance' readonly>
                                 </div>
                             </div>
                         </div>
@@ -268,30 +280,41 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">    
-                                Vehicles Assigned
-                            </div>
-                            <div class="col-md-12">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Vehicle</th>
-                                        <th>Driver</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            <div class="col-md-6">    
+                                <label for="vehicleDropdown">Vehicle Assigned:</label>
+                                <select class="form-control" id="vehicleDropdown" style="font-size: 18px">
                                     @foreach($vehiclesAssigned as $vehicleAssigned)
-                                        <tr>
-                                            <td>{{ $vehicleAssigned->vehicle->unitName }}</td>
-                                            <td>{{ $vehicleAssigned->employee->firstName }} {{ $vehicleAssigned->employee->lastName }}</td>
-                                        </tr>
+                                        <option value="{{ $vehicleAssigned->unitName }}">
+                                            {{ $vehicleAssigned->vehicle->unitName }}
+                                        </option>
                                     @endforeach
-                                </tbody>
-                            </table>
+                                    @foreach($availableVehicles as $vehicle)
+                                        <option value="{{ $vehicle->unitName }}">
+                                            {{ $vehicle->unitName }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="employeeDropdown">Driver Assigned:</label>
+                                <select class="form-control" id="employeeDropdown" style="font-size: 18px">
+                                    @foreach($vehiclesAssigned as $vehicleAssigned)
+                                        <option value="{{ $vehicleAssigned->employee->empID }}">
+                                            {{ $vehicleAssigned->employee->firstName }} {{ $vehicleAssigned->employee->lastName }}
+                                        </option>
+                                    @endforeach
+                                    @foreach($availableDrivers as $driver)
+                                        <option value="{{ $driver->empID }}">
+                                            {{ $driver->firstName }} {{ $driver->lastName }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
+                        
+                        
                         @if ($rents[0]->rent_Period_Status !== 'Completed')
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
                         @endif
                         <button type="button" class="btn btn-danger" onclick="goBack()">Back</button>
                     </form>
@@ -308,87 +331,32 @@
         window.history.back();
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-    // Get references to the select elements and input fields
-    const tariffSelect = document.getElementById('tariff_id');
-    const rentPerHourInput = document.getElementById('rent_per_hour');
+    document.addEventListener('DOMContentLoaded', function () {
+    // Get the input fields and add event listeners for input changes
     const extraHoursInput = document.getElementById('extra_hours');
+    const ratePerHour = parseFloat('{{ $bookings[0]->tariff->rent_Per_Hour }}') || 0;
     const computeInput = document.getElementById('compute');
-    const totalPriceInput = document.getElementById('total_price');
-    const balanceInput = document.getElementById('balance');
-    const statusSelect = document.getElementById('status');
 
-    // Store the initial values
-    let initialRentPerHour = parseFloat(rentPerHourInput.value) || 0;
-    let initialExtraHours = parseFloat(extraHoursInput.value) || 0;
-    let initialTotalPrice = parseFloat(totalPriceInput.value) || 0;
-    let initialBalance = parseFloat(balanceInput.value) || 0;
-    let originalBalance = initialBalance; // Store the original balance
-    let initialStatus = statusSelect.value;
+    // Update the values when the page loads
+    updateValues();
 
-    // Function to update the rate per hour based on the selected location
-    function updateRatePerHour() {
-        const selectedOption = tariffSelect.options[tariffSelect.selectedIndex];
-        const rentPerHour = parseFloat(selectedOption.getAttribute('data-rent-per-hour'));
+    // Add input event listener
+    extraHoursInput.addEventListener('input', updateValues);
 
-        // Update the displayed rate per hour
-        rentPerHourInput.value = rentPerHour.toFixed(2);
-
-        // Reset extra hours to the initial value
-        extraHoursInput.value = initialExtraHours.toFixed(2);
-
-        // Reset total price and balance to initial values
-        totalPriceInput.value = initialTotalPrice.toFixed(2);
-        balanceInput.value = originalBalance.toFixed(2); // Set the balance back to original
-    }
-
-    // Function to update the balance and total price when the extra hours change
-    function updateBalanceAndTotalPrice() {
+    function updateValues() {
+        // Get the value of extra hours input
         const extraHours = parseFloat(extraHoursInput.value) || 0;
-        const rentPerHour = parseFloat(rentPerHourInput.value) || 0;
-
-        // Calculate the extra hour fee
-        const extraHourFee = (extraHours * rentPerHour).toFixed(2);
-
-        // Update the computed extra hour fee
-        computeInput.value = extraHourFee;
+        
+        // Calculate the extra hour fees based on rate per hour and extra hours
+        const extraHourFees = extraHours * ratePerHour;
+        
+        // Display the calculated fees in the 'compute' input field
+        computeInput.value = '₱ ' + extraHourFees.toFixed(2);
+        
+        // Log the result to the console for debugging
+        console.log('Script is running');
     }
-
-    // Add an event listener to the tariff select element
-    tariffSelect.addEventListener('change', updateRatePerHour);
-
-    // Add an event listener to the extra_hours input field
-    extraHoursInput.addEventListener('input', updateBalanceAndTotalPrice);
-
-    // Function to handle status change
-    function handleStatusChange() {
-        const selectedValue = statusSelect.value;
-        statusSelect.style.backgroundColor = selectedValue === 'Approved' ? 'lightgreen' : 'red';
-        initialStatus = selectedValue;
-    }
-
-    // Add an event listener to the status select element
-    statusSelect.addEventListener('change', handleStatusChange);
-
-    // Add an event listener to the tariff select element
-tariffSelect.addEventListener('change', function () {
-    // Calculate the extra hour fee based on the new location
-    updateBalanceAndTotalPrice();
-
-    // Reset extra hours to the initial value when a new location is selected
-    extraHoursInput.value = initialExtraHours.toFixed(2);
 });
-
-    // Initial update
-    updateRatePerHour();
-
-    // Handle initial status
-    handleStatusChange();
-
-    // Compute extra hour fees on page load
-    updateBalanceAndTotalPrice();
-});
-
 
 
 </script>

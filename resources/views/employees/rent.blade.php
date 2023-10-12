@@ -112,8 +112,8 @@
                                     </td>                                    
                                     <td>{{ $rent->payment_Status }}</td>
                                     <td>{{ $rent->extra_Hours !== null ? $rent->extra_Hours : '--none--' }}</td>
-                                    <td>{{ $rent->total_Price }}</td>
-                                    <td>{{ $rent->balance }}</td>
+                                    <td>₱ {{ $rent->total_Price }}</td>
+                                    <td>₱ {{ $rent->balance }}</td>
 
                                    
                                     <td class="col-md-1">

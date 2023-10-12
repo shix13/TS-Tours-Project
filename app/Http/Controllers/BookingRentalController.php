@@ -193,38 +193,48 @@ public function rentalView($id)
     }])
     ->where('rentID', $rents[0]->rentID)
     ->get();
-
-    /*/ Now, you can access the vehicle types and their details like this:
-    foreach ($vehicleTypesBooked as $typesBooked) {
-    $vehicleTypes = $typesBooked->vehicleType;
-    // Access vehicle type details, e.g., $vehicleType->name, $vehicleType->description, etc.
-    }
-    dd($vehicleTypes);*/
-    // Pass the data to the Blade view
-
     
-    return view('employees.rentalView', compact('rental', 'vehiclesAssigned', 'bookings', 'rents','drivers', 'vehicleTypesBooked',  'availableVehicles','tariffs'));
+    $startDate = \Carbon\Carbon::parse($bookings[0]->startDate);
+    $endDate = \Carbon\Carbon::parse($bookings[0]->endDate)->addDay(1); // Add 1 day to end date
+
+    // Check for available vehicles based on start date, end date, maintenance schedule, and existing bookings
+    $availableVehicles = Vehicle::where('status', 'Active')
+    ->whereDoesntHave('maintenances', function ($query) use ($startDate, $endDate) {
+        $query->whereIn('status', ['In Progress', 'Scheduled'])
+            ->where('scheduleDate', '>=', $startDate)
+            ->where('scheduleDate', '<=', $endDate);
+    })
+    ->whereDoesntHave('vehicleAssignments.booking', function ($query) use ($startDate, $endDate) {
+        $query->where('status', '!=', 'Denied')
+            ->where('status', '!=', 'Cancelled')
+            ->where('status', '!=', 'Completed')
+            ->where(function ($query) use ($startDate, $endDate) {
+                $query->where('startDate', '<=', $endDate)
+                    ->where('endDate', '>=', $startDate);
+            });
+    })
+    ->with('vehicleType')
+    ->get();
+
+
+    $availableDrivers = Employee::whereIn('accountType', ['Driver', 'Driver Outsourced'])
+    ->whereDoesntHave('vehicleAssignments', function($query) use ($startDate, $endDate) {
+        $query->whereHas('booking', function($bookingQuery) use ($startDate, $endDate) {
+            $bookingQuery->where('startDate', '<=', $endDate)
+                         ->where('endDate', '>=', $startDate)
+                         ->where('status', '!=', 'Denied')
+                         ->where('status', '!=', 'Cancelled')
+                         ->where('status', '!=', 'Completed');
+        });
+    })
+    ->get();
+    
+    
+    return view('employees.rentalView', compact('rental', 'vehiclesAssigned', 'bookings', 'rents','drivers', 'vehicleTypesBooked',  'availableVehicles','availableDrivers','tariffs'));
 }
 
 public function update(Request $request, $id)
-{   
-    // Validate the form data if needed
-    $request->validate([
-        'pickup_date' => 'required|date',
-        'pickup_time' => 'required|date_format:H:i',
-        'dropoff_date' => 'required|date',
-        'dropoff_time' => 'required|date_format:H:i',
-        'pickup_address'=> 'required',
-        //'vehicle_id' => 'required|exists:vehicles,unitID', 
-        'tariff_id' => 'required|exists:tariffs,tariffID', 
-        //'driver_assigned' => 'required|exists:employees,empID', 
-        'extra_hours' => 'numeric|min:0',
-        'status' => 'required|in:Approved,Cancelled', 
-        'pickup_address' => 'required|string',
-        'note' => 'nullable|string',
-    ]);
-    
-    //dd($request);   
+{
     // Find the rental by ID
     $rental = Rent::find($id);
 
@@ -241,64 +251,57 @@ public function update(Request $request, $id)
         return redirect()->back()->with('error', 'Booking not found.');
     }
 
-    // Attempt to update the booking information based on the form input
     try {
-
         // Combine pickup_date and pickup_time into a single datetime string
         $pickupDateTime = $request->input('pickup_date') . ' ' . $request->input('pickup_time');
-        // Use Carbon to create a datetime instance from the combined string
         $combinedStartDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $pickupDateTime);
-        
+
         // Combine dropoff_date and dropoff_time into a single datetime string
         $dropoffDateTime = $request->input('dropoff_date') . ' ' . $request->input('dropoff_time');
-        // Use Carbon to create a datetime instance from the combined string
         $combinedEndDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $dropoffDateTime);
 
-
-        // Attempt to update the booking information based on the form input
+        // Update the booking information
         $booking->update([
-            'startDate' => $combinedStartDate, 
+            'startDate' => $combinedStartDate,
             'endDate' => $combinedEndDate,
-            'tariffID' =>$request->input('tariff_id'),
-            'unitID' =>$request->input('vehicle_id'),
             'pickUp_Address' => $request->input('pickup_address'),
             'note' => $request->input('note'),
             'status' => $request->input('status'),
         ]);
-       
-        $extraHours = $request->input('extra_hours', 0);
-        $ratePerHour = $booking->tariff->rent_Per_Hour; 
 
-       
+        // Calculate extra hour fees
+        $extraHours = $request->input('extra_hours', 0);
+        $ratePerHour = $booking->tariff->rent_Per_Hour;
+
         // Calculate the difference between the new and old extra hours
         $extraHoursDifference = $extraHours - $rental->extra_Hours;
-        
+
         // Calculate the total price based on the new extra hours
         $newTotalPrice = $rental->total_Price + ($extraHours * $ratePerHour);
         $newBalance = $rental->balance + ($extraHours * $ratePerHour);
-        
+
         // If the extra hours are reduced, adjust the total price and balance
-     if ($extraHoursDifference < 0) {
-        $extraHourRate = $ratePerHour * abs($extraHoursDifference);
-        $newTotalPrice -= $extraHourRate;
-        $newBalance -= $extraHourRate;
+        if ($extraHoursDifference < 0) {
+            $extraHourRate = $ratePerHour * abs($extraHoursDifference);
+            $newTotalPrice -= $extraHourRate;
+            $newBalance -= $extraHourRate;
         }
-        
-        // Attempt to update the rental information based on the form input
+
+        // Update the rental information
         $rental->update([
-            //'driverID' => $request->input('driver_assigned'),
             'rent_Period_Status' => $request->input('rental_status'),
-            'extra_Hours' => $request->input('extra_hours'),
-            'total_Price' => $newTotalPrice, 
+            'extra_Hours' => $extraHours,
+            'total_Price' => $newTotalPrice,
             'balance' => $newBalance,
         ]);
-    
+
         return redirect()->back()->with('success', 'Rental information updated successfully.');
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'An error occurred while updating rental information: ' . $e->getMessage());
     }
-    
 }
+
+
 
 public function bookAssign($id)
 {
@@ -340,11 +343,6 @@ public function bookAssign($id)
         });
     })
     ->get();
-
-
-
-
-
 
     // Retrieve data from the 'vehicle_types_booked' table
     $bookedTypes = VehicleTypeBooked::where('reserveID', $pendingBooking->reserveID)->get();

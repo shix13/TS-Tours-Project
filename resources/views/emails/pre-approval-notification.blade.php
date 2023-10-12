@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Pre-Approval Notification</title>
+    <title>Booking Confirmation</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,10 +24,10 @@
         }
 
         .header {
+            background-color: #007bff;
+            color: white;
             text-align: center;
-            color: #007bff;
-            font-size: 24px;
-            margin-bottom: 20px;
+            padding: 20px;
         }
 
         .content {
@@ -37,12 +37,15 @@
         }
 
         .button {
-            display: inline-block;
             background-color: #007bff;
-            color: #ffffff;
+            color: white;
             padding: 10px 20px;
             text-decoration: none;
             border-radius: 5px;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
         }
 
         .footer {
@@ -55,10 +58,10 @@
 </head>
 
 <body>
-    <div class="container" style="border: 1px solid black">
+    <div class="container">
         <div class="header">
             <img src="{{ asset('images/TsTours.jpg') }}" alt="TS Tours Logo" width="100px">
-            <h2 style="color: #007bff;">Booking Approved!</h2>
+            <h2>Booking Approved!</h2>
         </div>
 
         <div class="content">
@@ -74,11 +77,8 @@
 
             <p>
                 If you have any questions or need further assistance, feel free to contact us at 0995-132-0184 or
-            </p>
-            <p>
                 <a href="mailto:tstoursduma@gmail.com" style="color: #007bff; text-decoration: none;">tstoursduma@gmail.com</a>.
             </p>
-            
         </div>
 
         <div class="footer">

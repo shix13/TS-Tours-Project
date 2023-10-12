@@ -25,15 +25,32 @@
 
         .header {
             text-align: center;
-            color: #ff6347; /* Tomato Red */
-            font-size: 24px;
             margin-bottom: 20px;
+        }
+
+        .header img {
+            width: 150px;
+        }
+
+        .header h2 {
+            color: #ff6347; /* Tomato Red */
+            font-size: 28px;
+            margin-top: 10px;
         }
 
         .content {
             margin-bottom: 20px;
             font-size: 16px;
             color: #333;
+        }
+
+        .content p {
+            margin-bottom: 15px;
+        }
+
+        .content a {
+            color: #007bff;
+            text-decoration: none;
         }
 
         .footer {
@@ -46,9 +63,9 @@
 </head>
 
 <body>
-    <div class="container" style="border: 1px solid black">
+    <div class="container">
         <div class="header">
-            <img src="{{ asset('images/TsTours.jpg') }}" alt="TS Tours Logo" width="100px">
+            <img src="{{ asset('images/TsTours.jpg') }}" alt="TS Tours Logo">
             <h2>Booking Denied</h2>
         </div>
 
@@ -59,9 +76,9 @@
                 <br>Please contact us for further details or to discuss alternative options.
             </p>
 
-            <p style="color: black">
+            <p>
                 If you have any questions or need further assistance, feel free to contact us at 0995-132-0184 or
-                <a href="mailto:tstoursduma@gmail.com" style="color: #007bff; text-decoration: none;">tstoursduma@gmail.com</a>.
+                <a href="mailto:tstoursduma@gmail.com">tstoursduma@gmail.com</a>.
             </p>
         </div>
 

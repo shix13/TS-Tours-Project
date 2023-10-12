@@ -67,13 +67,13 @@ Route::prefix('employee')->group(function(){
 
     Route::middleware('auth:employee')->group(function () {
     //ACCOUNTS
-        //Route::middleware(['manager'])->group(function (){
+        Route::middleware(['manager'])->group(function (){
            Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
            Route::get('/account/{empID}/edit', [EmployeeController::class, 'edit'])->name('employee.edit');
            Route::put('/account/{empID}', [EmployeeController::class, 'update'])->name('employee.update');
            Route::get('/account', [AccountsController::class, 'accountIndex'])->name('employee.accounts');
            Route::delete('/employee/{empID}', [EmployeeController::class, 'delete'])->name('employee.delete');
-       // });
+        });
 
         Route::post('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'register'])->name('employee.register.submit');
         Route::get('/profile', [EmployeeController::class, 'profile'])->name('employee.profile');

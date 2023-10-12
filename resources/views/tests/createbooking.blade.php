@@ -17,7 +17,7 @@
                     <div class="col text-center">
                         <div class="row">
                             <input type="radio" id="type1" name="bookingType" value="Rent" checked="checked" onchange="toggleEndDate()">
-                            <label for="type1">Rent For A Day</label>
+                            <label for="type1">Rent Fleet</label>
                         </div>
                         <div class="row">
                             <input type="radio" id="type2" name="bookingType" value="Pickup/Dropoff" onchange="toggleEndDate()">
@@ -182,7 +182,7 @@
         // Add an event listener to disable dates before the selected Start Date in End Date
         startDateInput.addEventListener('change', function () {
             var selectedStartDate = new Date(startDateInput.value);
-            selectedStartDate.setDate(selectedStartDate.getDate() + 1); // Add one day
+            selectedStartDate.setDate(selectedStartDate.getDate()); // Add one day
             var minEndDate = selectedStartDate.toISOString().split('T')[0];
             endDateInput.min = minEndDate;
             endDateInput.value = ''; // Reset End Date
