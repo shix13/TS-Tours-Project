@@ -21,6 +21,8 @@ use App\Mail\BookingConfirmationMail;
 use App\Mail\BookingDeniedMail;
 use App\Mail\BookingApprovedMail;
 use Carbon\Carbon;
+use App\Models\Remittance;
+
 
 class BookingRentalController extends Controller
 {
@@ -113,7 +115,7 @@ public function approveBooking($bookingId)
                     ->subject('Booking Approved');
         });
 
-        return redirect()->back()->with('success', 'Booking has been approved and saved as a rent.');
+        return redirect()->back()->with('success', 'Booking has been approved. Rent info created.');
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'An error occurred while approving the booking: ' . $e->getMessage());
     }
@@ -262,41 +264,31 @@ public function update(Request $request, $id)
         // Calculate subtotal based on changes in dates and booking type
         $subtotal = $this->processRate($booking->tariff->rate_Per_Day, $combinedStartDate, $combinedEndDate, $booking->bookingType);
         
-        // Update the booking information
-        $booking->update([
-            'startDate' => $combinedStartDate,
-            'endDate' => $combinedEndDate,
-            'pickUp_Address' => $request->input('pickup_address'),
-            'note' => $request->input('note'),
-            'status' => $request->input('status'),
-            'subtotal' => $subtotal,
-        ]);
+        // Calculate extra hour fees
+        $extraHours = $request->input('extra_hours', 0);
+        $ratePerHour = $booking->tariff->rent_Per_Hour;
+        $oldExtraHours = $rental->extra_Hours;
+
+        // Calculate the difference between the new and old extra hours
+        $extraHoursDifference = $extraHours - $oldExtraHours;
+
+        // Calculate the Extra Hour Fees based on the difference
+        $extraHourFees = $extraHoursDifference * $ratePerHour;
+
+        // Calculate the new total price by adding Extra Hour Fees to the Subtotal
+        $newTotalPrice = max($subtotal, $subtotal + $extraHourFees);
+
+        $remittanceTotal = Remittance::where('rentID', $rental->id)->sum('amount');
         
-       // Calculate extra hour fees
-       $extraHours = $request->input('extra_hours', 0);
-       $ratePerHour = $booking->tariff->rent_Per_Hour;
-       $oldExtraHours = $rental->extra_Hours; 
+        // Calculate the new balance ensuring it doesn't go negative
+        $newBalance = $newTotalPrice- ($remittanceTotal + $booking->downpayment_Fee) ;
 
-       // Calculate the difference between the new and old extra hours
-       $extraHoursDifference = $extraHours - $rental->extra_Hours;
-
-       // Calculate the total price based on the new extra hours
-       $newTotalPrice = $subtotal +  ($extraHours * $ratePerHour) - ($oldExtraHours * $ratePerHour);
-       $newBalance = $rental->balance - ($oldExtraHours * $ratePerHour) + ($extraHours * $ratePerHour);
-
-       // If the extra hours are reduced, adjust the total price and balance
-       if ($extraHoursDifference < 0) {
-           $extraHourRate = $ratePerHour * abs($extraHoursDifference);
-           $newTotalPrice -= $extraHourRate;
-           $newBalance -= $extraHourRate;
-       }
-
-       // Update the rental information
-       $rental->update([
-           'rent_Period_Status' => $request->input('rental_status'),
-           'extra_Hours' => $extraHours,
-           'total_Price' => $newTotalPrice,
-           'balance' => $newBalance,
+        // Update the rental information
+        $rental->update([
+            'rent_Period_Status' => $request->input('rental_status'),
+            'extra_Hours' => $extraHours,
+            'total_Price' => $newTotalPrice,
+            'balance' => $newBalance,
         ]);
         
         // Update vehicles assigned based on reserveID
@@ -322,6 +314,7 @@ public function update(Request $request, $id)
         return redirect()->back()->with('error', 'An error occurred while updating rental information: ' . $e->getMessage());
     }
 }
+
 
 
 

@@ -1,7 +1,7 @@
 @extends('layouts.empbar')
 
 @section('title')
-    TS | Add Vehicle
+    TS | New Remittance
 @endsection
 
 @section('content')
@@ -11,69 +11,83 @@
         <div class="col-md-12 offset-md-0">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title" style="color: red;">Add Remittance</h4>
+                    <h4 class="card-title" style="color: orangered">
+                        <i class="fas fa-plus-circle" ></i> Add Remittance
+                    </h4>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('remittance.store') }}" enctype="multipart/form-data">
                         @csrf
                         
                         <div class="form-group">
-                            <label for="clerk">Clerk</label>
-                            <input type="text" name="clerk" id="clerk" value=" {{Auth::guard('employee')->user()->firstName}} {{Auth::guard('employee')->user()->lastName}}" class="form-control @error('clerk') is-invalid @enderror" readonly>
+                            <label for="clerk" style="color: black">
+                                <i class="fas fa-user" ></i> Clerk
+                            </label>
+                            <input style="background: white;color:black;font-size:17px" type="text" name="clerk" id="clerk" value="{{ Auth::guard('employee')->user()->firstName }} {{ Auth::guard('employee')->user()->lastName }}" class="form-control" readonly>
                             <input type="hidden" name="clerkID" id="clerkID" value="{{ Auth::guard('employee')->user()->empID }}">
                             @error('clerk')
                             <span class="invalid-feedback" role="alert">
-                               **{{ $message }}
+                                <strong>{{ $message }}</strong>
                             </span>
                             @enderror
                         </div>
 
                         <div class="form-group">
-                            <label for="driver">Driver</label>
-                                <select class="form-control" id="driver" name="driver">
-                                    @foreach($drivers as $driver)
-                                    <option value="{{ $driver->empID }}">{{ $driver->firstName }} {{ $driver->lastName }}</option>
-                                    @endforeach
-                                </select>
+                            <label for="driver" style="color: black">
+                                <i class="fas fa-car"></i> Driver
+                            </label>
+                            <select class="form-control" id="driver" name="driver" style="font-size:17px">
+                                @foreach($drivers as $driver)
+                                <option value="{{ $driver->empID }}">{{ $driver->firstName }} {{ $driver->lastName }}</option>
+                                @endforeach
+                            </select>
                             @error('driver')
                             <span class="invalid-feedback" role="alert">
-                                **{{ $message }}
+                                <strong>{{ $message }}</strong>
                             </span>
                             @enderror
                         </div>
 
                         <div class="form-group">
-                            <label for="pax">Rent ID</label>
-                            <input type="text" name="rent" id="rent" class="form-control" value="{{ request('id') }}" readonly>
+                            <label for="rent" style="color: black">
+                                <i class="fas fa-file-alt"></i> Rent ID
+                            </label>
+                            <input type="text"  style="background: white;color:black;font-size:17px"" name="rent" id="rent" class="form-control" value="{{ request('id') }}" readonly>
                             @error('rent')
                             <span class="invalid-feedback" role="alert">
-                                **{{ $message }}
+                                <strong>{{ $message }}</strong>
                             </span>
                             @enderror
                         </div>
 
                         <div class="form-group">
-                            <label for="specification">Receipt Number</label>
-                            <input type="text" name="receipt_num" id="receipt_num" class="form-control @error('receipt_number') is-invalid @enderror" required>
-                            @error('receipt_number')
+                            <label for="receipt_num" style="color: black">
+                                <i class="fas fa-receipt"></i> Receipt Number
+                            </label>
+                            <input type="text" name="receipt_num" style="font-size:17px" id="receipt_num" class="form-control @error('receipt_num') is-invalid @enderror" required>
+                            @error('receipt_num')
                             <span class="invalid-feedback" role="alert">
-                                **{{ $message }}
+                                <strong>{{ $message }}</strong>
                             </span>
                             @enderror
                         </div>
 
                         <div class="form-group">
-                            <label for="pax">Amount</label>
-                            <input type="text" name="amount" id="amount" class="form-control @error('amount') is-invalid @enderror" required>
+                            <label for="amount" style="color: black">
+                                <i class="fas fa-money-bill-alt"></i> Amount
+                            </label>
+                            <input type="text" name="amount" id="amount" style="font-size:17px" class="form-control @error('amount') is-invalid @enderror" required>
                             @error('amount')
                             <span class="invalid-feedback" role="alert">
-                                **{{ $message }}
+                                <strong>{{ $message }}</strong>
                             </span>
                             @enderror
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Add Remittance</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Add Remittance
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -103,5 +117,3 @@
     }
 </script>
 @endsection
-
-
