@@ -11,7 +11,10 @@
 
     <div class="row">
         <div class="col-md-2">
-            <a href="{{ route('remittance.select-rent') }}" class="btn btn-danger">ADD A NEW REMITTANCE</a>
+            <a href="{{ route('remittance.select-rent') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> New Remittance
+            </a>
+            
         </div>
         <div class="col-md-8">
             <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
@@ -61,7 +64,7 @@
                             <strong>Sent by</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Rent ID</strong>
+                            <strong>Tracking ID</strong>
                         </th>
                         <th class="bold-text">
                             <strong>Receipt Number</strong>
@@ -70,7 +73,7 @@
                             <strong>Amount</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Created At</strong>
+                            <strong>Remittance Date</strong>
                         </th>
                     </thead>
                     <tbody>
@@ -84,10 +87,10 @@
                                     <td>{{ $counter++ }}</td>
                                     <td>{{ $r->clerk->firstName }} {{ $r->clerk->lastName }}</td>
                                     <td>{{ $r->driver->firstName }} {{ $r->driver->lastName }}</td>
-                                    <td>{{ $r->rent->rentID }}</td>
+                                    <td>{{ $r->rent->reserveID }}</td>
                                     <td>{{ $r->receiptNum }}</td>
                                     <td>{{ $r->amount }}</td>
-                                    <td>{{ $r->created_at }}</td>
+                                    <td>{{ $r->created_at->format('M d, Y g:ia') }}</td>
                                 </tr>
                             @endforeach
                         @else

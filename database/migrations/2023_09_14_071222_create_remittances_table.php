@@ -15,7 +15,6 @@ return new class extends Migration
             $table->unsignedBigInteger('rentID');
             $table->string('receiptNum');
             $table->decimal('amount', 10, 2);
-            $table->dateTime('date_Time');
             $table->timestamps();
 
             // Define foreign key constraints

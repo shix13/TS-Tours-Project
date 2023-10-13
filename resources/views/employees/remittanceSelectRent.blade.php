@@ -93,8 +93,8 @@
                                     <td>{{ $rent->balance }}</td>
 
                                    
-                                    <td class="col-md-1">
-                                        <a href="{{ route('remittance.create', ['id' => $rent->rentID]) }}" class="btn btn-success btn-block" style="margin-bottom: 10px;"><strong>Select</strong></a>
+                                    <td class="col-md-2">
+                                        <a href="{{ route('remittance.create', ['id' => $rent->rentID]) }}" class="btn btn-success btn-block" style="margin-bottom: 10px;"><strong> <i class="fas fa-plus-circle"></i> Select</strong></a>
                                     </td>                                   
                                 </tr>
                             @endforeach

@@ -47,126 +47,76 @@ class TestController extends Controller
     }
 
     public function processBooking(Request $request){
-        /*$validatedData = $request->validate([
-            'StartDate' => 'required|date|after:today',
-            'EndDate' => 'required|date|after:StartDate',
-            'MobileNum' => 'required|string|max:30',
-            'PickUpAddress' => 'required|string|max:255',
-            'Note' => 'nullable|string|max:255',
-        ]);*/
-
-        //dd($request->all());
-
         $location = $request->input('location');
-        $tariffData = Tariff::query()
-            ->where('location', 'LIKE', "%{$location}%")
-            ->get();
-
-        $bookingType = $request->input('bookingType');
-        foreach($tariffData as $tariff){
-            $tariffID = $tariff->tariffID;
-            if ($bookingType === 'Rent') {
-                $tariffRate = $tariff->rate_Per_Day;
-            
-                $startDate = $request->input('StartDate');
-                $endDate = $request->input('EndDate');
-                $pickupTime = $request->input('PickupTime');
-            
-                // Parse the start date, end date, and pickup time using Carbon
-                $startDateTime = Carbon::parse($startDate . ' ' . $pickupTime);
-                $endDateTime = Carbon::parse($endDate . ' ' . $pickupTime);
-            
-                // Calculate the difference in days between start and end dates
-                $diffInDays = $endDateTime->diffInDays($startDateTime);
-            
-                // Calculate the end time by adding rentPerDayHrs hours to pickup time for each day
-                $endTime = $startDateTime->copy()->addDays($diffInDays)->addHours($tariff->rentPerDayHrs);
-            
-                // Format the end time
-                $endTimeFormatted = $endTime->format('Y:m:d H:i:s');
-            
-                // Calculate the subtotal using the processRate method
-                $subtotal = $this->processRate($tariffRate, $startDate, $endDate);
-            
-                // Concatenate the end time with the end date
-               // $returnTime = $endDate . ' ' . $endTimeFormatted;
-            
-               // dd($startDate, $pickupTime, $endTimeFormatted, $tariff->rentPerDayHrs, $diffInDays, $endTime);
-            }
-                     
-            elseif($bookingType === 'Pickup/Dropoff'){
-                //Pickup/Dropoff's price does not need to be calculated by date anymore
-                $startDate = $request->input('StartDate');
-                $endDate = $request->input('StartDate');
-                // Concatenate pickup time with start date to create the full start date and time
-                $startDateTime = $startDate . ' ' . $pickupTime;
-                $pickupTime = $request->input('PickupTime'); // Get pickup time from the request
-                $subtotal = $tariff->do_pu;
-            }
-       
-        
-        $downpayment = 0; // $this->processDownpayment($subtotal);
-        $currentDate = Carbon::now();
-        $formattedDate = $currentDate->format('d-m-Y H:i:s');
-        
+        $tariff = Tariff::where('location', 'LIKE', "%{$location}%")->first();
     
-        $booking = new Booking();
-
-        $bookingData = [
-            "cust_first_name" => $request->input('FirstName'),
-            "cust_last_name" => $request->input('LastName'),
-            "cust_email" => $request->input('Email'),
-            "bookingType" => $request->input('bookingType'),
-            "tariffID" => $tariffID,
-            "startDate" => $startDate,
-            "endDate" => $endTimeFormatted,
-            "mobileNum" => $request->input('MobileNum'),
-            "pickUp_Address" => $request->input('PickUpAddress'),         
-            "note" => $request->input('Note'),
-            "downpayment_Fee" => $downpayment,
-            "subtotal" => $subtotal,
-            "status" => "Pending",
-        ];
+        if (!$tariff) {
+            return redirect()->back()->with('error', 'Tariff not found for the specified location.');
+        }
+    
+        $bookingType = $request->input('bookingType');
+        $startDate = $request->input('StartDate');
+        $pickupTime = $request->input('PickupTime');
         
-
-        // Assign values to its attributes
-        $booking->cust_first_name = $request->get('FirstName');
-        $booking->cust_last_name = $request->get('LastName');
-        $booking->cust_email = $request->get('Email');
-        $booking->bookingType = $request->get('bookingType');
-        $booking->tariffID = $tariffID;
-        $booking->mobileNum = $request->get('MobileNum');
-        $booking->pickUp_Address = $request->get('PickUpAddress');
-        $booking->note = $request->get('Note');
-        $booking->downpayment_Fee = $downpayment;
-        $booking->subtotal = $subtotal;
-        $booking->status = "Pending";
-        $booking->startDate = $startDateTime;
-        $booking->endDate = $endTimeFormatted;
+        if ($bookingType === 'Rent') {
+            $tariffRate = $tariff->rate_Per_Day;
+            $endDate = $request->input('EndDate');
+    
+            $startDateTime = Carbon::parse($startDate . ' ' . $pickupTime);
+            $endDateTime = Carbon::parse($endDate . ' ' . $pickupTime);
+    
+            $diffInDays = $endDateTime->diffInDays($startDateTime);
+            $endTime = $startDateTime->copy()->addDays($diffInDays)->addHours($tariff->rentPerDayHrs);
+            
+            $formattedStartDate = $startDateTime->format('Y-m-d H:i:s');
+            $formattedEndDate = $endTime->format('Y-m-d H:i:s');
+    
+            $subtotal = $this->processRate($tariffRate, $startDate, $endDate);
+        } elseif ($bookingType === 'Pickup/Dropoff') {
+            $subtotal = $tariff->do_pu;
+            $endDate = $startDate; // Assuming same start and end date for Pickup/Dropoff
+            $formattedStartDate = Carbon::parse($startDate . ' ' . $pickupTime)->format('Y-m-d H:i:s');
+            $formattedEndDate = $formattedStartDate; // Same start and end date for Pickup/Dropoff
+        } else {
+            return redirect()->back()->with('error', 'Invalid booking type.');
+        }
+    
+        $downpayment = 0; // Calculate downpayment logic can be added here if needed
+    
+        $booking = new Booking([
+            'cust_first_name' => $request->input('FirstName'),
+            'cust_last_name' => $request->input('LastName'),
+            'cust_email' => $request->input('Email'),
+            'bookingType' => $bookingType,
+            'tariffID' => $tariff->tariffID,
+            'mobileNum' => $request->input('MobileNum'),
+            'pickUp_Address' => $request->input('PickUpAddress'),
+            'note' => $request->input('Note'),
+            'downpayment_Fee' => $downpayment,
+            'subtotal' => $subtotal,
+            'status' => 'Pending',
+            'startDate' => $formattedStartDate,
+            'endDate' => $formattedEndDate,
+        ]);
+    
         $booking->save();
-    }
-        $reserveID = $booking->reserveID;
-
-        $vehicleTypes = $request->input('TypeQuantity');
-        
-        //Process the vehicle types booked
-        foreach ($vehicleTypes as $vehicleTypeId => $quantity) {
-            // Create a new instance of the VehicleTypeBooked model and set the attributes
-            $vehicleTypeBooked = new VehicleTypeBooked();
-            $vehicleTypeBooked->vehicle_Type_ID = $vehicleTypeId;
-            $vehicleTypeBooked->quantity = $quantity;
-            $vehicleTypeBooked->reserveID = $reserveID;
-            // Save the new record to the database
+    
+        // Process vehicle types booked (assuming 'TypeQuantity' is an array of vehicle type IDs and quantities)
+        foreach ($request->input('TypeQuantity') as $vehicleTypeId => $quantity) {
+            $vehicleTypeBooked = new VehicleTypeBooked([
+                'vehicle_Type_ID' => $vehicleTypeId,
+                'quantity' => $quantity,
+                'reserveID' => $booking->reserveID,
+            ]);
             $vehicleTypeBooked->save();
         }
-        /*
-        $bookingStatusUrl = route('checkbookingstatus', $reserveID);
-        return Redirect::to($bookingStatusUrl);
-        */
+    
+        // Send booking confirmation email
         Mail::to($booking->cust_email)->send(new BookingConfirmation($booking->toArray()));
-        
+    
         return redirect()->route('checkbookingstatus', ['booking' => $booking])->with('success', 'Your booking details have been saved successfully');
     }
+    
 
     public function processRate($tariffRate, $startDate, $endDate){
         $start = Carbon::parse($startDate);
@@ -182,11 +132,11 @@ class TestController extends Controller
         return $subtotal;
     }
 
-    public function processDownpayment($subtotal){
+    /*public function processDownpayment($subtotal){
         $downpayment = $subtotal * 0.10;
 
         return $downpayment;
-    }
+    }*/
 
     public function searchView(){
         return view('tests.searchbooking');

@@ -29,7 +29,7 @@ class RemittanceController extends Controller
 
         $rent = Rent::find($id);
         
-        $drivers = $rent->employees()->where('accountType', 'Driver')->get();
+        $drivers = Employee::whereIn('accountType', ['Driver', 'Driver Outsourced'])->get();
 
         /*
         $drivers = Employee::where('accountType', 'Driver')
@@ -40,15 +40,16 @@ class RemittanceController extends Controller
 
     public function store(Request $request){
     // Validate the form data
+    //dd($request);
     $data = $request->validate([
         'clerk' => 'required|string|max:255',
         'clerkID' => 'required|integer',
         'driver' => 'required|integer',
         'rent' => 'required|integer',
-        'receipt_num' => 'required|integer|min:1',
+        'receipt_num' => 'required|integer|min:1|unique:remittances,receiptNum',
         'amount' => 'required|numeric',
     ]);
-
+    
     // Create a new record in the 'rent' table
     Remittance::create([
         'clerkID' => $data['clerkID'],
@@ -60,10 +61,13 @@ class RemittanceController extends Controller
 
     $rentData = Rent::find($data['rent']);
 
-    $rentData->rent_Period_Status = 'Completed';
+if ($rentData->balance <= $data['amount']) {
     $rentData->payment_Status = 'Paid';
-    $rentData->balance = $data['amount'] - $rentData->balance;
-    $rentData->save();
+}
+
+$rentData->balance -= $data['amount'];
+$rentData->save();
+
 
     return redirect()->route('employee.remittance');
     }
