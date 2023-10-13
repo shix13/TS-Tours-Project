@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\BookingConfirmationMail;
 use App\Mail\BookingDeniedMail;
 use App\Mail\BookingApprovedMail;
-
+use Carbon\Carbon;
 
 class BookingRentalController extends Controller
 {
@@ -33,8 +33,7 @@ class BookingRentalController extends Controller
         }, 'tariff' => function ($query){
             $query->withTrashed(); // Include soft-deleted 'tariff' records
         }])
-            ->where('status', 'Pending')
-            ->orderBy('created_at', 'desc') // Assuming you have a 'created_at' column, you can replace it with your actual timestamp column
+            ->where('status', 'Pending')// Assuming you have a 'created_at' column, you can replace it with your actual timestamp column
             ->paginate(10, ['*'], 'pending');
     
         // Pass the data to the Blade view
@@ -260,6 +259,9 @@ public function update(Request $request, $id)
         $dropoffDateTime = $request->input('dropoff_date') . ' ' . $request->input('dropoff_time');
         $combinedEndDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $dropoffDateTime);
 
+        // Calculate subtotal based on changes in dates and booking type
+        $subtotal = $this->processRate($booking->tariff->rate_Per_Day, $combinedStartDate, $combinedEndDate, $booking->bookingType);
+        
         // Update the booking information
         $booking->update([
             'startDate' => $combinedStartDate,
@@ -267,39 +269,61 @@ public function update(Request $request, $id)
             'pickUp_Address' => $request->input('pickup_address'),
             'note' => $request->input('note'),
             'status' => $request->input('status'),
+            'subtotal' => $subtotal,
         ]);
+        
+       // Calculate extra hour fees
+       $extraHours = $request->input('extra_hours', 0);
+       $ratePerHour = $booking->tariff->rent_Per_Hour;
+       $oldExtraHours = $rental->extra_Hours; 
 
-        // Calculate extra hour fees
-        $extraHours = $request->input('extra_hours', 0);
-        $ratePerHour = $booking->tariff->rent_Per_Hour;
+       // Calculate the difference between the new and old extra hours
+       $extraHoursDifference = $extraHours - $rental->extra_Hours;
 
-        // Calculate the difference between the new and old extra hours
-        $extraHoursDifference = $extraHours - $rental->extra_Hours;
+       // Calculate the total price based on the new extra hours
+       $newTotalPrice = $subtotal +  ($extraHours * $ratePerHour) - ($oldExtraHours * $ratePerHour);
+       $newBalance = $rental->balance - ($oldExtraHours * $ratePerHour) + ($extraHours * $ratePerHour);
 
-        // Calculate the total price based on the new extra hours
-        $newTotalPrice = $rental->total_Price + ($extraHours * $ratePerHour);
-        $newBalance = $rental->balance + ($extraHours * $ratePerHour);
+       // If the extra hours are reduced, adjust the total price and balance
+       if ($extraHoursDifference < 0) {
+           $extraHourRate = $ratePerHour * abs($extraHoursDifference);
+           $newTotalPrice -= $extraHourRate;
+           $newBalance -= $extraHourRate;
+       }
 
-        // If the extra hours are reduced, adjust the total price and balance
-        if ($extraHoursDifference < 0) {
-            $extraHourRate = $ratePerHour * abs($extraHoursDifference);
-            $newTotalPrice -= $extraHourRate;
-            $newBalance -= $extraHourRate;
+       // Update the rental information
+       $rental->update([
+           'rent_Period_Status' => $request->input('rental_status'),
+           'extra_Hours' => $extraHours,
+           'total_Price' => $newTotalPrice,
+           'balance' => $newBalance,
+        ]);
+        
+        // Update vehicles assigned based on reserveID
+        $unitIDs = $request->input('unitID', []); // Provide an empty array as default
+        $empIDs = $request->input('empID', []); // Provide an empty array as default
+        $reserveID = $booking->reserveID;
+
+        // Get existing vehicle assignments for this reserveID
+        $existingAssignments = VehicleAssigned::where('reserveID', $reserveID)->get();
+
+        // Loop through existing assignments and update them if necessary
+        foreach ($existingAssignments as $i => $assignment) {
+            if (isset($unitIDs[$i]) && isset($empIDs[$i])) {
+                $assignment->update([
+                    'unitID' => $unitIDs[$i],
+                    'empID' => $empIDs[$i],
+                ]);
+            }
         }
 
-        // Update the rental information
-        $rental->update([
-            'rent_Period_Status' => $request->input('rental_status'),
-            'extra_Hours' => $extraHours,
-            'total_Price' => $newTotalPrice,
-            'balance' => $newBalance,
-        ]);
-
-        return redirect()->back()->with('success', 'Rental information updated successfully.');
+        return redirect()->back()->with('success', 'Rental information and vehicle assignments updated successfully.');
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'An error occurred while updating rental information: ' . $e->getMessage());
     }
 }
+
+
 
 
 
@@ -384,11 +408,33 @@ public function storeAssigned(Request $request){
 
 public function preApproved(){
     
-    $preApprovedBookings = Booking::where('status', 'Pre-Approved')
-    ->orderBy('created_at', 'desc') // Assuming you have a 'created_at' column, replace it with your actual timestamp column
+    $preApprovedBookings = Booking::where('status', 'Pre-Approved')// Assuming you have a 'created_at' column, replace it with your actual timestamp column
     ->get();
 
 
     return view('employees.preApproved', compact('preApprovedBookings'));
+}
+
+private function processRate($rate, $startDate, $endDate, $bookingType)
+{  // dd($rate);
+    // Parse the start and end dates using Carbon
+    $startDateTime = Carbon::parse($startDate);
+    $endDateTime = Carbon::parse($endDate);
+
+    // Calculate the difference in days between start and end dates
+    $diffInDays = $endDateTime->diffInDays($startDateTime);
+
+    if ($bookingType === 'Rent') {
+        // For Rent bookings, calculate the total rate based on the daily rate
+       
+        return $rate * ($diffInDays + 1); // Add 1 to include both the start and end dates
+    } elseif ($bookingType === 'Pickup/Dropoff') {
+        // For Pickup/Dropoff bookings, the rate is already fixed, return it directly
+        return $rate;
+    }
+
+    // Handle other booking types or provide default logic as needed
+    // For example, throw an exception for unsupported booking types
+    throw new \InvalidArgumentException('Invalid booking type: ' . $bookingType);
 }
 }

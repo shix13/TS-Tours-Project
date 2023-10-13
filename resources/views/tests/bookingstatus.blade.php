@@ -43,7 +43,7 @@
                     </div>
                     <div class="row text-left">
                         <div class="col">
-                            Downpayment Fee (10%): {{ $booking['downpayment_Fee']}}
+                            Downpayment Fee (10%)
                         </div>
                     </div> <hr>
                     <form method="POST" action="{{ route('checkoutbooking') }}">

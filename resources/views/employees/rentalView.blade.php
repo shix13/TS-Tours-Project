@@ -282,35 +282,40 @@
                         <div class="row">
                             <div class="col-md-6">    
                                 <label for="vehicleDropdown">Vehicle Assigned:</label>
-                                <select class="form-control" id="vehicleDropdown" style="font-size: 18px">
+                                <select class="form-control" id="vehicleDropdown" name="unitID" style="font-size: 18px">
                                     @foreach($vehiclesAssigned as $vehicleAssigned)
-                                        <option value="{{ $vehicleAssigned->unitName }}">
+                                        <option value="{{ $vehicleAssigned->vehicle->unitID }}">
                                             {{ $vehicleAssigned->vehicle->unitName }}
                                         </option>
                                     @endforeach
                                     @foreach($availableVehicles as $vehicle)
-                                        <option value="{{ $vehicle->unitName }}">
-                                            {{ $vehicle->unitName }}
-                                        </option>
+                                        @if (!$vehiclesAssigned->contains('vehicle.unitID', $vehicle->unitID))
+                                            <option value="{{ $vehicle->unitID }}">
+                                                {{ $vehicle->unitName }}
+                                            </option>
+                                        @endif
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="employeeDropdown">Driver Assigned:</label>
-                                <select class="form-control" id="employeeDropdown" style="font-size: 18px">
+                                <select class="form-control" id="employeeDropdown" name="empID" style="font-size: 18px">
                                     @foreach($vehiclesAssigned as $vehicleAssigned)
                                         <option value="{{ $vehicleAssigned->employee->empID }}">
                                             {{ $vehicleAssigned->employee->firstName }} {{ $vehicleAssigned->employee->lastName }}
                                         </option>
                                     @endforeach
                                     @foreach($availableDrivers as $driver)
-                                        <option value="{{ $driver->empID }}">
-                                            {{ $driver->firstName }} {{ $driver->lastName }}
-                                        </option>
+                                        @if (!$vehiclesAssigned->contains('employee.empID', $driver->empID))
+                                            <option value="{{ $driver->empID }}">
+                                                {{ $driver->firstName }} {{ $driver->lastName }}
+                                            </option>
+                                        @endif
                                     @endforeach
                                 </select>
                             </div>
                         </div>
+                        
                         
                         
                         @if ($rents[0]->rent_Period_Status !== 'Completed')
