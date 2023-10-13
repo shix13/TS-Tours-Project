@@ -88,83 +88,131 @@
         <div class="col">
             <h4><strong>Booking Details</strong> | Tracking Number: {{ $booking['reserveID'] }}</h4> 
             <div class="container">
-                <div class="row">
-                    <div class="col">
-                        <i class="fas fa-car"></i> Vehicles booked
-                        <div class="row">
-                            @foreach($vehicleTypesBooked as $vehicleTypeBooked)
-                                @php
-                                
-                                    $vehicleType = $vehicleTypeBooked->vehicleType;
-                                    $type = $vehicleType->vehicle_Type;
+            <div class="row">
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <i class="fas fa-car"></i> Vehicles booked
+                            <div class="row">
+                                @foreach($vehicleTypesBooked as $vehicleTypeBooked)
+                                    @php
                                     
-                                @endphp
-                            <div class="col">
-                                x{{ $vehicleTypeBooked->quantity }} {{ $type }}
-                            </div>
-                            @endforeach
-                        </div><hr>
+                                        $vehicleType = $vehicleTypeBooked->vehicleType;
+                                        $type = $vehicleType->vehicle_Type;
+                                        
+                                    @endphp
+                                <div class="col-md-12">
+                                    x{{ $vehicleTypeBooked->quantity }} {{ $type }}
+                                </div>
+                                @endforeach
+                            </div><hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <i class="fas fa-calendar-alt"></i> Schedule Date
+                            <div class="row">
+                                <div class="col">
+                                    Start Date:
+                                </div>
+                                <div class="col">
+                                    {{ $booking['startDate'] }}
+                                </div>
+                                <div class="col">
+                                    End Date:
+                                </div>
+                                <div class="col">
+                                    {{ $booking['endDate'] }}
+                                </div>
+                            </div><hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <i class="fas fa-map-marker-alt"></i>  Location
+                        </div>
+                        <div class="col">
+                            {{ $booking->tariff->location }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <i class="fas fa-user"></i> Customer Name
+                        </div>
+                        <div class="col">
+                            {{ $booking['cust_first_name'] }} {{ $booking['cust_last_name'] }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <i class="fas fa-phone"></i> Phone Number
+                        </div>
+                        <div class="col">
+                            {{ $booking['mobileNum']}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <i class="fas fa-map-pin"></i> Pickup Address
+                        </div>
+                        <div class="col">
+                            {{ $booking['pickUp_Address']}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <i class="fas fa-sticky-note"></i> Additional Notes
+                        </div>
+                        <div class="col">
+                        {{ $booking['note']}}
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <i class="fas fa-calendar-alt"></i> Schedule Date
-                        <div class="row">
-                            <div class="col">
-                                Start Date:
-                            </div>
-                            <div class="col">
-                                {{ $booking['startDate'] }}
-                            </div>
-                            <div class="col">
-                                End Date:
-                            </div>
-                            <div class="col">
-                                {{ $booking['endDate'] }}
-                            </div>
-                        </div><hr>
+                <div class="col" style="border-left: 1px solid Silver;">
+                    Vehicles Assigned
+                    <div class="row">
+                        <div class="col-md-12">
+                            @if(isset($vehiclesAssigned))
+                            <div class="scrollable-container" style="height: 300px; overflow-y: auto;">
+                                @foreach($vehiclesAssigned as $vehicleAssigned)
+                                    @php
+                                        $vehicle = $vehicleAssigned->vehicle;
+                                        $vPic = $vehicle->pic;
+                                        $vPlate = $vehicle->registrationNumber;
+                                        $vName = $vehicle->unitName;
+                                        $vPax = $vehicle->pax;
+                                        $vSpec = $vehicle->specification;
+                                        $vModel = $vehicle->yearModel;
+                                        $vColor = $vehicle->color;
+                                    @endphp
+                                    <div class="card">
+                                        <div class="row no-gutters">
+                                            <div class="col-md-4">
+                                                <img src="{{ $vPic }}" class="card-img" alt="Vehicle Image">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">{{ $vName }}</h5>
+                                                    <p class="card-text" style="text-align: left;">
+                                                        <strong>Plate Number:</strong> {{ $vPlate }}<br>
+                                                        <strong>Passenger Capacity:</strong> {{ $vPax }}<br>
+                                                        <strong>Year Model:</strong> {{ $vModel }}<br>
+                                                        <strong>Color:</strong> {{ $vColor }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                                </div>
+                            @else
+                                <p>There are no assigned vehicles yet.</p>
+                            @endif
+                        </div>
+
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <i class="fas fa-map-marker-alt"></i>  Location
-                    </div>
-                    <div class="col">
-                        {{ $booking->tariff->location }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <i class="fas fa-user"></i> Customer Name
-                    </div>
-                    <div class="col">
-                        {{ $booking['cust_first_name'] }} {{ $booking['cust_last_name'] }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <i class="fas fa-phone"></i> Phone Number
-                    </div>
-                    <div class="col">
-                        {{ $booking['mobileNum']}}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <i class="fas fa-map-pin"></i> Pickup Address
-                    </div>
-                    <div class="col">
-                        {{ $booking['pickUp_Address']}}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <i class="fas fa-sticky-note"></i> Additional Notes
-                    </div>
-                    <div class="col">
-                    {{ $booking['note']}}
-                    </div>
-                </div>
+            </div>
             </div>
         </div>
 </div>

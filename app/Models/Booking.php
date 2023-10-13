@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Illuminate\Database\Eloquent\Model;
 class Booking extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
@@ -84,5 +84,8 @@ class Booking extends Authenticatable
         return $this->hasMany(VehicleTypeBooked::class, 'reserveID');
     }
 
-    
+    public function vehiclesAssigned()
+    {
+        return $this->hasMany(VehicleAssigned::class, 'reserveID');
+    }
 }

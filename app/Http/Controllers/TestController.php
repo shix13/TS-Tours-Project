@@ -211,11 +211,15 @@ class TestController extends Controller
 
     public function bookingStatus(Booking $booking){
         $vehicleTypesBooked = $booking->vehicleTypesBooked;
+        $vehiclesAssigned = $booking->vehiclesAssigned;
+        if ($vehiclesAssigned->isEmpty()) {
+            $vehiclesAssigned = null;
+        }
         //dd($vehicleTypesBooked);
         $tariffs = $booking->tariff;
         //dd($booking);
         //dd($type);
-        return view('tests.bookingstatus', compact('booking', 'vehicleTypesBooked', 'tariffs'));
+        return view('tests.bookingstatus', compact('booking', 'vehicleTypesBooked', 'tariffs', 'vehiclesAssigned'));
     }
 
     public function checkout(Request $request){
