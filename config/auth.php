@@ -44,6 +44,10 @@ return [
             'driver' => 'session',
             'provider' => 'employees', // Use your employee user provider
         ],
+        'driver' => [ // Define your "driver" guard here
+            'driver' => 'session', // You can choose a driver (e.g., 'session', 'token')
+            'provider' => 'employees', // The provider for your "driver" guard
+        ],
     ],
 
     /*

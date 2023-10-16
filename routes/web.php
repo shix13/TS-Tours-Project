@@ -15,6 +15,9 @@ use App\Http\Controllers\RemittanceController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\Auth\DriverLoginController;
+use App\Http\Controllers\DriverController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -144,7 +147,15 @@ Route::prefix('employee')->group(function(){
 
     });
 });
+Route::prefix('driver')->group(function(){
+    Route::get('/login', [DriverLoginController::class, 'showLoginForm'])->name('driver.login');
+    Route::post('/loginsubmit', [DriverLoginController::class, 'login'])->name('driver.login.submit');
 
+    //auth:employee is temporary, may need to find a way to only let drivers in
+    Route::middleware('auth:driver')->group(function () {
+        Route::get('/dashboard', [DriverController::class, 'dashboard'])->name('driver.dashboard');
+    });
+});
 //Route::prefix('test')->group(function(){
     Route::get('/selectvehicles', [TestController::class, 'getVehicles'])->name('selectvehicles');
     Route::post('/createbooking', [TestController::class, 'proceedBooking'])->name('createbooking');
