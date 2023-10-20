@@ -153,7 +153,9 @@ Route::prefix('driver')->group(function(){
 
     //auth:employee is temporary, may need to find a way to only let drivers in
     Route::middleware('auth:driver')->group(function () {
-        Route::get('/dashboard', [DriverController::class, 'dashboard'])->name('driver.dashboard');
+        Route::get('/activeTask', [DriverController::class, 'showActive'])->name('driver.active');
+        Route::get('/upcomingTasks', [DriverController::class, 'showUpcoming'])->name('driver.upcoming');
+        Route::get('/logout', [DriverLoginController::class, 'logout'])->name('driver.logout');
     });
 });
 //Route::prefix('test')->group(function(){

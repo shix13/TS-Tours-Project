@@ -24,14 +24,20 @@ class RedirectIfAuthenticated
             switch($guard){
                 case 'employee':
                     if(Auth::guard($guard)->check()) {
-                    return redirect('employee.dashboard');
-                }
-                 break;
-
-            default:  
+                        return redirect('employee.dashboard');
+                    }
+                    break;
+                
+                case 'driver':
                     if(Auth::guard($guard)->check()) {
-                    return redirect(RouteServiceProvider::HOME);
-                }
+                        return redirect()->route('driver.upcoming');
+                    }
+                    break;
+
+                default:  
+                    if(Auth::guard($guard)->check()) {
+                        return redirect(RouteServiceProvider::HOME);
+                    }
                     break; 
             }
             return $next($request);

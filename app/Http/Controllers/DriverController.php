@@ -15,7 +15,7 @@ class DriverController extends Controller
         2. Check if the correct driver is assigned by looking at vehiclesAssigned and it's empID column
 
     */
-    public function dashboard(){
+    public function showActive(){
         $driverID = Auth::user()->empID;
         
         /*
@@ -27,21 +27,39 @@ class DriverController extends Controller
             ->get();
         */
 
-        $assignments = Rent::whereIn('rent_Period_Status', ['Ongoing', 'Booked'])
+        $activeTask = Rent::whereIn('rent_Period_Status', ['Ongoing'])
             ->whereHas('assignments', function($query) use ($driverID){
                 $query->whereIn('empID', [$driverID]);
             })
-            ->with('assignments')
+            ->with(['assignments' => function ($query) use ($driverID) {
+                $query->where('empID', $driverID)
+                ->with('vehicle');
+            }])
+            ->first();
+
+        return view('drivers.activeTasks', compact('activeTask'));
+    }
+
+    public function showUpcoming(){
+        $driverID = Auth::user()->empID;
+
+        $upcomingTasks = Rent::whereIn('rent_Period_Status', ['Scheduled'])
+            ->whereHas('assignments', function($query) use ($driverID){
+                $query->whereIn('empID', [$driverID]);
+            })
+            ->with(['assignments' => function ($query) use ($driverID) {
+                $query->where('empID', $driverID)
+                ->with('vehicle');
+            }])
             ->get();
-
-        $activeAssignments = $assignments->filter(function ($assignment){
-            return $assignment->rent_Period_Status === 'Ongoing';
-        });
-
-        $bookedAssignments = $assignments->filter(function ($assignment){
-            return $assignment->rent_Period_Status === 'Booked';
-        });
-
-        return view('drivers.driver-dashboard');
+        /*
+        foreach($upcomingTasks as $task){
+            foreach($task->assignments as $assignment){
+                dd($assignment->vehicle->unitName);
+            }
+        }
+        */
+        
+        return view('drivers.upcomingTasks', compact('upcomingTasks'));
     }
 }

@@ -36,28 +36,26 @@ class DriverLoginController extends Controller
     public function login(Request $request)
     {   
         $this->validate($request, [
-            'email' => 'required|email',
+            'mobileNum' => 'required|string',
             'password' => 'required|min:8'
         ]);
           
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('mobileNum', 'password');
         $credentials['accountType'] = 'driver';
 
         if (Auth::guard('driver')->attempt($credentials)) {
-            return redirect()->route('driver.dashboard');
+            return redirect()->route('driver.active');
             //return redirect()->intened(route('employee.dashboard'));
             //      intended resulted to go back to login when not logged in as customer (?)
         }
 
-        return redirect()->back()->withInput($request->only('email', 'remember'))->withErrors([
-            'email' => 'These credentials do not match our records.',
+        return redirect('/driver/login')->withInput($request->only('mobileNum', 'remember'))->withErrors([
+            'mobileNum' => 'These credentials do not match our records.',
         ]);
     }
 
     public function logout(){
-       
-        Auth::guard('employee')->logout();
-
-        return redirect('/home');
+        Auth::guard('driver')->logout();
+        return redirect('/driver/login');
     }
 }
