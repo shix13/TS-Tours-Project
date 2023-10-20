@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('assignedID');
             $table->unsignedBigInteger('unitID'); // Foreign key to vehicle table
             $table->unsignedBigInteger('empID'); // Foreign key to employee table
-            $table->unsignedBigInteger('rentID'); // Foreign key to rent table
+            $table->unsignedBigInteger('rentID')->nullable(); // Foreign key to rent table
             $table->timestamps();
 
             

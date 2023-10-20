@@ -71,7 +71,7 @@
                             <strong>Profile</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Job</strong>
+                            <strong>Role</strong>
                         </th>
                         <th class="bold-text">
                             <strong>Mobile Number</strong>

@@ -86,7 +86,7 @@
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-check"></i> Add Remittance
+                                <i class="fas fa-save"></i> Save Remittance
                             </button>
                         </div>
                     </form>

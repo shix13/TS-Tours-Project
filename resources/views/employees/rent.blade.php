@@ -185,5 +185,13 @@
     });
 });
 
+
+function refreshPage() {
+        location.reload(); // Reload the current page
+    }
+
+    // Call the refreshPage function every X milliseconds (e.g., every 5 seconds)
+    setTimeout(refreshPage, 30000); 
+        
     </script>
 @endsection

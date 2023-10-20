@@ -282,7 +282,7 @@ public function update(Request $request, $id)
         
         // Calculate the new balance ensuring it doesn't go negative
         $newBalance = $newTotalPrice- ($remittanceTotal + $booking->downpayment_Fee) ;
-
+        
         // Update the rental information
         $rental->update([
             'rent_Period_Status' => $request->input('rental_status'),
@@ -326,40 +326,49 @@ public function bookAssign($id)
     $pendingBooking = Booking::where('status', 'Pending')->where('reserveID', $id)->first();
 
     // Calculate start and end dates for checking availability
-    $startDate = \Carbon\Carbon::parse($pendingBooking->startDate);
-    $endDate = \Carbon\Carbon::parse($pendingBooking->endDate)->addDay(1); // Add 1 day to end date
+    $startDate = \Carbon\Carbon::parse($pendingBooking->startDate)->startOfDay(); // Start from midnight
+    $endDate = \Carbon\Carbon::parse($pendingBooking->endDate)->endOfDay()->addDay(1); // End at the end of the day and add 1 day
 
-    // Check for available vehicles based on start date, end date, maintenance schedule, and existing bookings
     $availableVehicles = Vehicle::where('status', 'Active')
     ->whereDoesntHave('maintenances', function ($query) use ($startDate, $endDate) {
         $query->whereIn('status', ['In Progress', 'Scheduled'])
             ->where('scheduleDate', '>=', $startDate)
-            ->where('scheduleDate', '<=', $endDate);
+            ->where('scheduleDate', '<', $endDate);
     })
     ->whereDoesntHave('vehicleAssignments.booking', function ($query) use ($startDate, $endDate) {
-        $query->where('status', '!=', 'Denied')
-            ->where('status', '!=', 'Cancelled')
-            ->where('status', '!=', 'Completed')
+        $query->where('status',  'Denied')
+            ->where('status', 'Cancelled')
             ->where(function ($query) use ($startDate, $endDate) {
-                $query->where('startDate', '<=', $endDate)
+                $query->where('startDate', '<', $endDate)
                     ->where('endDate', '>=', $startDate);
             });
+    })
+    ->whereDoesntHave('vehicleAssignments.rent', function ($query) {
+        $query->where('rent_Period_Status', ['Completed', 'Cancelled']);
     })
     ->with('vehicleType')
     ->get();
 
 
+    
     $availableDrivers = Employee::whereIn('accountType', ['Driver', 'Driver Outsourced'])
-    ->whereDoesntHave('vehicleAssignments', function($query) use ($startDate, $endDate) {
-        $query->whereHas('booking', function($bookingQuery) use ($startDate, $endDate) {
-            $bookingQuery->where('startDate', '<=', $endDate)
-                         ->where('endDate', '>=', $startDate)
-                         ->where('status', '!=', 'Denied')
-                         ->where('status', '!=', 'Cancelled')
-                         ->where('status', '!=', 'Completed');
+    ->whereDoesntHave('vehicleAssignments', function ($query) use ($startDate, $endDate) {
+        $query->where(function ($query) use ($startDate, $endDate) {
+            $query->whereHas('booking', function ($bookingQuery) use ($startDate, $endDate) {
+                $bookingQuery->where('startDate', '<', $endDate)
+                    ->where('endDate', '>=', $startDate)
+                    ->whereNotIn('status', ['Denied', 'Cancelled']);
+            })
+            ->whereDoesntHave('rent', function ($rentQuery) {
+                $rentQuery->where('rent_Period_Status', 'Completed')
+                    ->orWhere('rent_Period_Status', 'Cancelled');
+            });
         });
     })
     ->get();
+
+
+    
 
     // Retrieve data from the 'vehicle_types_booked' table
     $bookedTypes = VehicleTypeBooked::where('reserveID', $pendingBooking->reserveID)->get();
@@ -367,6 +376,7 @@ public function bookAssign($id)
     // Pass the filtered data, available vehicles, available drivers, bookedTypes, and employees to the view
     return view('employees.bookAssignments', compact('pendingBooking', 'bookedTypes', 'availableVehicles', 'availableDrivers'));
 }
+
 
 
 

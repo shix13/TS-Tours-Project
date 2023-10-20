@@ -22,21 +22,22 @@
                     <strong><i class="far fa-clock"></i> Pickup Time:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->format('g:i A') }}<br>
                     <strong><i class="far fa-calendar-alt"></i> Return Date:</strong> {{ \Carbon\Carbon::parse($pendingBooking->endDate)->format('F j, Y') }}<br>
                     <strong><i class="fas fa-calendar-day"></i> Number of Days:</strong>
-                    @php
-                    $startDate = \Carbon\Carbon::parse($pendingBooking->startDate);
-                    $endDate = \Carbon\Carbon::parse($pendingBooking->endDate);
-                    
-                    // Calculate the total duration in days, including partial days, and round it up
-                    $numberOfDays = ceil($startDate->floatDiffInDays($endDate));
-                    
-                    // Determine the label for day(s)
-                    $daysLabel = ($numberOfDays == 1) ? 'day' : 'days';
-                    
-                    // Format the end time
-                    $endTimeFormatted = $endDate->format('Y:m:d H:i:s');
-                @endphp
-                
-                {{ $numberOfDays }} {{ $daysLabel }} 
+@php
+    $startDate = \Carbon\Carbon::parse($pendingBooking->startDate)->startOfDay(); // Start from midnight
+    $endDate = \Carbon\Carbon::parse($pendingBooking->endDate)->endOfDay(); // End at the end of the day
+    
+    // Calculate the total duration in days, including partial days, and round it up
+    $numberOfDays = ceil($startDate->floatDiffInDays($endDate));
+    
+    // Determine the label for day(s)
+    $daysLabel = ($numberOfDays == 1) ? 'day' : 'days';
+    
+    // Format the end time
+    $endTimeFormatted = $endDate->format('Y:m:d H:i:s');
+@endphp
+
+{{ $numberOfDays }} {{ $daysLabel }}
+
                 
                 
                 

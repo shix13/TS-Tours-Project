@@ -25,7 +25,7 @@
 </div>
 <br>
 @endif
-
+<button type="button" class="btn btn-danger" onclick="goBack()"><i class="fa-solid fa-circle-left"></i> Back</button>
 <div class="content">
     <div class="row">
         <div class="col-md-10">
@@ -172,7 +172,7 @@
                                         <i class="fas fa-calendar-alt"></i> Rental Status
                                     </label>
                                     <select class="form-control" name="rental_status">
-                                        <option value="Booked" {{ $rents[0]->rent_Period_Status === 'Scheduled' ? 'selected' : '' }}>
+                                        <option value="Scheduled" {{ $rents[0]->rent_Period_Status === 'Scheduled' ? 'selected' : '' }}>
                                              Scheduled
                                         </option>
                                         <option value="Ongoing" {{ $rents[0]->rent_Period_Status === 'Ongoing' ? 'selected' : '' }}>
@@ -316,12 +316,11 @@
                             </div>
                         </div>
                         
-                        
-                        
+                        <br>
                         @if ($rents[0]->rent_Period_Status !== 'Completed')
                             <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
                         @endif
-                        <button type="button" class="btn btn-danger" onclick="goBack()">Back</button>
+                        
                     </form>
                 </div>
             </div>
@@ -333,8 +332,8 @@
 @section('scripts')
 <script>
     function goBack() {
-        window.history.back();
-    }
+    window.location.href = "{{ route('employee.rental') }}";
+}
 
     document.addEventListener('DOMContentLoaded', function () {
     // Get the input fields and add event listeners for input changes

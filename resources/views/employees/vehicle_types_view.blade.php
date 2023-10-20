@@ -10,8 +10,10 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-md-2">
-            <a href="{{route('vehicleTypes.create')}}" class="btn btn-danger"><strong>ADD NEW VEHICLE TYPE</strong></a>
+    <div class="col-md-6">
+            <a href="{{route('employee.vehicle')}}" class="btn btn-danger" ><i class="fa-solid fa-circle-left"></i> Back</a>
+        
+            <a href="{{route('vehicleTypes.create')}}" class="btn btn-success"><i class="fas fa-plus"></i> Add New Vehicle Type</a>
         </div>
     </div>
 

@@ -209,10 +209,18 @@ public function getAvailableSchedules($vehicleId) {
     // Get all booking records for the vehicle
     $bookingDates = $vehicle->vehicleAssignments->filter(function($assignment) {
         return $assignment->booking &&
-            $assignment->booking->status !== 'Denied';
+            $assignment->booking->status !== 'Denied' &&
+            !($assignment->rent->rent_Period_Status === 'Completed') &&
+            !($assignment->rent->rent_Period_Status === 'Cancelled');
     })->flatMap(function($assignment) {
         $startDate = \Carbon\Carbon::parse($assignment->booking->startDate);
         $endDate = \Carbon\Carbon::parse($assignment->booking->endDate);
+
+        // Modify the start date to the beginning of the day (midnight)
+        $startDate->startOfDay();
+
+        // Modify the end date to the end of the day (just before midnight)
+        $endDate->endOfDay();
 
         // Generate all dates in between startDate and endDate (inclusive)
         $datesInRange = [];
@@ -229,6 +237,7 @@ public function getAvailableSchedules($vehicleId) {
     // Return the available schedules as JSON response
     return response()->json($availableSchedules);
 }
+
 
 
 

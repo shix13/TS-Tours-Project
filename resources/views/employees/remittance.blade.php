@@ -89,7 +89,7 @@
                                     <td>{{ $r->driver->firstName }} {{ $r->driver->lastName }}</td>
                                     <td>{{ $r->rent->reserveID }}</td>
                                     <td>{{ $r->receiptNum }}</td>
-                                    <td>{{ $r->amount }}</td>
+                                    <td>₱{{ $r->amount }}</td>
                                     <td>{{ $r->created_at->format('M d, Y g:ia') }}</td>
                                 </tr>
                             @endforeach

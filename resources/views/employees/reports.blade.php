@@ -5,310 +5,386 @@
 @endsection
 
 @section('content')
-<br>
-<br>
-<div class="container">
-    <div class="row">
-        <div class="col-md-2">
-            <a href="{{ route('employee.register') }}" class="btn btn-danger">ADD NEW ACCOUNT</a>
-        </div>
-        <div class="col-md-8">
-            <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px; margin-right: -180px; border-radius: 5px; margin-bottom: 20px;">
-                <div class="form-group col-md-6">
-                    <input type="text" id="nameSearch" class="form-control" placeholder="Enter Name">
-                </div>
-                <div class="form-group col-md-3">
-                    <select id="companyRoleFilter" class="form-control">
-                        <option value="All">All Roles</option>
-                        <option value="Manager">Manager</option>
-                        <option value="Clerk">Clerk</option>
-                        <option value="Driver">Driver</option>
-                        <option value="Mechanic">Mechanic</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <select id="tableFilter" class="form-control">
-                        <option value="All">All</option>
-                        <option value="Employee">Employee</option>
-                        <option value="Customer">Customer</option>
-                    </select>
-                </div>   
-            </div>
-                  
-        </div>
+<br><br>
+<style>
+    
+    .filter-nav a.active {
+        background-color: orangered; /* New background color for the active filter */
+    }
+
+    .filter-nav {
+        text-align: center;
+    }
+
+    .filter-nav ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .filter-nav li {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .filter-nav a {
+        text-decoration: none;
+        background-color: #3498db;
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 5px;
+        transition: background-color 0.2s;
+    }
+
+    .filter-nav a:hover {
+        background-color: rgba(255, 68, 0, 0.763);
+    }
+
+    .interactive-card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .interactive-card h4 {
+        margin-top: 0;
+    }
+
+    .interactive-card p {
+        font-size: 17px;
+    }
+
+    .statistics-bar {
+        height: 20px;
+        background-color: #3498db;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+
+    .bar-container {
+        background-color: #eee;
+        border-radius: 5px;
+        padding: 5px;
+    }
+</style>
+
+<div class="container" style="padding: 20px;">
+    <h2>Maintenance and Rental Reports</h2>
+    <hr>
+    <div class="filter-nav text-right" id="filter-nav-1" >
+        <ul>
+            <li><a href="#" data-filter="1D">1D</a></li>
+            <li><a href="#" data-filter="5D">5D</a></li>
+            <li><a href="#" data-filter="1M">1M</a></li>
+            <li><a href="#" data-filter="6M">6M</a></li>
+            <li><a href="#" data-filter="1Y">1Y</a></li>
+            <li><a href="#" data-filter="MAX">MAX</a></li>
+        </ul>
     </div>
-
-
-    @if(session('success'))
-        <div class="custom-success-message alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+    <br>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-wrench"></i> Maintenance</h4>
+                    <hr>
+                    <p class="card-text">
+                        <strong>Count:</strong> <span id="totalMaintenance">Loading...</span>
+                        <div class="bar-container">
+                            <div class="statistics-bar" id="maintenanceBar" style="width: 0;"></div>
+                        </div>
+                    </p>
+                </div>
+            </div>
         </div>
-        <br>
-        @endif
-
-        @if(session('error'))
-        <div class="custom-error-message alert alert-danger alert-dismissible fade show" role="alert">
-            {{ session('error') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+        
+        <div class="col-md-4">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fa-solid fa-car-side"></i> Rentals</h4>
+                    <hr>
+                    <p class="card-text">
+                        <strong>Count:</strong> <span id="totalFleetRentals">Loading...</span>
+                        <div class="bar-container">
+                            <div class="statistics-bar" id="fleetRentalsBar" style="width: 0;"></div>
+                        </div>
+                    </p>
+                </div>
+            </div>
         </div>
-        <br>
-        @endif
+
+        <div class="col-md-4">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fa-solid fa-laptop-file"></i> Bookings</h4>
+                    <hr>
+                    <p class="card-text">
+                        <strong>Count:</strong> <span id="totalBookings">Loading...</span>
+                        <div class="bar-container">
+                            <div class="statistics-bar" id="bookingBar" style="width: 0;"></div>
+                        </div>
+                    </p>
+                </div>
+            </div>
+        </div>
         
 
-
-    <div id="employeeCard" class="card">
-        <div class="card-header">
-            <h4 class="card-title">Employee Accounts</h4>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="emptable" class="table table-hover table-striped">
-                    <thead class="text-primary font-montserrat">
-                        <th class="bold-text">
-                            <strong>#</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Profile</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Name</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Company Role</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Mobile Number</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Email</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Action</strong>
-                        </th>
-                    </thead>
-                    <tbody>
-                        @php
-                            $counter = 1; // Initialize a counter variable
-                        @endphp
-
-                        @if ($employees !== null && $employees->count() > 0)
-                        @foreach ($employees as $employee)
-                        <tr>
-                            <td>{{ $counter++ }}</td>
-                            <td class="text-center">
-                                @if ($employee->profile_img)
-                                    <img src="{{ asset('storage/' . $employee->profile_img) }}" alt="Profile Image" width="100">
-                                @else
-                                    <!-- If there is no profile image, display a default image -->
-                                    <img src="{{ asset('storage/profile_images/def.png') }}" alt="Default Image" width="100">
-                                @endif
-                            </td>
-                            <td>{{ $employee->firstName }} {{ $employee->lastName }}</td>
-                            <td>{{ $employee->accountType }}</td>
-                            <td>{{ $employee->mobileNum }}</td>
-                            <td>{{ $employee->email }}</td>
-                            <td class="text-center">
-                                <a href="{{ route('employee.edit', $employee->empID) }}" class="btn btn-primary  col-6">EDIT</a>
-                                
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $employee->empID }}">DELETE</button>
-                                <div class="modal fade" id="deleteModal{{ $employee->empID }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                Are you sure you want to delete this employee?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                <form method="POST" action="{{ route('employee.delete', $employee->empID) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            
-                        </tr>
-                        @endforeach
-                        @else
-                            <tr>
-                                <td colspan="12">No accounts available.</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
+        <div class="col-md-6">
+            <div class ="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-money-bill"></i> Revenue</h4>
+                    <hr>
+                    <p class="card-text" >
+                        <strong>Revenue Earned:</strong> <span id="totalRevenue">Loading...</span> <br>
+                        <strong>Downpayment Received:</strong><span id="downpaymentReceived">Loading...</span><br>
+                        <strong>Money Remitted:</strong> <span id="moneyRemitted">Loading...</span>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="customerCard" class="card">
-        <div class="card-header">
-            <h4 class="card-title">Customer Accounts</h4>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="custtable" class="table table-hover table-striped">
-                    <thead class="text-primary font-montserrat">
-                        <th class="bold-text">
-                            <strong>#</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Profile</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Name</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Mobile Number</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Email</strong>
-                        </th>
-                    </thead>
-                    <tbody>
-                        @php
-                            $counter = 1; // Initialize a counter variable
-                        @endphp
+    <hr>
 
-                        @if ($customers !== null && $customers->count() > 0)
-                        @foreach ($customers as $customer)
-                        <tr>
-                            <td>{{ $counter++ }}</td>
-                            <td class="text-center">
-                                @if ($customer->profile_img)
-                                    <img src="{{ asset('storage/' . $customer->profile_img) }}" alt="Profile Image" width="100">
-                                @else
-                                    <!-- If there is no profile image, display a default image -->
-                                    <img src="{{ asset('storage/profile_images/def.png') }}" alt="Default Image" width="100">
-                                @endif
-                            </td>
-                            <td>{{ $customer->firstName }} {{ $customer->lastName }}</td>
-                            <td>{{ $customer->mobileNum }}</td>
-                            <td>{{ $customer->email }}</td>
-                        </tr>
-                        @endforeach
-                        @else
-                            <tr>
-                                <td colspan="12">No accounts available.</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div class="filter-nav text-right" id="filter-nav-2" >
+        <ul>
+            <li><a href="#" data-filter="1Month">1M</a></li>
+            <li><a href="#" data-filter="6Months">6M</a></li>
+            <li><a href="#" data-filter="1Year">1Y</a></li>
+            <li><a href="#" data-filter="MAXYear">MAX</a></li>
+        </ul>
     </div>
-
     
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-map-marker-alt"></i> Top Locations</h4>
+                    <hr>
+                    <table class="table" id="tariffTable">
+                        <tbody>
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-car"></i> Top Assigned Fleets</h4>
+                    <hr>
+                    <table class="table" id="assignedVehiclesTable">
+   
+                        <tbody>
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>            
+        </div>
+    </div>
 </div>
-
 @endsection
 
 @section('scripts')
 <script>
-    $(document).ready(function () {
-    // Function to filter the employee table rows based on name and company role
-    function searchEmployeeByNameAndRole(nameQuery, role) {
-        var empTable = $('#emptable'); // Update the table ID to 'emptable'
-        empTable.find('tbody tr').each(function () {
-            var row = $(this);
-            var nameCell = row.find('td:nth-child(3)'); // Adjust the column index if needed
-            var roleCell = row.find('td:nth-child(4)'); // Adjust the column index if needed
-            var name = nameCell.text().trim();
-            var employeeRole = roleCell.text().trim();
-            var found = false;
+const fetchDataUrl = '{{ route('fetchData') }}';
+const fetchDataSecondFilterUrl = '{{ route('fetchDataSecondFilter') }}';
 
-            // Check if the name contains the query and matches the selected role
-            if ((name.toLowerCase().includes(nameQuery.toLowerCase()) || nameQuery === '') && (employeeRole === role || role === 'All')) {
-                found = true;
-            }
+// Function to update sections based on the first filter
+function updateSections(filter) {
+    // Remove the 'active' class from all filters
 
-            if (found) {
-                row.show();
+    $.ajax({
+        url: fetchDataUrl,
+        type: 'POST',
+        data: {
+            filter: filter,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function (data) {
+            if (data.error) {
+                console.error(data.error);
             } else {
-                row.hide();
+                // Add the 'active' class to the selected filter
+                $(`[data-filter="${filter}"]`).addClass('active');
+
+                // Update the Maintenance section
+                $('#totalMaintenance').text(data.totalMaintenance);
+                $('#maintenanceBar').css('width', data.maintenancePercentage + '%');
+
+                // Update the Rentals section
+                $('#totalFleetRentals').text(data.totalRentals);
+                $('#fleetRentalsBar').css('width', data.rentalsPercentage + '%');
+
+                // Update the Booking section
+                $('#totalBookings').text(data.totalBookings);
+                $('#bookingBar').css('width', data.bookingPercentage + '%');
+
+                // Update the Revenue section
+                $('#totalRevenue').text(data.totalRevenue);
+                $('#revenueBar').css('width', data.revenuePercentage + '%');
+
+                // Optionally, update additional sections if needed
+                $('#downpaymentReceived').text(data.downpaymentReceived);
+                $('#moneyRemitted').text(data.moneyRemitted);
             }
-        });
-    }
-
-    // Function to filter the customer table rows based on name
-    function searchCustomerByName(nameQuery) {
-        var custTable = $('#custtable'); // Update the table ID to 'custtable'
-        custTable.find('tbody tr').each(function () {
-            var row = $(this);
-            var nameCell = row.find('td:nth-child(3)'); // Adjust the column index if needed
-            var name = nameCell.text().trim();
-            var found = false;
-
-            // Check if the name contains the query
-            if (name.toLowerCase().includes(nameQuery.toLowerCase()) || nameQuery === '') {
-                found = true;
-            }
-
-            if (found) {
-                row.show();
-            } else {
-                row.hide();
-            }
-        });
-    }
-
-    // Function to show/hide cards based on the selected filter
-    function toggleCards(selectedFilter, employeeRole ) {
-        var employeeCard = $('#employeeCard');
-        var customerCard = $('#customerCard');
-
-        if (selectedFilter === 'Employee' && employeeRole!== 'All Roles') {
-            employeeCard.show();
-            customerCard.show();
-        } else if (selectedFilter === 'Employee' && employeeRole === 'All Roles') {
-            employeeCard.show();
-            customerCard.hide();
-        }else if (selectedFilter === 'Customer') {
-            employeeCard.hide();
-            customerCard.show();
-        } else if (selectedFilter === 'All') {
-            employeeCard.show();
-            customerCard.show();
+        },
+        error: function (error) {
+            console.error('Failed to fetch data:', error);
         }
-    }
-
-    // Initial filter when the page loads
-    toggleCards('All');
-    searchEmployeeByNameAndRole('', 'All');
-
-    // Handle search input keyup and role dropdown change for employee table
-    $('#nameSearch, #companyRoleFilter').on('input change', function () {
-        var nameQuery = $('#nameSearch').val();
-        var role = $('#companyRoleFilter').val();
-        searchEmployeeByNameAndRole(nameQuery, role);
     });
+}
 
-    // Handle search input keyup for customer table
-    $('#nameSearch').on('input', function () {
-        var nameQuery = $('#nameSearch').val();
-        searchCustomerByName(nameQuery);
-    });
+// Function to update sections based on the second filter
+function updateSectionsSecondFilter(filter) {
+    // Remove the 'active' class from all filters in the second filter group
 
-    // Handle filter dropdown change
-    $('#tableFilter').on('change', function () {
-        var selectedFilter = $(this).val();
-        toggleCards(selectedFilter);
+    $.ajax({
+        url: fetchDataSecondFilterUrl,
+        type: 'POST',
+        data: {
+            filter: filter,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function (data) {
+            if (data.error) {
+                console.error(data.error);
+            } else {
+                // Add the 'active' class to the selected filter
+                $(`[data-filter="${filter}"]`).addClass('active');
+
+                // Update the Tariff section
+                const tariffTable = $('#tariffTable tbody');
+                tariffTable.empty(); // Clear existing data
+
+                // Create an object to store the counts for each location and booking type
+                const locationCounts = {};
+
+                for (const bookingType in data.topLocations) {
+                    const bookingCount = data.topLocations[bookingType];
+                    const [locationName, type] = bookingType.split('|'); // Split bookingType into locationName and type
+
+                    if (!locationCounts[locationName]) {
+                        locationCounts[locationName] = {};
+                    }
+
+                    locationCounts[locationName][type] = bookingCount;
+                }
+
+                // Create the table header for Tariff section
+                tariffTable.append(`
+                    <tr class="text-center">
+                        <th class="col-md-5">Location</th>
+                        <th>Rent Count</th>
+                        <th>Pick-Up/Drop-Off Count</th>
+                    </tr>
+                `);
+
+                // Populate the table with location and booking type counts
+                for (const locationName in locationCounts) {
+                    const counts = locationCounts[locationName];
+                    tariffTable.append(`
+                        <tr class="text-center">
+                            <td>${locationName}</td>
+                            <td>${counts['Rent'] || 0}</td>
+                            <td>${counts['Pickup\/Dropoff'] || 0}</td>
+                        </tr>
+                    `);
+                }
+
+                // Update the Assigned Vehicles section
+                const assignedVehiclesTable = $('#assignedVehiclesTable tbody');
+                assignedVehiclesTable.empty(); // Clear existing data
+
+                // Add the header for the Assigned Vehicles section
+                assignedVehiclesTable.append(`
+                    <tr class="text-center">
+                        <th class="col-md-5">Vehicle</th>
+                        <th>Plate Number</th>
+                        <th>Assignment Count</th>
+                    </tr>
+                `);
+
+                data.topVehicles.forEach((fleet) => {
+                    // Append a row for each fleet and its assigned vehicles
+                    assignedVehiclesTable.append(`
+                        <tr class="text-center">
+                            <td>${fleet.unitName}</td>
+                            <td>${fleet.registrationNumber}</td>
+                            <td>${fleet.assignment_count}</td>
+                        </tr>
+                    `);
+                });
+            }
+        },
+        error: function (error) {
+            console.error('Failed to fetch data for the second filter:', error);
+        }
     });
+}
+
+// Click event handler for the "View Fleet" button
+$(document).on('click', '.view-fleet-button', function () {
+    const fleetId = $(this).data('fleet-id');
+    
+    // Navigate to a different page with the fleet ID
+    window.location.href = '/fleetReport/' + fleetId; // Replace '/fleet/' with the actual URL you want to navigate to
 });
 
-</script>
 
+// Click event handler for the first filter buttons
+$('.filter-nav:eq(0) a').click(function (e) {
+    e.preventDefault();
+    const filter = $(this).data('filter');
+    updateSections(filter);
+
+    // Remove the 'active' class from all first filter buttons
+    $('.filter-nav:eq(0) a').removeClass('active');
+    
+    // Add the 'active' class to the clicked button
+    $(this).addClass('active');
+});
+
+// Click event handler for the second filter buttons
+$('.filter-nav:eq(1) a').click(function (e) {
+    e.preventDefault();
+    const filter = $(this).data('filter');
+    updateSectionsSecondFilter(filter);
+
+    // Remove the 'active' class from all second filter buttons
+    $('.filter-nav:eq(1) a').removeClass('active');
+    
+    // Add the 'active' class to the clicked button
+    $(this).addClass('active');
+});
+
+// Initial update for the first filter group
+const initialFilter = '1D';
+updateSections(initialFilter);
+
+// Initial update for the second filter group
+const initialFilter1 = '1Month';
+updateSectionsSecondFilter(initialFilter1);
+
+// Function to refresh data for the first filter
+function refreshFirstFilterData() {
+    const activeFilter = $('.filter-nav:eq(0) a.active').data('filter');
+    updateSections(activeFilter);
+}
+
+// Function to refresh data for the second filter
+function refreshSecondFilterData() {
+    const activeFilter = $('.filter-nav:eq(1) a.active').data('filter');
+    updateSectionsSecondFilter(activeFilter);
+}
+
+// Refresh the data every X milliseconds for both filters
+setInterval(refreshFirstFilterData, 30000);
+setInterval(refreshSecondFilterData, 30000);
+
+
+</script>
 @endsection
