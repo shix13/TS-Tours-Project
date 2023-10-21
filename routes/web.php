@@ -67,6 +67,10 @@ Route::prefix('employee')->group(function(){
     //LOGIN ACCOUNT
      Route::get('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'showLoginForm'])->name('employee.login');
      Route::post('/loginsubmit', [App\Http\Controllers\Auth\EmployeeController::class, 'login'])->name('employee.login.submit');
+     
+
+     //Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
+     //Route::post('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'register'])->name('employee.register.submit');
 
     Route::middleware('auth:employee')->group(function () {
     //ACCOUNTS
