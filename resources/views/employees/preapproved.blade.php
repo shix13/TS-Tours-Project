@@ -144,7 +144,7 @@
         // Add click event listener to the "Approve" button
         $('.approve-btn').on('click', function(event) {
             // Get the value of gcash_RefNum from the corresponding table cell
-            var gcashRefNum = $(this).closest('tr').find('td:eq(3)').text().trim();
+            var gcashRefNum = $(this).closest('tr').find('td:eq(4)').text().trim();
 
             // Check if gcash_RefNum is empty
             if (gcashRefNum === '') {

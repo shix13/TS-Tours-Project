@@ -48,16 +48,23 @@
                             @enderror
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" hidden>
                             <label for="rent" style="color: black">
                                 <i class="fas fa-file-alt"></i> Rent ID
                             </label>
-                            <input type="text"  style="background: white;color:black;font-size:17px"" name="rent" id="rent" class="form-control" value="{{ request('id') }}" readonly>
+                            <input type="text"  style="background: white;color:black;font-size:17px"" name="rent" id="rent" class="form-control" value="{{ request('id') }}" >
                             @error('rent')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                             @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tracking" style="color: black">
+                                <i class="fas fa-file-alt"></i> Tracking ID
+                            </label>
+                            <input type="text"  style="background: white;color:black;font-size:17px"" name="tracking" id="tracking" class="form-control" value="{{ $rent->reserveID }}" readonly>
                         </div>
 
                         <div class="form-group">
@@ -84,6 +91,25 @@
                             @enderror
                         </div>
 
+                        <div class="form-group">
+                            <label for="paymentType" style="color: black">
+                                <i class="fa-solid fa-hand-holding-dollar"></i> Payment Type
+                            </label>
+                            <select name="paymentType" id="paymentType" style="font-size:17px" class="form-control @error('paymentType') is-invalid @enderror" required>
+                                <option value="" selected>-- Select Payment Type --</option>
+                                <option value="Cash">Cash</option>
+                                <option value="GCash">GCash</option>
+                                <option value="Check">Check</option>
+                                <option value="Others">Others</option>
+                            </select>
+                            @error('paymentType')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+
+                        
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Save Remittance

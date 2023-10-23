@@ -205,13 +205,16 @@ public function getAvailableSchedules($vehicleId) {
         return in_array($maintenance->status, ['Scheduled', 'In Progress']) &&
             $maintenance->status !== 'Cancelled';
     })->pluck('scheduleDate');
-
+   
     // Get all booking records for the vehicle
     $bookingDates = $vehicle->vehicleAssignments->filter(function($assignment) {
         return $assignment->booking &&
             $assignment->booking->status !== 'Denied' &&
-            !($assignment->rent->rent_Period_Status === 'Completed') &&
-            !($assignment->rent->rent_Period_Status === 'Cancelled');
+            (
+                !$assignment->rent || // Check if there is no associated rent record
+                !($assignment->rent->rent_Period_Status === 'Completed') ||
+                !($assignment->rent->rent_Period_Status === 'Cancelled')
+            );
     })->flatMap(function($assignment) {
         $startDate = \Carbon\Carbon::parse($assignment->booking->startDate);
         $endDate = \Carbon\Carbon::parse($assignment->booking->endDate);

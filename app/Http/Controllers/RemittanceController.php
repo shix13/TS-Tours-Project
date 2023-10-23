@@ -35,7 +35,9 @@ class RemittanceController extends Controller
         $drivers = Employee::where('accountType', 'Driver')
             ->get();
         */
-        return view('employees.remittancecreate', compact('drivers'));
+
+        //dd($rent);
+        return view('employees.remittancecreate', compact('drivers','rent'));
     }
 
     public function store(Request $request){
@@ -48,6 +50,7 @@ class RemittanceController extends Controller
         'rent' => 'required|integer',
         'receipt_num' => 'required|integer|min:1|unique:remittances,receiptNum',
         'amount' => 'required|numeric',
+        'paymentType' => 'required|in:Cash,GCash',
     ]);
     
     // Create a new record in the 'rent' table
@@ -57,6 +60,7 @@ class RemittanceController extends Controller
         'rentID' => $data['rent'],
         'receiptNum' => $data['receipt_num'],
         'amount' => $data['amount'],
+        'paymentType' => $data['paymentType'],
     ]);
 
     $rentData = Rent::find($data['rent']);
@@ -81,5 +85,14 @@ $rentData->save();
 
         // Pass the data to the Blade view
         return view('employees.remittanceSelectRent', compact('rents'));
+    }
+
+    public function returnIndex()
+    {
+        // Retrieve a list of rentals from the database 
+        $rents = Rent::with('assignments')->get();
+
+        // Pass the data to the Blade view
+        return view('employees.remittanceSelectReturnRent', compact('rents'));
     }
 }

@@ -38,14 +38,15 @@
                 <div class="container">
                     <div class="row text-left" >
                         <div class="col"> <br>
-                            Subtotal: {{ $booking['subtotal']}}
+                            Subtotal: ₱{{ $booking['subtotal']}}
                         </div>
                     </div>
                     <div class="row text-left">
                         <div class="col">
-                            Downpayment Fee (10%)
+                            Minimum Downpayment Fee (10%) : ₱{{ $booking['subtotal'] *.1}}
                         </div>
-                    </div> <hr>
+                    </div>
+                    <hr>
                     <form method="POST" action="{{ route('checkoutbooking') }}">
                         <input type="hidden" name="bookingID" value="{{ $booking->reserveID }}">
                         @csrf
@@ -56,8 +57,13 @@
                                 <button type="submit" class="btn btn-primary"  style="margin-top: 50px">Confirm Payment</button>
                             </div>
                     </form>
-                </div>
-            </div>
+                    <div class="row text-center">
+                        <div class="col">
+                           Before confirming payment please make sure youre booking details are final. <br>No refunds will be made after confirming payment 
+                        </div>
+                    </div>
+                </div> <hr>
+            </div> 
             <div class="col-md-4 ">
                 <!-- Add your image here -->
                 <img src="{{ asset('images/gcash.jpg') }}" alt="GCash" style="width: 100%;margin-left:0%">
@@ -167,7 +173,7 @@
                             <div class="col">
                                 {{ $booking['note'] }}
                             </div>
-                        </div>
+                        </div> <hr>
                     </div>
                     <div class="col-md-12 text-center" style="border-left: 1px solid Silver; font-size: 18px">
                         Vehicles Assigned

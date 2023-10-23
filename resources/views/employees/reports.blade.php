@@ -40,8 +40,8 @@
     }
 
     .interactive-card {
-        background-color: #fff;
-        border: 1px solid #ddd;
+        background-color: rgba(209, 210, 212, 0.099);
+        border: 2px solid lightslategray;
         border-radius: 5px;
         padding: 15px;
         margin-bottom: 20px;
@@ -58,23 +58,25 @@
     .statistics-bar {
         height: 20px;
         background-color: #3498db;
-        margin-top: 10px;
+        margin-top: 0px;
         border-radius: 5px;
     }
 
     .bar-container {
         background-color: #eee;
         border-radius: 5px;
-        padding: 5px;
+        border: 1px solid gray;
     }
 </style>
 
 <div class="container" style="padding: 20px;">
-    <h2>Maintenance and Rental Reports</h2>
+    <h2 style="font-weight:700"><i class="fa-solid fa-laptop-file"></i> Maintenance and Rental Reports</h2>
     <hr>
+    <button id="generatePdfButton">Generate PDF</button>
+
     <div class="filter-nav text-right" id="filter-nav-1" >
         <ul>
-            <li><a href="#" data-filter="1D">1D</a></li>
+            <li><a href="#" data-filter="1D">Today</a></li>
             <li><a href="#" data-filter="5D">5D</a></li>
             <li><a href="#" data-filter="1M">1M</a></li>
             <li><a href="#" data-filter="6M">6M</a></li>
@@ -136,9 +138,10 @@
                     <h4 class="card-title"><i class="fas fa-money-bill"></i> Revenue</h4>
                     <hr>
                     <p class="card-text" >
-                        <strong>Revenue Earned:</strong> <span id="totalRevenue">Loading...</span> <br>
-                        <strong>Downpayment Received:</strong><span id="downpaymentReceived">Loading...</span><br>
-                        <strong>Money Remitted:</strong> <span id="moneyRemitted">Loading...</span>
+                        
+                        <strong>Downpayment Received:</strong>₱ <span id="downpaymentReceived">Loading...</span><br>
+                        <strong>Amount Remitted:</strong> ₱ <span id="moneyRemitted">Loading...</span> <br>
+                        <strong>Total Amount Earned:</strong> ₱ <span id="totalRevenue">Loading...</span> <br>
                     </p>
                 </div>
             </div>
@@ -146,38 +149,44 @@
     </div>
 
     <hr>
-
-    <div class="filter-nav text-right" id="filter-nav-2" >
-        <ul>
-            <li><a href="#" data-filter="1Month">1M</a></li>
-            <li><a href="#" data-filter="6Months">6M</a></li>
-            <li><a href="#" data-filter="1Year">1Y</a></li>
-            <li><a href="#" data-filter="MAXYear">MAX</a></li>
-        </ul>
-    </div>
     
     <div class="row">
         <div class="col-md-6">
             <div class="card interactive-card">
                 <div class="card-body">
-                    <h4 class="card-title"><i class="fas fa-map-marker-alt"></i> Top Locations</h4>
+                    <h4 class="card-title" style="font-weight: 700"><i class="fas fa-map-marker-alt"></i> Top Locations</h4>
                     <hr>
-                    <table class="table" id="tariffTable">
-                        <tbody>
+                    <table class="table" id="topLocationsTable">
+                        <tbody style="font-size:20px;font-weight:400">
                             <!-- Data will be populated here -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+        
         <div class="col-md-6">
             <div class="card interactive-card">
                 <div class="card-body">
-                    <h4 class="card-title"><i class="fas fa-car"></i> Top Assigned Fleets</h4>
+                    <h4 class="card-title" style="font-weight: 700"><i class="fas fa-car"></i> Top Active Assigned Fleets </h4></p>
                     <hr>
                     <table class="table" id="assignedVehiclesTable">
    
-                        <tbody>
+                        <tbody style="font-size:20px;font-weight:400">
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>            
+        </div>
+        <div class="col-md-12">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title" style="font-weight: 700"><i class="fa-solid fa-car-side"></i> Fleet Schedules Created </h4>
+                    <hr>
+                    <table class="table" id="topVehiclesTable">
+   
+                        <tbody style="font-size:20px;font-weight:400">
                             <!-- Data will be populated here -->
                         </tbody>
                     </table>
@@ -190,13 +199,11 @@
 
 @section('scripts')
 <script>
+let globalData = null;
 const fetchDataUrl = '{{ route('fetchData') }}';
-const fetchDataSecondFilterUrl = '{{ route('fetchDataSecondFilter') }}';
 
-// Function to update sections based on the first filter
 function updateSections(filter) {
     // Remove the 'active' class from all filters
-
     $.ajax({
         url: fetchDataUrl,
         type: 'POST',
@@ -210,6 +217,91 @@ function updateSections(filter) {
             } else {
                 // Add the 'active' class to the selected filter
                 $(`[data-filter="${filter}"]`).addClass('active');
+
+                if (data.secondFilterData) {
+                    // Update the Tariff section
+                    const tariffSection = $('#topLocationsTable tbody');
+                    tariffSection.empty(); // Clear existing data
+
+                    // Create a string to store the Tariff section text
+                    let tariffText = '';
+                    let locationIndex = 1; // Initialize locationIndex
+
+                    for (const location in data.secondFilterData.topLocations) {
+                        const bookingCount = data.secondFilterData.topLocations[location];
+
+                        // Since we are looping through locations, there's no need to check for locationName and lastLocationName.
+                        // Instead, you can use the 'location' variable directly.
+
+                        tariffText += `${locationIndex}. ${location} - ${bookingCount} bookings<br>`;
+                        locationIndex++; // Increment locationIndex
+                    }
+
+                    // Update the Tariff section with text
+                    tariffSection.html(tariffText);
+
+
+                    // Update the Assigned Vehicles section
+                    const assignedVehiclesSection = $('#assignedVehiclesTable tbody');
+                    assignedVehiclesSection.empty(); // Clear existing data
+
+                    // Create a string to store the Assigned Vehicles section text
+                    let vehiclesText = '';
+
+                    data.secondFilterData.topVehicles.forEach((fleet, index) => {
+                        const fleetText = `${index + 1}. ${fleet.unitName} - ${fleet.registrationNumber}`;
+                        vehiclesText += `${fleetText} <br>`;
+                    });
+
+                    // Update the Assigned Vehicles section with text
+                    assignedVehiclesSection.html(vehiclesText);
+                }
+
+                // Update the Individual Fleet Records section
+                const individualFleetSection = $('#topVehiclesTable tbody');
+                individualFleetSection.empty(); // Clear existing data
+
+                // Create a string to store the Individual Fleet Records section text
+                let individualFleetText = '';
+                let totalMaintenanceCount = 0; 
+                let totalAssignmentCount = 0; 
+
+                if (data.topVehicleAssignments) {
+                    totalMaintenanceCount = data.topVehicleAssignments.totalMaintenanceCount;
+                    totalAssignmentCount = data.topVehicleAssignments.totalAssignmentCount;
+
+                    data.topVehicleAssignments.topVehicleAssignments.forEach((assignment, index) => {
+                        const maintenancePercentage = (assignment.maintenance_count / totalMaintenanceCount) * 100;
+                        const assignmentPercentage = (assignment.assignment_count / totalAssignmentCount) * 100;
+
+                        const fleetText = `
+                            <tr>
+                                <td>${index + 1}. ${assignment.unitName} - ${assignment.registrationNumber}</td>
+                                <td>Maintenance Count: ${assignment.maintenance_count} 
+                                    <div class="bar-container">
+                                        <div class="statistics-bar" style="width: ${maintenancePercentage.toFixed(2)}%;"></div>
+                                    </div>
+                                </td>
+                                <td>Assignment Count: ${assignment.assignment_count} 
+                                    <div class="bar-container">
+                                        <div class="statistics-bar" style="width: ${assignmentPercentage.toFixed(2)}%;"></div>
+                                    </div>
+                                </td>
+                            </tr>`;
+
+                        individualFleetText += fleetText;
+                    });
+                } else {
+                    // Display a message or handle the absence of data
+                    individualFleetText = '<tr><td colspan="3">No data available</td></tr>';
+                }
+
+                // Update the Individual Fleet Records section with text
+                individualFleetSection.html(individualFleetText);
+
+
+                // Update the Individual Fleet Records section with text
+                individualFleetSection.html(individualFleetText);
 
                 // Update the Maintenance section
                 $('#totalMaintenance').text(data.totalMaintenance);
@@ -230,6 +322,8 @@ function updateSections(filter) {
                 // Optionally, update additional sections if needed
                 $('#downpaymentReceived').text(data.downpaymentReceived);
                 $('#moneyRemitted').text(data.moneyRemitted);
+
+                globalData = data;
             }
         },
         error: function (error) {
@@ -238,153 +332,51 @@ function updateSections(filter) {
     });
 }
 
-// Function to update sections based on the second filter
-function updateSectionsSecondFilter(filter) {
-    // Remove the 'active' class from all filters in the second filter group
+document.getElementById('generatePdfButton').addEventListener('click', function () {
+    if (globalData) {
+        // Convert data to a JSON string
+        const dataJson = JSON.stringify(globalData);
 
-    $.ajax({
-        url: fetchDataSecondFilterUrl,
-        type: 'POST',
-        data: {
-            filter: filter,
-            _token: '{{ csrf_token() }}'
-        },
-        success: function (data) {
-            if (data.error) {
-                console.error(data.error);
-            } else {
-                // Add the 'active' class to the selected filter
-                $(`[data-filter="${filter}"]`).addClass('active');
+        // Encode the data as a URL parameter
+        const dataParam = encodeURIComponent(dataJson);
 
-                // Update the Tariff section
-                const tariffTable = $('#tariffTable tbody');
-                tariffTable.empty(); // Clear existing data
+        // Construct the URL with the data parameter
+        const pdfUrl = `/generate-pdf?data=${dataParam}`; // Updated URL
 
-                // Create an object to store the counts for each location and booking type
-                const locationCounts = {};
-
-                for (const bookingType in data.topLocations) {
-                    const bookingCount = data.topLocations[bookingType];
-                    const [locationName, type] = bookingType.split('|'); // Split bookingType into locationName and type
-
-                    if (!locationCounts[locationName]) {
-                        locationCounts[locationName] = {};
-                    }
-
-                    locationCounts[locationName][type] = bookingCount;
-                }
-
-                // Create the table header for Tariff section
-                tariffTable.append(`
-                    <tr class="text-center">
-                        <th class="col-md-5">Location</th>
-                        <th>Rent Count</th>
-                        <th>Pick-Up/Drop-Off Count</th>
-                    </tr>
-                `);
-
-                // Populate the table with location and booking type counts
-                for (const locationName in locationCounts) {
-                    const counts = locationCounts[locationName];
-                    tariffTable.append(`
-                        <tr class="text-center">
-                            <td>${locationName}</td>
-                            <td>${counts['Rent'] || 0}</td>
-                            <td>${counts['Pickup\/Dropoff'] || 0}</td>
-                        </tr>
-                    `);
-                }
-
-                // Update the Assigned Vehicles section
-                const assignedVehiclesTable = $('#assignedVehiclesTable tbody');
-                assignedVehiclesTable.empty(); // Clear existing data
-
-                // Add the header for the Assigned Vehicles section
-                assignedVehiclesTable.append(`
-                    <tr class="text-center">
-                        <th class="col-md-5">Vehicle</th>
-                        <th>Plate Number</th>
-                        <th>Assignment Count</th>
-                    </tr>
-                `);
-
-                data.topVehicles.forEach((fleet) => {
-                    // Append a row for each fleet and its assigned vehicles
-                    assignedVehiclesTable.append(`
-                        <tr class="text-center">
-                            <td>${fleet.unitName}</td>
-                            <td>${fleet.registrationNumber}</td>
-                            <td>${fleet.assignment_count}</td>
-                        </tr>
-                    `);
-                });
-            }
-        },
-        error: function (error) {
-            console.error('Failed to fetch data for the second filter:', error);
-        }
-    });
-}
-
-// Click event handler for the "View Fleet" button
-$(document).on('click', '.view-fleet-button', function () {
-    const fleetId = $(this).data('fleet-id');
-    
-    // Navigate to a different page with the fleet ID
-    window.location.href = '/fleetReport/' + fleetId; // Replace '/fleet/' with the actual URL you want to navigate to
+        // Trigger the download by opening a new window or tab
+        window.open(pdfUrl, '_blank');
+    } else {
+        console.error('Data not available for PDF generation');
+    }
 });
 
 
+
+
 // Click event handler for the first filter buttons
-$('.filter-nav:eq(0) a').click(function (e) {
+$('.filter-nav a').click(function (e) {
     e.preventDefault();
     const filter = $(this).data('filter');
     updateSections(filter);
 
     // Remove the 'active' class from all first filter buttons
-    $('.filter-nav:eq(0) a').removeClass('active');
-    
-    // Add the 'active' class to the clicked button
-    $(this).addClass('active');
-});
+    $('.filter-nav a').removeClass('active');
 
-// Click event handler for the second filter buttons
-$('.filter-nav:eq(1) a').click(function (e) {
-    e.preventDefault();
-    const filter = $(this).data('filter');
-    updateSectionsSecondFilter(filter);
-
-    // Remove the 'active' class from all second filter buttons
-    $('.filter-nav:eq(1) a').removeClass('active');
-    
     // Add the 'active' class to the clicked button
     $(this).addClass('active');
 });
 
 // Initial update for the first filter group
-const initialFilter = '1D';
+const initialFilter = '1M';
 updateSections(initialFilter);
-
-// Initial update for the second filter group
-const initialFilter1 = '1Month';
-updateSectionsSecondFilter(initialFilter1);
 
 // Function to refresh data for the first filter
 function refreshFirstFilterData() {
-    const activeFilter = $('.filter-nav:eq(0) a.active').data('filter');
+    const activeFilter = $('.filter-nav a.active').data('filter');
     updateSections(activeFilter);
 }
 
-// Function to refresh data for the second filter
-function refreshSecondFilterData() {
-    const activeFilter = $('.filter-nav:eq(1) a.active').data('filter');
-    updateSectionsSecondFilter(activeFilter);
-}
-
-// Refresh the data every X milliseconds for both filters
+// Refresh the data every X milliseconds for the first filter
 setInterval(refreshFirstFilterData, 30000);
-setInterval(refreshSecondFilterData, 30000);
-
-
 </script>
 @endsection

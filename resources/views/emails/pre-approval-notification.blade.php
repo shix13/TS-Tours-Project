@@ -12,7 +12,6 @@
             margin: 0;
             padding: 0;
         }
-
         .container {
             width: 100%;
             max-width: 600px;
@@ -22,37 +21,51 @@
             border-radius: 10px;
             background-color: #ffffff;
         }
-
         .header {
-            background-color: #007bff;
+            background-color: midnightblue;
             color: white;
-            text-align: center;
             padding: 20px;
+            text-align: center;
         }
-
-        .content {
-            margin-bottom: 20px;
-            font-size: 16px;
-            color: #333;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
-
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
         .button {
-            background-color: #007bff;
+            background-color: #4CAF50;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 20px;
+            text-align: center;
             text-decoration: none;
+            display: inline-block;
             border-radius: 5px;
         }
-
         .button:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
         }
-
         .footer {
-            font-size: 14px;
-            color: #555;
             text-align: center;
-            margin-top: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+            }
+            .header {
+                font-size: 20px;
+            }
+            table {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -60,14 +73,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('images/TsTours.jpg') }}" alt="TS Tours Logo" width="100px">
-            <h2>Booking Approved!</h2>
+            <h2>TS Tours Services</h2>
+            <h4>Booking Approved!</h4>
         </div>
 
         <div class="content">
             <p>
                 Dear {{ $customerFirstName }} {{ $customerLastName }},<br>
-                Thank you for choosing TS Tours Services. Your booking with ID: <strong>{{ $reserveID }}</strong> has been approved!
+                Thank you for choosing TS Tours Services. Your Tracking ID: <strong>{{ $reserveID }}</strong> has been approved!<br>
                 To proceed, please click the following link to pay the down payment fee.
             </p>
 

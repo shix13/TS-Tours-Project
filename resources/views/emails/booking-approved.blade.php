@@ -13,65 +13,64 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
-
         .container {
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
+            border: 1px solid #ccc;
             border-radius: 10px;
             background-color: #ffffff;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
         }
-
         .header {
+            background-color: midnightblue;
+            color: white;
+            padding: 20px;
             text-align: center;
-            margin-bottom: 20px;
         }
-
-        .logo img {
-            display: block;
-            margin: 0 auto;
-        }
-
-        .content {
-            margin-bottom: 20px;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .details {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .details h3 {
-            margin-bottom: 10px;
-            color: #007bff;
-        }
-
-        .details ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .cta-button {
-            display: block;
+        table {
             width: 100%;
-            max-width: 200px;
-            margin: 20px auto;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
             padding: 15px;
-            background-color: #007bff;
-            color: #fff;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
             text-align: center;
             text-decoration: none;
+            display: inline-block;
             border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+            }
+            .header {
+                font-size: 20px;
+            }
+            table {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -79,53 +78,94 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">
-                <img src="{{ asset('images/TsTours.jpg') }}" alt="TS Tours Logo" width="150px">
-            </div>
-            <h2 style="color: #007bff;">Booking Approved!</h2>
+            <h2>TS Tours Services</h2>
+            <h4>Booking Approved!</h4>
+       
         </div>
-
         <div class="content">
             <p>
                 Dear {{ $booking->cust_first_name }} {{ $booking->cust_last_name }},<br>
-                Your payment under booking ID: <strong>{{ $booking->reserveID }}</strong> has been approved.
-                Thank you for choosing our services.
+                Your payment under tracking ID: <strong>{{ $booking->reserveID }}</strong> has been approved.
             </p>
+            <p>Thank you for your booking with TS Tours Services. Below are the details of your booking:</p>
+ 
+         <div class="details">
+            <h3>Booking Details:</h3>
+            <table>
+                <tr>
+                    <td><strong>Booking Type:</strong></td>
+                    <td>{{ $booking->bookingType }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Schedule Date:</strong></td>
+                    <td>{{ $booking->startDate }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Return Date:</strong></td>
+                    <td>{{ \Carbon\Carbon::parse($booking->endDate)->format('Y-m-d') }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Location:</strong></td>
+                    <td>{{ $tariff->location }}</td>
+                </tr>
+            </table>
+        </div>
 
-            <div class="details">
-                <h3>Booking Details:</h3>
-                <ul>
-                    <li><strong>Booking Type:</strong> {{ $booking->bookingType }}</li>
-                    <li><strong>Schedule Date:</strong> {{ $booking->startDate }}</li>
-                    <li><strong>Return Date:</strong> {{ \Carbon\Carbon::parse($booking->endDate)->format('Y-m-d') }}</li>
-                    <li><strong>Location:</strong> {{ $tariff->location }}</li>
-                </ul>
-            </div>
-
-            <div class="details">
-                <h3>Vehicle Information:</h3>
+        <div class="details">
+            <h3>Vehicle Information:</h3>
+            <table>
                 @foreach($vehicles as $vehicle)
-                    <ul>
-                        <li><strong>License Plate Number:</strong> {{ $vehicle->registrationNumber }}</li>
-                        <li><strong>Model:</strong> {{ $vehicle->unitName }}</li>
-                        <li><strong>Passenger Capacity:</strong> {{ $vehicle->pax }}</li>
-                    </ul>
+                <tr>
+                    <td><strong>License Plate Number:</strong></td>
+                    <td>{{ $vehicle->registrationNumber }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Model:</strong></td>
+                    <td>{{ $vehicle->unitName }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Passenger Capacity:</strong></td>
+                    <td>{{ $vehicle->pax }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Color:</strong></td>
+                    <td>{{ $vehicle->color }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Year Model:</strong></td>
+                    <td>{{ $vehicle->yearModel }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Vehicle Type:</strong></td>
+                    <td>{{ $vehicle->vehicleType->vehicle_Type }}</td>
+                </tr>                
                 @endforeach
-            </div>
+            </table>
+        </div>
 
-            <div class="details">
-                <h3>Driver Information:</h3>
+        <div class="details">
+            <h3>Driver Information:</h3>
+            <table>
                 @foreach($drivers as $driver)
-                    <ul>
-                        <li><strong>First Name:</strong> {{ $driver->firstName }}</li>
-                        <li><strong>Last Name:</strong> {{ $driver->lastName }}</li>
-                        <li><strong>Mobile Number:</strong> {{ $driver->mobileNum }}</li>
-                    </ul>
+                <tr>
+                    <td><strong>First Name:</strong></td>
+                    <td>{{ $driver->firstName }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Last Name:</strong></td>
+                    <td>{{ $driver->lastName }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Mobile Number:</strong></td>
+                    <td>{{ $driver->mobileNum }}</td>
+                </tr>
                 @endforeach
-            </div>            
+            </table>
+        </div>
+
         </div>
         
-        <a href="{{ route('home') }}" class="cta-button" style="color: black;background:orangered">Explore More</a>
+        <a href="{{ route('home') }}" class="cta-button" style="text-decoration: none;">Explore More</a>
 
         <div class="footer text-center">
             <p>&copy; 2023 TS Tours Services. All rights reserved.</p>

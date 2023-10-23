@@ -202,7 +202,7 @@
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
                                     <label style="color: black;">
-                                        <i class="fas fa-clock"></i> Extra Hours
+                                        <i class="fa-solid fa-hourglass-half"></i> Extra Hours
                                     </label>
                                     <input id="extra_hours" type="number" class="form-control" min="0" name="extra_hours" min='0' value="{{ $rents[0]->extra_Hours ?? 0 }}">
                                 </div>
@@ -240,7 +240,7 @@
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
                                     <label style="color: black;">
-                                        <i class="fas fa-hourglass-half"></i> Extra Hour Fees
+                                        <i class="fa-solid fa-money-check-dollar"></i> Extra Hour Fees
                                     </label>
                                     <input style="color: black;background-color: rgb(255, 255, 255)" id='compute' type="text" class="form-control" value="₱ 0" readonly>
                                 </div>
@@ -249,7 +249,7 @@
                             <div class="col-md-3 pl-1">
                                 <div class="form-group">
                                     <label style="color: black;">
-                                        <i class="fas fa-hand-holding-usd"></i> Balance
+                                        <i class="fa-solid fa-dollar-sign"></i> Balance
                                     </label>
                                     <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value="₱ {{$rents[0]->balance}}" id="balance" name='balance' readonly>
                                 </div>

@@ -12,7 +12,6 @@
             margin: 0;
             padding: 0;
         }
-
         .container {
             width: 100%;
             max-width: 600px;
@@ -22,42 +21,51 @@
             border-radius: 10px;
             background-color: #ffffff;
         }
-
         .header {
+            background-color: midnightblue;
+            color: white;
+            padding: 20px;
             text-align: center;
-            margin-bottom: 20px;
         }
-
-        .header img {
-            width: 150px;
-        }
-
-        .header h2 {
-            color: #ff6347; /* Tomato Red */
-            font-size: 28px;
-            margin-top: 10px;
-        }
-
-        .content {
-            margin-bottom: 20px;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .content p {
-            margin-bottom: 15px;
-        }
-
-        .content a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .footer {
-            font-size: 14px;
-            color: #555;
-            text-align: center;
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 20px;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+            }
+            .header {
+                font-size: 20px;
+            }
+            table {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -65,8 +73,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('images/TsTours.jpg') }}" alt="TS Tours Logo">
-            <h2>Booking Denied</h2>
+            <h2>TS Tours Services</h2>
+            <h4>Booking Denied</h4>
         </div>
 
         <div class="content">
