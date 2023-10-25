@@ -16,12 +16,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;500;700&family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
-
+    <!-- Scripts -->
+    
+    <link rel="stylesheet" href="{{ asset('css/TSstyles.css') }}">
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
 </head>
-<body >
+<body class="b1">
     <div id="app" style="font-family: 'Montserrat', sans-serif;">
         <nav class="navbar navbar-expand-md navbar-light  shadow-sm" style="background-color: #122E50;padding:10px;font-size:15px">
             <div class="container"  >
@@ -73,7 +75,7 @@
             </div>
         </nav>
     </div>
-        <main class="py-4" style="background: radial-gradient(circle, rgba(234,235,238,1) 0%, rgba(226,228,231,1) 23%, rgba(211,211,224,1) 50%, rgba(221,221,232,1) 79%, rgba(205,207,209,1) 100%);">
+        <main class="py-4 body" >
             @yield('content')
         </main>
     

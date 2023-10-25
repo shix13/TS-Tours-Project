@@ -1,0 +1,10 @@
+.body {
+    background: #f0f0f0; /* Fallback background color */
+    background: radial-gradient(
+        circle, rgba(234, 235, 238, 1) 0%,
+        rgba(226, 228, 231, 1) 23%,
+        rgba(211, 211, 224, 1) 50%,
+        rgba(221, 221, 232, 1) 79%,
+        rgba(205, 207, 209, 1) 100%
+    );
+}

@@ -15,6 +15,8 @@ use App\Http\Controllers\RemittanceController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ResetPasswordController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,7 +34,7 @@ Route::get('/', function () {
 });
 */
 
-Auth::routes();
+//Auth::routes();
 
 Route::post('/contact', [TestController::class, 'sendEmail'])->name('contact.send');
 //VISITOR
@@ -66,7 +68,7 @@ Route::prefix('employee')->group(function(){
      Route::get('/login', [App\Http\Controllers\Auth\EmployeeController::class, 'showLoginForm'])->name('employee.login');
      Route::post('/loginsubmit', [App\Http\Controllers\Auth\EmployeeController::class, 'login'])->name('employee.login.submit');
 
-    Route::middleware('auth:employee')->group(function () {
+     Route::group(['middleware' => 'auth:employee'], function () {
     //ACCOUNTS
         Route::middleware(['manager'])->group(function (){
         Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
@@ -171,3 +173,15 @@ Route::prefix('employee')->group(function(){
     Route::middleware('auth:employee')->group(function () {
             Route::get('generate-pdf', [ReportsController::class, 'generatePDF'])->name('generate-pdf');
             });
+
+    //reset password 
+    Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+
+    // Send the password reset email
+    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+    
+    // Show the password reset form
+    Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    
+    // Handle the password reset request
+    Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');

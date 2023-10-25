@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
-    public function __contruct()
+    public function __contsruct()
     {
         $this->middleware('employee')->except('logout');
     }

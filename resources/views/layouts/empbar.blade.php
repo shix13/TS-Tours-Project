@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" />
   <link href="{{ asset('assets/css/now-ui-dashboard.css?v=1.5.1') }}" rel="stylesheet" />
+  <link href="./assets_emp/css/now-ui-kit.css?v=1.3.0" rel="stylesheet" />
+
 
   
 

@@ -101,13 +101,13 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'customers',
-            'table' => 'password_reset_tokens',
+            'table' => 'password_reset_tokens_for_users',  
             'expire' => 60,
             'throttle' => 60,
         ],
         'employee' => [
             'provider' => 'employees',
-            'table' => 'password_reset_tokens',
+            'table' => 'password_reset_tokens_for_employees', 
             'expire' => 15,
             'throttle' => 60,
         ],

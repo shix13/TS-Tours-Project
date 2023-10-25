@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Arr;
+use Illuminate\Http\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -49,5 +50,7 @@ class Handler extends ExceptionHandler
         }
         return redirect()->guest(route($login));
     }
+
+   
 
 }
