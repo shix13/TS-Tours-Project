@@ -6,20 +6,41 @@
 
 @section('content')
 <div class="container">
+    @php
+        $startDateString = $activeTask->booking->startDate;
+        $endDateString = $activeTask->booking->endDate;
+        
+        $startDateCarbon = \Carbon\Carbon::parse($startDateString);
+        $startDate = $startDateCarbon->format('F, j, Y g:i A');
+
+        $endDateCarbon = \Carbon\Carbon::parse($endDateString);
+        $endDate = $endDateCarbon->format('F, j, Y');
+
+        foreach ($activeTask->assignments as $assignment) {
+            $unitID = $assignment->vehicle->unitID;
+            $empID = $assignment->employee->empID;
+        }
+    @endphp
+    <div class="container" style="text-align:center; color:white;">
+        <h1>HTML Geolocation</h1>
+        <p>Click the button to get your coordinates.</p>
+
+        <form method="POST" action="{{ route('driver.store') }}">
+            @csrf
+
+        <input name="latitude" id="latitude" value="latitude" readonly><br>
+        <input name="longitude" id="longitude" value="longitude" readonly><br>
+        <input name="driverID" value="{{ $empID }}" readonly><br>
+        <input name="unitID" value="{{ $unitID }}" readonly><br>
+
+        <button onclick="getGeolocation()" type="button">Try It</button><br>
+        </form>
+    </div>
+    
     <h3 style="color: white">ACTIVE TASK</h3>
     @if($activeTask)
     <div class="card">
         <div class="card-header">
-            @php
-                $startDateString = $activeTask->booking->startDate;
-                $endDateString = $activeTask->booking->endDate;
-                
-                $startDateCarbon = \Carbon\Carbon::parse($startDateString);
-                $startDate = $startDateCarbon->format('F, j, Y g:i A');
-
-                $endDateCarbon = \Carbon\Carbon::parse($endDateString);
-                $endDate = $endDateCarbon->format('F, j, Y');
-            @endphp
             <h5 class="card-title">{{ $activeTask->booking->tariff->location }} · {{ $startDate }}</h5>
             <span style="background-color: orange; border-radius:5px;padding:5px">Rent ID:<strong> {{$activeTask->rentID}}</strong> | Booking ID : <strong> {{$activeTask->booking->reserveID}} </strong></span>
         </div>
@@ -109,7 +130,6 @@
                 </div>
             </div>
             
-
             <h5 class="card-title">Vehicle Assigned</h5>
             <div class="row">
                 
@@ -127,4 +147,40 @@
 <script src="{{ asset('assets/js/core/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
 <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+function getGeolocation(){
+    if (navigator.geolocation) {
+        
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var driverID = {{ $driverID }};
+            var unitID = {{ $unitID }}; 
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            console.log(unitID);
+            // Send this data to your Laravel application using an HTTP request (e.g., Axios or Fetch).
+            // Include the rider's ID or any relevant information.
+
+            // Update the content of the HTML elements
+            document.getElementById("latitude").value = latitude;
+            document.getElementById("longitude").value = longitude;
+        });
+        
+        //navigator.geolocation.getCurrentPosition(showPosition);
+         // Submit the form
+         setTimeout(function() {
+                document.querySelector('form').submit();
+            }, 1000);
+    }
+    else {
+        alert("Geolocation is not supported by your browser.");
+    }
+}
+
+function showPosition(position) {
+    document.getElementById("latitude").textContent = position.coords.latitude;
+    document.getElementById("longitude").textContent = position.coords.longitude;
+}
+
+</script>
 @endsection

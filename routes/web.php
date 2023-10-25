@@ -17,6 +17,7 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\Auth\DriverLoginController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\GeolocationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -160,6 +161,7 @@ Route::prefix('driver')->group(function(){
         Route::get('/activeTask', [DriverController::class, 'showActive'])->name('driver.active');
         Route::get('/upcomingTasks', [DriverController::class, 'showUpcoming'])->name('driver.upcoming');
         Route::get('/logout', [DriverLoginController::class, 'logout'])->name('driver.logout');
+        Route::post('/store-geolocation', [GeolocationController::class, 'store'])->name('driver.store');
     });
 });
 //Route::prefix('test')->group(function(){

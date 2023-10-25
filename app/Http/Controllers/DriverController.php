@@ -37,7 +37,7 @@ class DriverController extends Controller
             }])
             ->first();
 
-        return view('drivers.activeTasks', compact('activeTask'));
+        return view('drivers.activeTasks', compact('activeTask', 'driverID'));
     }
 
     public function showUpcoming(){
