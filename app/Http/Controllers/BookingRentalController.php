@@ -375,7 +375,7 @@ public function storeAssigned(Request $request){
     $unitIDs = $request->input('unitID');
     $empIDs = $request->input('empID');
     $reserveID = $request->input('reserveID');
-
+    
     foreach($unitIDs as $i => $unitID){
         VehicleAssigned::create([
             'unitID' => $unitID,

@@ -16,10 +16,10 @@
         $endDateCarbon = \Carbon\Carbon::parse($endDateString);
         $endDate = $endDateCarbon->format('F, j, Y');
 
-        foreach ($activeTask->assignments as $assignment) {
-            $unitID = $assignment->vehicle->unitID;
-            $empID = $assignment->employee->empID;
-        }
+        $assignment = $activeTask->assignments->first();
+        $assignmentID = $assignment->assignedID;
+        $unitID = $assignment->vehicle->unitID;
+        $empID = $assignment->employee->empID;
     @endphp
     <div class="container" style="text-align:center; color:white;">
         <h1>HTML Geolocation</h1>
@@ -28,10 +28,9 @@
         <form method="POST" action="{{ route('driver.store') }}">
             @csrf
 
-        <input name="latitude" id="latitude" value="latitude" readonly><br>
-        <input name="longitude" id="longitude" value="longitude" readonly><br>
-        <input name="driverID" value="{{ $empID }}" readonly><br>
-        <input name="unitID" value="{{ $unitID }}" readonly><br>
+        <input name="latitude" id="latitude" readonly><br>
+        <input name="longitude" id="longitude" readonly><br>
+        <input name="assignmentID" value="{{ $assignmentID }}" readonly><br>
 
         <button onclick="getGeolocation()" type="button">Try It</button><br>
         </form>
@@ -170,7 +169,7 @@ function getGeolocation(){
          // Submit the form
          setTimeout(function() {
                 document.querySelector('form').submit();
-            }, 1000);
+            }, 5000);
     }
     else {
         alert("Geolocation is not supported by your browser.");

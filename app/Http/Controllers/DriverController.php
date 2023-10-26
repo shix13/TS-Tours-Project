@@ -27,6 +27,10 @@ class DriverController extends Controller
             ->get();
         */
 
+        /*
+            Codeblock gets active tasks where rent period status is ongoing and the assignment's empid is equals
+            to the current logged in user's ID.
+        */
         $activeTask = Rent::whereIn('rent_Period_Status', ['Ongoing'])
             ->whereHas('assignments', function($query) use ($driverID){
                 $query->whereIn('empID', [$driverID]);
@@ -36,6 +40,8 @@ class DriverController extends Controller
                 ->with('vehicle');
             }])
             ->first();
+
+        $assignment = $activeTask->assignments->first();
 
         return view('drivers.activeTasks', compact('activeTask', 'driverID'));
     }

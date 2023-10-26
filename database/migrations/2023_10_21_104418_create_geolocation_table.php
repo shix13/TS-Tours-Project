@@ -12,16 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('geolocation', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('unitID');
-            $table->unsignedBigInteger('driverID');
+            $table->id('geolocationID');
+            $table->unsignedBigInteger('assignedID');
             $table->double('latitude', 10, 7);
             $table->double('longitude', 10, 7);
             $table->timestamps();
 
             // Define foreign key constraints
-            $table->foreign('unitID')->references('unitID')->on('vehicles');
-            $table->foreign('driverID')->references('empID')->on('employees');
+            $table->foreign('assignedID')->references('assignedID')->on('vehicles_assigned');
         });
     }
 

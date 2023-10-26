@@ -3,19 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Geolocation;
 class GeolocationController extends Controller
 {
     //
     public function store(Request $request){
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
-        $driverID = $request->input('driverID');
-        $unitID = $request->input('unitID');
+        $assignmentID = $request->input('assignmentID');
 
-        dd($latitude, $longitude, $driverID, $unitID);
+        //dd($latitude, $longitude, $assignmentID);
 
-        Geolocation::create($data);
-        return response()->json(['message' => 'Geolocation data saved.']);
+        $geolocation = new Geolocation();
+        $geolocation->longitude = $longitude;
+        $geolocation->latitude = $latitude;
+        $geolocation->assignedID = $assignmentID;
+        $geolocation->save();
+
+        return redirect()->route('driver.active')->with('success', 'Location sent successfully');
     }
 }
