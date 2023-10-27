@@ -41,6 +41,7 @@ Auth::routes();
 Route::post('/contact', [TestController::class, 'sendEmail'])->name('contact.send');
 //VISITOR
 Route::get('/home', [App\Http\Controllers\VisitorController::class, 'tsdefault'])->name('home');
+Route::get('/', [App\Http\Controllers\VisitorController::class, 'tsdefault'])->name('home');
 Route::get('/aboutus', [App\Http\Controllers\VisitorController::class, 'tsabout'])->name('aboutus');
 Route::get('/fleet', [App\Http\Controllers\VisitorController::class, 'tsfleet'])->name('fleet');
 Route::get('/contactus', [App\Http\Controllers\VisitorController::class, 'tscontact'])->name('contactus');
@@ -76,11 +77,18 @@ Route::prefix('employee')->group(function(){
     Route::middleware('auth:employee')->group(function () {
     //ACCOUNTS
         Route::middleware(['manager'])->group(function (){
-           Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
-           Route::get('/account/{empID}/edit', [EmployeeController::class, 'edit'])->name('employee.edit');
-           Route::put('/account/{empID}', [EmployeeController::class, 'update'])->name('employee.update');
-           Route::get('/account', [AccountsController::class, 'accountIndex'])->name('employee.accounts');
-           Route::delete('/employee/{empID}', [EmployeeController::class, 'delete'])->name('employee.delete');
+        Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
+        Route::get('/account/{empID}/edit', [EmployeeController::class, 'edit'])->name('employee.edit');
+        Route::put('/account/{empID}', [EmployeeController::class, 'update'])->name('employee.update');
+        Route::get('/account', [AccountsController::class, 'accountIndex'])->name('employee.accounts');
+        Route::delete('/employee/{empID}', [EmployeeController::class, 'delete'])->name('employee.delete');
+
+           //REPORTS
+       
+        Route::match(['get', 'post'], '/fetch-data', [ReportsController::class, 'fetchData'])->name('fetchData');
+        
+        //Route::match(['get', 'post'],'/fetch-data-second-filter', [ReportsController::class, 'fetchDataSecondFilter'])->name('fetchDataSecondFilter');
+        //Route::get('/fleetReport{fleetId}',[ReportsController::class, 'showReport']);
         });
 
         Route::post('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'register'])->name('employee.register.submit');
@@ -140,7 +148,8 @@ Route::prefix('employee')->group(function(){
 
     //REMITTANCE
         Route::get('/remittance', [RemittanceController::class, 'remittanceIndex'])->name('employee.remittance');
-        Route::get('/remittance/selectrent', [RemittanceController::class, 'rentIndex'])->name('remittance.select-rent');
+        Route::get('/remittance/newremittance/selectrent', [RemittanceController::class, 'rentIndex'])->name('remittance.select-rent');
+        //Route::get('/remittance/cashreturns/selectrent', [RemittanceController::class, 'returnIndex'])->name('remittance.select-return');
         Route::get('/remittance/{id}/remittancecreate', [RemittanceController::class, 'create'])->name('remittance.create');
         Route::post('/remittance/store', [RemittanceController::class, 'store'])->name('remittance.store');
 
@@ -174,5 +183,10 @@ Route::prefix('driver')->group(function(){
     Route::post('/checkoutbooking', [TestController::class, 'checkout'])->name('checkoutbooking');
     //});
 
+    //Dont move this! AJAX Query 
     Route::get('/get-available-schedules/{vehicleId}', [MaintenanceController::class, 'getAvailableSchedules'])->name('get-available-schedules');
 
+
+    Route::middleware('auth:employee')->group(function () {
+            Route::get('generate-pdf', [ReportsController::class, 'generatePDF'])->name('generate-pdf');
+            });

@@ -11,7 +11,7 @@
     <div class="row">
         <div class="container">
             <nav class="navbar navbar-expand-md " style="background: midnightblue; font-weight: 700">
-                <ul class="navbar-nav col-md-8" style="font-size: 18px">
+                <ul class="navbar-nav col-md-9" style="font-size: 18px">
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('employee.booking') ? 'active' : 'hi' }}" href="{{ route('employee.booking') }}">Bookings</a>
                     </li>
@@ -27,7 +27,7 @@
                 </ul>
                 <div class="col-md-5" style="justify-content: flex-end">
                     <div class="form-row" style="background-color: transparent; padding: 10px; border-radius: 5px;">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-7">
                             <input type="text" id="bookingIdSearch" class="form-control" placeholder="Search Booking ID" style="padding: 10px; background: white">
                         </div>
                     </div>
@@ -68,9 +68,9 @@
                         <tr>
                             <th class="bold-text"><strong>#</strong></th>
                             <th class="bold-text"><strong>Booking ID</strong></th>
-                            <th class="bold-text"><strong>Downpayment Fee</strong></th>
+                            <th class="bold-text"><strong>Total Amount</strong></th>
+                            <th class="bold-text"><strong>Downpayment Paid</strong></th>
                             <th class="bold-text"><strong>Gcash Reference No.</strong></th>
-                            <th class="bold-text"><strong>Subtotal</strong></th>
                             <th class="bold-text"><strong>Status</strong></th>
                             <th class="bold-text"><strong>Actions</strong></th>
                         </tr>
@@ -85,9 +85,10 @@
                                 <tr class="text-center">
                                     <td>{{ $counter++ }}</td>
                                     <td><strong>{{ $preApprovedBooking->reserveID }}</strong></td>
+                                    <td>₱ {{ $preApprovedBooking->subtotal }}</td>
                                     <td>₱ {{ $preApprovedBooking->downpayment_Fee }}</td>
                                     <td>{{ $preApprovedBooking->gcash_RefNum }}</td>
-                                    <td>₱ {{ $preApprovedBooking->subtotal }}</td>
+                                    
                                     <td>{{ $preApprovedBooking->status }}</td>
                                     <td class="col-md-1">
                                         <a href="{{ route('employee.approveBooking', ['bookingId' => $preApprovedBooking->reserveID]) }}" class="btn btn-success btn-block approve-btn" style="margin-bottom: 10px;"><strong><i class="fa-solid fa-check"></i> Approve</strong></a>
@@ -143,7 +144,7 @@
         // Add click event listener to the "Approve" button
         $('.approve-btn').on('click', function(event) {
             // Get the value of gcash_RefNum from the corresponding table cell
-            var gcashRefNum = $(this).closest('tr').find('td:eq(3)').text().trim();
+            var gcashRefNum = $(this).closest('tr').find('td:eq(4)').text().trim();
 
             // Check if gcash_RefNum is empty
             if (gcashRefNum === '') {
@@ -208,5 +209,11 @@
     });
 });
 
+function refreshPage() {
+        location.reload(); // Reload the current page
+    }
+
+    // Call the refreshPage function every X milliseconds (e.g., every 5 seconds)
+    setTimeout(refreshPage, 30000); 
 </script>
 @endsection

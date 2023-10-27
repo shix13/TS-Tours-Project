@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-md-2">
             <a href="{{ route('remittance.select-rent') }}" class="btn btn-success">
-                <i class="fas fa-plus"></i> New Remittance
+                <i class="fas fa-plus"></i> Add New Remittance
             </a>
             
         </div>
@@ -73,6 +73,9 @@
                             <strong>Amount</strong>
                         </th>
                         <th class="bold-text">
+                            <strong>Payment Type</strong>
+                        </th>
+                        <th class="bold-text">
                             <strong>Remittance Date</strong>
                         </th>
                     </thead>
@@ -89,7 +92,8 @@
                                     <td>{{ $r->driver->firstName }} {{ $r->driver->lastName }}</td>
                                     <td>{{ $r->rent->reserveID }}</td>
                                     <td>{{ $r->receiptNum }}</td>
-                                    <td>{{ $r->amount }}</td>
+                                    <td>₱{{ $r->amount }}</td>
+                                    <td>{{ $r->paymentType }}</td>
                                     <td>{{ $r->created_at->format('M d, Y g:ia') }}</td>
                                 </tr>
                             @endforeach

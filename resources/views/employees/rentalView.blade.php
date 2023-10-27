@@ -25,7 +25,7 @@
 </div>
 <br>
 @endif
-
+<button type="button" class="btn btn-danger" onclick="goBack()"><i class="fa-solid fa-circle-left"></i> Back</button>
 <div class="content">
     <div class="row">
         <div class="col-md-10">
@@ -172,7 +172,7 @@
                                         <i class="fas fa-calendar-alt"></i> Rental Status
                                     </label>
                                     <select class="form-control" name="rental_status">
-                                        <option value="Booked" {{ $rents[0]->rent_Period_Status === 'Scheduled' ? 'selected' : '' }}>
+                                        <option value="Scheduled" {{ $rents[0]->rent_Period_Status === 'Scheduled' ? 'selected' : '' }}>
                                              Scheduled
                                         </option>
                                         <option value="Ongoing" {{ $rents[0]->rent_Period_Status === 'Ongoing' ? 'selected' : '' }}>
@@ -202,7 +202,7 @@
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
                                     <label style="color: black;">
-                                        <i class="fas fa-clock"></i> Extra Hours
+                                        <i class="fa-solid fa-hourglass-half"></i> Extra Hours
                                     </label>
                                     <input id="extra_hours" type="number" class="form-control" min="0" name="extra_hours" min='0' value="{{ $rents[0]->extra_Hours ?? 0 }}">
                                 </div>
@@ -240,7 +240,7 @@
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
                                     <label style="color: black;">
-                                        <i class="fas fa-hourglass-half"></i> Extra Hour Fees
+                                        <i class="fa-solid fa-money-check-dollar"></i> Extra Hour Fees
                                     </label>
                                     <input style="color: black;background-color: rgb(255, 255, 255)" id='compute' type="text" class="form-control" value="₱ 0" readonly>
                                 </div>
@@ -249,7 +249,7 @@
                             <div class="col-md-3 pl-1">
                                 <div class="form-group">
                                     <label style="color: black;">
-                                        <i class="fas fa-hand-holding-usd"></i> Balance
+                                        <i class="fa-solid fa-dollar-sign"></i> Balance
                                     </label>
                                     <input style="color: black;background-color: rgb(255, 255, 255)" type="text" class="form-control" value="₱ {{$rents[0]->balance}}" id="balance" name='balance' readonly>
                                 </div>
@@ -316,12 +316,11 @@
                             </div>
                         </div>
                         
-                        
-                        
+                        <br>
                         @if ($rents[0]->rent_Period_Status !== 'Completed')
                             <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
                         @endif
-                        <button type="button" class="btn btn-danger" onclick="goBack()">Back</button>
+                        
                     </form>
                 </div>
             </div>
@@ -333,8 +332,8 @@
 @section('scripts')
 <script>
     function goBack() {
-        window.history.back();
-    }
+    window.location.href = "{{ route('employee.rental') }}";
+}
 
     document.addEventListener('DOMContentLoaded', function () {
     // Get the input fields and add event listeners for input changes

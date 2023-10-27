@@ -22,6 +22,7 @@ class Remittance extends Model
         'rentID',
         'receiptNum',
         'amount',
+        'paymentType', 
     ];
 
     // Define relationships with other models here if needed

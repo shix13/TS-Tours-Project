@@ -122,11 +122,11 @@
                                     <td>{{ $pendingBooking->status }}</td>
                                     <td>
                                         <a href="{{ route('booking.Assign', ['bookingId' => $pendingBooking->reserveID]) }}" class="btn btn-success">
-                                           <strong><i class="fas fa-check"></i>Assign</strong> 
+                                           <strong><i class="fas fa-check"></i> Assign</strong> 
                                         </a>
                                         <br><br>
                                         <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#denyModal{{ $pendingBooking->reserveID }}">
-                                          <strong>  <i class="fas fa-times"></i> Deny</strong>
+                                          <strong>  <i class="fa-solid fa-xmark"></i> Deny</strong>
                                         </button>                                        
                                         
                                         <!-- Deny Modal -->
@@ -289,6 +289,13 @@
     });
 });
 
+
+function refreshPage() {
+        location.reload(); // Reload the current page
+    }
+
+    // Call the refreshPage function every X milliseconds (e.g., every 5 seconds)
+    setTimeout(refreshPage, 30000); 
 </script>
 @endsection
 

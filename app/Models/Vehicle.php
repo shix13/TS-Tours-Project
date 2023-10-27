@@ -21,7 +21,7 @@ class Vehicle extends Authenticatable
     protected $table = 'vehicles';
     protected $primaryKey = 'unitID'; 
     protected $fillable = [
-        'pic', 'registrationNumber', 'unitName', 'pax', 'specification', 'status', 'vehicle_Type_ID','yearModel', 'color', 'ownership_type', 'outsourced_from'
+        'pic', 'registrationNumber', 'unitName', 'pax', 'specification', 'status', 'vehicle_Type_ID','yearModel', 'color', 'ownership_type', 'outsourced_from',
     ];
 
     /**

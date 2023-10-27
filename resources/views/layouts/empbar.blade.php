@@ -78,6 +78,12 @@
                         <p>Remittances</p>
                     </a>
                 </li>
+                <li class="{{ Request::is('employee/reports') ? 'active' : '' }}">
+                  <a href="{{ route('employee.reports') }}">
+                    <i class="now-ui-icons files_single-copy-04"></i>
+                      <p>Reports</p>
+                  </a>
+              </li>
             </ul>
         </div>
     </div>

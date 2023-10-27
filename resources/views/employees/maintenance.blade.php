@@ -16,7 +16,7 @@
             </a>
         </div>
         <div class="col-md-2">
-            <a href="{{ route('maintenance.create') }}" class="btn btn-success" style="padding: 11px 25px">
+            <a href="{{ route('maintenance.create') }}" class="btn btn-success" style="padding: 18px 25px">
                 <i class="fas fa-plus"></i> Add Schedule
             </a>
         </div>

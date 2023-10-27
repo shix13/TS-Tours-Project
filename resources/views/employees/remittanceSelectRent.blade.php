@@ -9,8 +9,8 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-1">
-            <a href="{{ route('employee.remittance') }}" class="btn btn-danger">BACK</a>
+        <div class="col-md-2">
+            <a href="{{ route('employee.remittance') }}" class="btn btn-danger"><i class="fa-solid fa-circle-left"></i> Back</a>
         </div>
         <div class="col-md-9">
             <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-left:10px; margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
@@ -89,8 +89,8 @@
                                     </td>                                    
                                     <td>{{ $rent->payment_Status }}</td>
                                     <td>{{ $rent->extra_Hours !== null ? $rent->extra_Hours : '--none--' }}</td>
-                                    <td>{{ $rent->total_Price }}</td>
-                                    <td>{{ $rent->balance }}</td>
+                                    <td>₱{{ $rent->total_Price }}</td>
+                                    <td>₱{{ $rent->balance }}</td>
 
                                    
                                     <td class="col-md-2">

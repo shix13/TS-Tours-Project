@@ -23,6 +23,19 @@ Licensed under the MIT license - http://opensource.org/licenses/MIT
 Copyright (c) 2015 Daniel Eden
 */
 
+.interactive-card {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  transition: transform 0.2s;
+}
+
+.interactive-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+
 .nav-link.active {
   background-color: rgb(118, 118, 255); /* or any other style you want to apply */
   border-radius: 5px;

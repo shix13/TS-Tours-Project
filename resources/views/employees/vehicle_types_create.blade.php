@@ -18,8 +18,8 @@
                         @csrf
 
                         <div class="form-group">
-                            <label for="pic" class="custom-file-upload">
-                                <span class="icon">Select Photo</span>
+                            <label for="pic" class="custom-file-upload" style="color: black">
+                                <span class="icon"><i class="fas fa-upload"></i> Select Photo</span>
                             </label>
                             <hr>
                             <input type="file" name="pic" id="pic" class="form-control @error('pic') is-invalid @enderror" accept="image/*" onchange="displayImage(this)">
@@ -32,7 +32,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="vehicleType">Vehicle Type</label>
+                            <label for="vehicleType" style="color: black"><i class="fas fa-car"></i> Vehicle Type</label>
                             <input type="text" name="vehicle_type" id="vehicleType" class="form-control @error('vehicle_type') is-invalid @enderror" required>
                             @error('vehicle_type')
                             <span class="invalid-feedback" role="alert">
@@ -42,7 +42,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="description">Description</label>
+                            <label for="description" style="color: black"><i class="fas fa-sticky-note"></i> Description</label>
                             <textarea name="description" id="description" class="form-control @error('description') is-invalid @enderror" rows="4"></textarea>
                             @error('description')
                             <span class="invalid-feedback" role="alert">
@@ -52,7 +52,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Add Vehicle Type</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Vehicle Type</button>
                         </div>
                     </form>
                 </div>

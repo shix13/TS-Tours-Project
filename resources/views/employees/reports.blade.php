@@ -5,310 +5,378 @@
 @endsection
 
 @section('content')
-<br>
-<br>
-<div class="container">
-    <div class="row">
-        <div class="col-md-2">
-            <a href="{{ route('employee.register') }}" class="btn btn-danger">ADD NEW ACCOUNT</a>
-        </div>
-        <div class="col-md-8">
-            <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px; margin-right: -180px; border-radius: 5px; margin-bottom: 20px;">
-                <div class="form-group col-md-6">
-                    <input type="text" id="nameSearch" class="form-control" placeholder="Enter Name">
-                </div>
-                <div class="form-group col-md-3">
-                    <select id="companyRoleFilter" class="form-control">
-                        <option value="All">All Roles</option>
-                        <option value="Manager">Manager</option>
-                        <option value="Clerk">Clerk</option>
-                        <option value="Driver">Driver</option>
-                        <option value="Mechanic">Mechanic</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <select id="tableFilter" class="form-control">
-                        <option value="All">All</option>
-                        <option value="Employee">Employee</option>
-                        <option value="Customer">Customer</option>
-                    </select>
-                </div>   
-            </div>
-                  
-        </div>
+<br><br>
+<style>
+    
+    .filter-nav a.active {
+        background-color: orangered; /* New background color for the active filter */
+    }
+
+    .filter-nav {
+        text-align: center;
+    }
+
+    .filter-nav ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .filter-nav li {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .filter-nav a {
+        text-decoration: none;
+        background-color: #3498db;
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 5px;
+        transition: background-color 0.2s;
+    }
+
+    .filter-nav a:hover {
+        background-color: rgba(255, 68, 0, 0.763);
+    }
+
+    .interactive-card {
+        background-color: rgba(209, 210, 212, 0.099);
+        border: 2px solid lightslategray;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .interactive-card h4 {
+        margin-top: 0;
+    }
+
+    .interactive-card p {
+        font-size: 17px;
+    }
+
+    .statistics-bar {
+        height: 20px;
+        background-color: #3498db;
+        margin-top: 0px;
+        border-radius: 5px;
+    }
+
+    .bar-container {
+        background-color: #eee;
+        border-radius: 5px;
+        border: 1px solid gray;
+    }
+</style>
+
+<div class="container" style="padding: 20px;">
+    <h2 style="font-weight:700"><i class="fa-solid fa-laptop-file"></i> Maintenance and Rental Reports</h2>
+    <hr>
+    <button id="generatePdfButton">Generate PDF</button>
+
+    <div class="filter-nav text-right" id="filter-nav-1" >
+        <ul>
+            <li><a href="#" data-filter="1D">Today</a></li>
+            <li><a href="#" data-filter="5D">5D</a></li>
+            <li><a href="#" data-filter="1M">1M</a></li>
+            <li><a href="#" data-filter="6M">6M</a></li>
+            <li><a href="#" data-filter="1Y">1Y</a></li>
+            <li><a href="#" data-filter="MAX">MAX</a></li>
+        </ul>
     </div>
-
-
-    @if(session('success'))
-        <div class="custom-success-message alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+    <br>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-wrench"></i> Maintenance</h4>
+                    <hr>
+                    <p class="card-text">
+                        <strong>Count:</strong> <span id="totalMaintenance">Loading...</span>
+                        <div class="bar-container">
+                            <div class="statistics-bar" id="maintenanceBar" style="width: 0;"></div>
+                        </div>
+                    </p>
+                </div>
+            </div>
         </div>
-        <br>
-        @endif
-
-        @if(session('error'))
-        <div class="custom-error-message alert alert-danger alert-dismissible fade show" role="alert">
-            {{ session('error') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+        
+        <div class="col-md-4">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fa-solid fa-car-side"></i> Rentals</h4>
+                    <hr>
+                    <p class="card-text">
+                        <strong>Count:</strong> <span id="totalFleetRentals">Loading...</span>
+                        <div class="bar-container">
+                            <div class="statistics-bar" id="fleetRentalsBar" style="width: 0;"></div>
+                        </div>
+                    </p>
+                </div>
+            </div>
         </div>
-        <br>
-        @endif
+
+        <div class="col-md-4">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fa-solid fa-laptop-file"></i> Bookings</h4>
+                    <hr>
+                    <p class="card-text">
+                        <strong>Count:</strong> <span id="totalBookings">Loading...</span>
+                        <div class="bar-container">
+                            <div class="statistics-bar" id="bookingBar" style="width: 0;"></div>
+                        </div>
+                    </p>
+                </div>
+            </div>
+        </div>
         
 
-
-    <div id="employeeCard" class="card">
-        <div class="card-header">
-            <h4 class="card-title">Employee Accounts</h4>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="emptable" class="table table-hover table-striped">
-                    <thead class="text-primary font-montserrat">
-                        <th class="bold-text">
-                            <strong>#</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Profile</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Name</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Company Role</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Mobile Number</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Email</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Action</strong>
-                        </th>
-                    </thead>
-                    <tbody>
-                        @php
-                            $counter = 1; // Initialize a counter variable
-                        @endphp
-
-                        @if ($employees !== null && $employees->count() > 0)
-                        @foreach ($employees as $employee)
-                        <tr>
-                            <td>{{ $counter++ }}</td>
-                            <td class="text-center">
-                                @if ($employee->profile_img)
-                                    <img src="{{ asset('storage/' . $employee->profile_img) }}" alt="Profile Image" width="100">
-                                @else
-                                    <!-- If there is no profile image, display a default image -->
-                                    <img src="{{ asset('storage/profile_images/def.png') }}" alt="Default Image" width="100">
-                                @endif
-                            </td>
-                            <td>{{ $employee->firstName }} {{ $employee->lastName }}</td>
-                            <td>{{ $employee->accountType }}</td>
-                            <td>{{ $employee->mobileNum }}</td>
-                            <td>{{ $employee->email }}</td>
-                            <td class="text-center">
-                                <a href="{{ route('employee.edit', $employee->empID) }}" class="btn btn-primary  col-6">EDIT</a>
-                                
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $employee->empID }}">DELETE</button>
-                                <div class="modal fade" id="deleteModal{{ $employee->empID }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                Are you sure you want to delete this employee?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                <form method="POST" action="{{ route('employee.delete', $employee->empID) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            
-                        </tr>
-                        @endforeach
-                        @else
-                            <tr>
-                                <td colspan="12">No accounts available.</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
+        <div class="col-md-6">
+            <div class ="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-money-bill"></i> Revenue</h4>
+                    <hr>
+                    <p class="card-text" >
+                        
+                        <strong>Downpayment Received:</strong>₱ <span id="downpaymentReceived">Loading...</span><br>
+                        <strong>Amount Remitted:</strong> ₱ <span id="moneyRemitted">Loading...</span> <br>
+                        <strong>Total Amount Earned:</strong> ₱ <span id="totalRevenue">Loading...</span> <br>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="customerCard" class="card">
-        <div class="card-header">
-            <h4 class="card-title">Customer Accounts</h4>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="custtable" class="table table-hover table-striped">
-                    <thead class="text-primary font-montserrat">
-                        <th class="bold-text">
-                            <strong>#</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Profile</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Name</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Mobile Number</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Email</strong>
-                        </th>
-                    </thead>
-                    <tbody>
-                        @php
-                            $counter = 1; // Initialize a counter variable
-                        @endphp
-
-                        @if ($customers !== null && $customers->count() > 0)
-                        @foreach ($customers as $customer)
-                        <tr>
-                            <td>{{ $counter++ }}</td>
-                            <td class="text-center">
-                                @if ($customer->profile_img)
-                                    <img src="{{ asset('storage/' . $customer->profile_img) }}" alt="Profile Image" width="100">
-                                @else
-                                    <!-- If there is no profile image, display a default image -->
-                                    <img src="{{ asset('storage/profile_images/def.png') }}" alt="Default Image" width="100">
-                                @endif
-                            </td>
-                            <td>{{ $customer->firstName }} {{ $customer->lastName }}</td>
-                            <td>{{ $customer->mobileNum }}</td>
-                            <td>{{ $customer->email }}</td>
-                        </tr>
-                        @endforeach
-                        @else
-                            <tr>
-                                <td colspan="12">No accounts available.</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
+    <hr>
     
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title" style="font-weight: 700"><i class="fas fa-map-marker-alt"></i> Top Locations</h4>
+                    <hr>
+                    <table class="table" id="topLocationsTable">
+                        <tbody style="font-size:20px;font-weight:400">
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title" style="font-weight: 700"><i class="fas fa-car"></i> Top Active Assigned Fleets </h4></p>
+                    <hr>
+                    <table class="table" id="assignedVehiclesTable">
+   
+                        <tbody style="font-size:20px;font-weight:400">
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>            
+        </div>
+        <div class="col-md-12">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title" style="font-weight: 700"><i class="fa-solid fa-car-side"></i> Fleet Schedules Created </h4>
+                    <hr>
+                    <table class="table" id="topVehiclesTable">
+   
+                        <tbody style="font-size:20px;font-weight:400">
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>            
+        </div>
+    </div>
 </div>
-
 @endsection
 
 @section('scripts')
 <script>
-    $(document).ready(function () {
-    // Function to filter the employee table rows based on name and company role
-    function searchEmployeeByNameAndRole(nameQuery, role) {
-        var empTable = $('#emptable'); // Update the table ID to 'emptable'
-        empTable.find('tbody tr').each(function () {
-            var row = $(this);
-            var nameCell = row.find('td:nth-child(3)'); // Adjust the column index if needed
-            var roleCell = row.find('td:nth-child(4)'); // Adjust the column index if needed
-            var name = nameCell.text().trim();
-            var employeeRole = roleCell.text().trim();
-            var found = false;
+let globalData = null;
+const fetchDataUrl = '{{ route('fetchData') }}';
 
-            // Check if the name contains the query and matches the selected role
-            if ((name.toLowerCase().includes(nameQuery.toLowerCase()) || nameQuery === '') && (employeeRole === role || role === 'All')) {
-                found = true;
-            }
-
-            if (found) {
-                row.show();
+function updateSections(filter) {
+    // Remove the 'active' class from all filters
+    $.ajax({
+        url: fetchDataUrl,
+        type: 'POST',
+        data: {
+            filter: filter,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function (data) {
+            if (data.error) {
+                console.error(data.error);
             } else {
-                row.hide();
+                // Add the 'active' class to the selected filter
+                $(`[data-filter="${filter}"]`).addClass('active');
+
+                if (data.secondFilterData) {
+                    // Update the Tariff section
+                    const tariffSection = $('#topLocationsTable tbody');
+                    tariffSection.empty(); // Clear existing data
+
+                    // Create a string to store the Tariff section text
+                    let tariffText = '';
+                    let locationIndex = 1; // Initialize locationIndex
+
+                    for (const location in data.secondFilterData.topLocations) {
+                        const bookingCount = data.secondFilterData.topLocations[location];
+
+                        // Since we are looping through locations, there's no need to check for locationName and lastLocationName.
+                        // Instead, you can use the 'location' variable directly.
+
+                        tariffText += `${locationIndex}. ${location} - ${bookingCount} bookings<br>`;
+                        locationIndex++; // Increment locationIndex
+                    }
+
+                    // Update the Tariff section with text
+                    tariffSection.html(tariffText);
+
+
+                    // Update the Assigned Vehicles section
+                    const assignedVehiclesSection = $('#assignedVehiclesTable tbody');
+                    assignedVehiclesSection.empty(); // Clear existing data
+
+                    // Create a string to store the Assigned Vehicles section text
+                    let vehiclesText = '';
+
+                    data.secondFilterData.topVehicles.forEach((fleet, index) => {
+                        const fleetText = `${index + 1}. ${fleet.unitName} - ${fleet.registrationNumber}`;
+                        vehiclesText += `${fleetText} <br>`;
+                    });
+
+                    // Update the Assigned Vehicles section with text
+                    assignedVehiclesSection.html(vehiclesText);
+                }
+
+                // Update the Individual Fleet Records section
+                const individualFleetSection = $('#topVehiclesTable tbody');
+                individualFleetSection.empty(); // Clear existing data
+
+                // Create a string to store the Individual Fleet Records section text
+                let individualFleetText = '';
+                let totalMaintenanceCount = 0; 
+                let totalAssignmentCount = 0; 
+
+                if (data.topVehicleAssignments) {
+                    totalMaintenanceCount = data.topVehicleAssignments.totalMaintenanceCount;
+                    totalAssignmentCount = data.topVehicleAssignments.totalAssignmentCount;
+
+                    data.topVehicleAssignments.topVehicleAssignments.forEach((assignment, index) => {
+                        const maintenancePercentage = (assignment.maintenance_count / totalMaintenanceCount) * 100;
+                        const assignmentPercentage = (assignment.assignment_count / totalAssignmentCount) * 100;
+
+                        const fleetText = `
+                            <tr>
+                                <td>${index + 1}. ${assignment.unitName} - ${assignment.registrationNumber}</td>
+                                <td>Maintenance Count: ${assignment.maintenance_count} 
+                                    <div class="bar-container">
+                                        <div class="statistics-bar" style="width: ${maintenancePercentage.toFixed(2)}%;"></div>
+                                    </div>
+                                </td>
+                                <td>Assignment Count: ${assignment.assignment_count} 
+                                    <div class="bar-container">
+                                        <div class="statistics-bar" style="width: ${assignmentPercentage.toFixed(2)}%;"></div>
+                                    </div>
+                                </td>
+                            </tr>`;
+
+                        individualFleetText += fleetText;
+                    });
+                } else {
+                    // Display a message or handle the absence of data
+                    individualFleetText = '<tr><td colspan="3">No data available</td></tr>';
+                }
+
+                // Update the Individual Fleet Records section with text
+                individualFleetSection.html(individualFleetText);
+
+
+                // Update the Individual Fleet Records section with text
+                individualFleetSection.html(individualFleetText);
+
+                // Update the Maintenance section
+                $('#totalMaintenance').text(data.totalMaintenance);
+                $('#maintenanceBar').css('width', data.maintenancePercentage + '%');
+
+                // Update the Rentals section
+                $('#totalFleetRentals').text(data.totalRentals);
+                $('#fleetRentalsBar').css('width', data.rentalsPercentage + '%');
+
+                // Update the Booking section
+                $('#totalBookings').text(data.totalBookings);
+                $('#bookingBar').css('width', data.bookingPercentage + '%');
+
+                // Update the Revenue section
+                $('#totalRevenue').text(data.totalRevenue);
+                $('#revenueBar').css('width', data.revenuePercentage + '%');
+
+                // Optionally, update additional sections if needed
+                $('#downpaymentReceived').text(data.downpaymentReceived);
+                $('#moneyRemitted').text(data.moneyRemitted);
+
+                globalData = data;
             }
-        });
-    }
-
-    // Function to filter the customer table rows based on name
-    function searchCustomerByName(nameQuery) {
-        var custTable = $('#custtable'); // Update the table ID to 'custtable'
-        custTable.find('tbody tr').each(function () {
-            var row = $(this);
-            var nameCell = row.find('td:nth-child(3)'); // Adjust the column index if needed
-            var name = nameCell.text().trim();
-            var found = false;
-
-            // Check if the name contains the query
-            if (name.toLowerCase().includes(nameQuery.toLowerCase()) || nameQuery === '') {
-                found = true;
-            }
-
-            if (found) {
-                row.show();
-            } else {
-                row.hide();
-            }
-        });
-    }
-
-    // Function to show/hide cards based on the selected filter
-    function toggleCards(selectedFilter, employeeRole ) {
-        var employeeCard = $('#employeeCard');
-        var customerCard = $('#customerCard');
-
-        if (selectedFilter === 'Employee' && employeeRole!== 'All Roles') {
-            employeeCard.show();
-            customerCard.show();
-        } else if (selectedFilter === 'Employee' && employeeRole === 'All Roles') {
-            employeeCard.show();
-            customerCard.hide();
-        }else if (selectedFilter === 'Customer') {
-            employeeCard.hide();
-            customerCard.show();
-        } else if (selectedFilter === 'All') {
-            employeeCard.show();
-            customerCard.show();
+        },
+        error: function (error) {
+            console.error('Failed to fetch data:', error);
         }
+    });
+}
+
+document.getElementById('generatePdfButton').addEventListener('click', function () {
+    if (globalData) {
+        // Convert data to a JSON string
+        const dataJson = JSON.stringify(globalData);
+
+        // Encode the data as a URL parameter
+        const dataParam = encodeURIComponent(dataJson);
+
+        // Construct the URL with the data parameter
+        const pdfUrl = `/generate-pdf?data=${dataParam}`; // Updated URL
+
+        // Trigger the download by opening a new window or tab
+        window.open(pdfUrl, '_blank');
+    } else {
+        console.error('Data not available for PDF generation');
     }
-
-    // Initial filter when the page loads
-    toggleCards('All');
-    searchEmployeeByNameAndRole('', 'All');
-
-    // Handle search input keyup and role dropdown change for employee table
-    $('#nameSearch, #companyRoleFilter').on('input change', function () {
-        var nameQuery = $('#nameSearch').val();
-        var role = $('#companyRoleFilter').val();
-        searchEmployeeByNameAndRole(nameQuery, role);
-    });
-
-    // Handle search input keyup for customer table
-    $('#nameSearch').on('input', function () {
-        var nameQuery = $('#nameSearch').val();
-        searchCustomerByName(nameQuery);
-    });
-
-    // Handle filter dropdown change
-    $('#tableFilter').on('change', function () {
-        var selectedFilter = $(this).val();
-        toggleCards(selectedFilter);
-    });
 });
 
-</script>
 
+
+
+// Click event handler for the first filter buttons
+$('.filter-nav a').click(function (e) {
+    e.preventDefault();
+    const filter = $(this).data('filter');
+    updateSections(filter);
+
+    // Remove the 'active' class from all first filter buttons
+    $('.filter-nav a').removeClass('active');
+
+    // Add the 'active' class to the clicked button
+    $(this).addClass('active');
+});
+
+// Initial update for the first filter group
+const initialFilter = '1M';
+updateSections(initialFilter);
+
+// Function to refresh data for the first filter
+function refreshFirstFilterData() {
+    const activeFilter = $('.filter-nav a.active').data('filter');
+    updateSections(activeFilter);
+}
+
+// Refresh the data every X milliseconds for the first filter
+setInterval(refreshFirstFilterData, 30000);
+</script>
 @endsection
