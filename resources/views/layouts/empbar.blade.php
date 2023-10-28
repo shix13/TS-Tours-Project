@@ -72,6 +72,14 @@
                         <p>Booking & Rental</p>
                     </a>
                 </li>
+                
+                <li class="{{ Request::is('employee/vehicleTracking') ? 'active' : '' }}">
+                  <a href="{{ route('employee.vehicleTracking') }}">
+                    <i class="now-ui-icons location_pin"></i>
+                      <p>Vehicle Tracking</p>
+                  </a>
+                </li>
+
                 <li class="{{ Request::is('employee/remittance') ? 'active' : '' }}">
                     <a href="{{ route('employee.remittance') }}">
                         <i class="now-ui-icons shopping_credit-card"></i>
@@ -83,7 +91,7 @@
                     <i class="now-ui-icons files_single-copy-04"></i>
                       <p>Reports</p>
                   </a>
-              </li>
+                </li>
             </ul>
         </div>
     </div>

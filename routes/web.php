@@ -18,7 +18,7 @@ use App\Http\Controllers\MailController;
 use App\Http\Controllers\Auth\DriverLoginController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\GeolocationController;
-
+use App\Http\Controllers\VehicleTracking;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -145,6 +145,9 @@ Route::prefix('employee')->group(function(){
 
         Route::get('/bookingAssign{bookingId}', [BookingRentalController::class, 'bookAssign'])->name('booking.Assign');
         Route::post('/storeAssign}', [BookingRentalController::class, 'storeAssigned'])->name('booking.storeAssign');
+
+    //VEHICLE TRACKING
+        Route::get('/vehicle-tracking', [VehicleTracking::class, 'vehicleIndex'])->name('employee.vehicleTracking');
 
     //REMITTANCE
         Route::get('/remittance', [RemittanceController::class, 'remittanceIndex'])->name('employee.remittance');
