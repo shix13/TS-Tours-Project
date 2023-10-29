@@ -15,7 +15,10 @@
   <!-- CSS Files -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" />
-  <link href="{{ asset('assets/css/now-ui-dashboard.css?v=1.5.1') }}" rel="stylesheet" />
+  <link href="{{ asset('assets/css/now-ui-dashboard.css?v=1.5.1') }}" rel="stylesheet" /> 
+  <link rel="stylesheet" href="{{ asset('assets/fontawesome-free-6.4.2-web/fontawesome-free-6.4.2-web/css/all.css') }}">
+  
+  
 
   
 
@@ -86,6 +89,12 @@
                         <p>Remittances</p>
                     </a>
                 </li>
+                <li class="{{ Request::is('employee/feedback') ? 'active' : '' }}">
+                  <a href="{{ route('view.feedback') }}">
+                      <i class="now-ui-icons emoticons_satisfied"></i>
+                      <p>Customer Feedbacks</p>
+                  </a>
+              </li>
                 <li class="{{ Request::is('employee/reports') ? 'active' : '' }}">
                   <a href="{{ route('employee.reports') }}">
                     <i class="now-ui-icons files_single-copy-04"></i>
@@ -133,7 +142,7 @@
                     </a>
 
                      <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{{ route('employee.profile') }}">Profile</a>
+                        <a class="dropdown-item" href="{{ route('employee.password') }}">Change Password</a>
                          <a class="dropdown-item" href="{{ route('employee.logout') }}"
                             onclick="event.preventDefault();
                                           document.getElementById('logout-form').submit();">

@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('feedbacks', function (Blueprint $table) {
             $table->id('feedbackID'); // Auto-incrementing primary key
-            $table->unsignedBigInteger('custID'); // Foreign key to customers table
             $table->unsignedBigInteger('rentID'); // Foreign key to rents table
             $table->text('feedback_Message');
             $table->timestamps();
 
             // Define foreign key constraints
-            $table->foreign('custID')->references('custID')->on('customers');
             $table->foreign('rentID')->references('rentID')->on('rents');
         });
     }

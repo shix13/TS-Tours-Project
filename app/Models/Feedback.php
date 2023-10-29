@@ -8,8 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class Feedback extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
@@ -21,7 +22,7 @@ class User extends Authenticatable
     protected $table = 'feedbacks';
     protected $primaryKey = 'feedbackID';
      protected $fillable = [
-        'custID', 'rentID', 'feedback_Message'
+        'rentID','rating', 'feedback_Message'
     ];
 
     /**

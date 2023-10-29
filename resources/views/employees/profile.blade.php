@@ -1,118 +1,102 @@
 @extends('layouts.empbar')
 
 @section('title')
-    TS | Profile
+    TS | Change Password
 @endsection
 
 @section('content')
-<br>
-<br>
-    <div class="content">
-        <div class="row">
-          <div class="col-md-8">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="title">Edit Profile</h5>
-              </div>
-              <div class="card-body"  style="font-size: 16px;">
-                <form>
-                  <div class="row">
-                    <div class="col-md-6 pr-1">
-                      <div class="form-group">
-                        <label>First Name</label>
-                        <input type="text" class="form-control" placeholder="First Name" value="{{$employee->firstName}}">
-                      </div>
-                    </div>
-                    <div class="col-md-6 pl-1">
-                      <div class="form-group">
-                        <label>Last Name</label>
-                        <input type="text" class="form-control" placeholder="Last Name" value="{{$employee->lastName}}">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-3 pr-1">
-                      <div class="form-group">
-                        <label>Account Type</label>
-                        <input type="text" readonly class="form-control"  value="{{$employee->accountType}}" style="background-color:white;color:black">
-                      </div>
-                    </div>
-                    <div class="col-md-5 pl-1">
-                      <div class="form-group">
-                        <label >Email address</label>
-                        <input type="email" class="form-control" value="{{$employee->email}}">
-                      </div>
-                    </div>
-                  
-                  <div class="col-md-4 pl-1">
-                    <div class="form-group">
-                      <label>Mobile Number</label>
-                      <input type="text" class="form-control" value="{{$employee->mobileNum}}">
-                    </div>
-                  </div>
-                </div>
+  <style>
+    .ts_input{
+    color: black !important;
+    }
 
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changePasswordModal">
-                  Change Password
-              </button>
-              <button type="button" class="btn btn-danger">Save Changes</button>
-                </form>
-              </div>
+    
+  </style>
+<br><br>
+
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+    @endif
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2" style="font-size: 16px;">
+                <div class="card">
+                    <div class="card-header" style="font-size: 25px;font-weight:700;color:orangered"><i class="fa-solid fa-key"></i> Change Password</div>
+                  
+                    <div class="card-body">
+                        <!-- Password change form goes here -->
+                        <form method="POST" action="{{ route('password.update') }}">
+                            @csrf
+                          
+                            <div class="form-group">
+                                <label for="current_password" class="ts_input" >Current Password</label>
+                                <input type="password" id="current_password" name="current_password" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password" class="ts_input">New Password</label>
+                                <input type="password" id="password" name="password" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password_confirmation" class="ts_input">Confirm New Password</label>
+                                <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" required>
+                            </div>
+                          
+                            <button type="button" id="togglePassword" class="btn btn-info"><i class="fas fa-eye"></i> Show Password</button>
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-lock"></i> Change Password</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card card-user">
-              <div class="image">
-                <img src="{{ asset('storage/profile_images/def.png') }}" alt="Background Img">
-              </div>
-              <div class="card-body">
-                <div class="author">
-                  <div class="form-group">
-                    
-                    <input type="file" name="profile_img" id="profile_img" class="form-control @error('profile_img') is-invalid @enderror" accept="image/*" onchange="displayProfileImage(this)">
-                    @error('profile_img')
-                    <span class="invalid-feedback" role="alert">
-                        **You forgot to select a profile image
-                    </span>
-                    @enderror
-                
-                    @if ($employee->profile_img)
-                    <!-- Display the profile_img if it's not null -->
-                    <img id="profileImgPreview" src="{{ asset('storage/' . $employee->profile_img) }}" alt="Profile Image" style="max-width: 100%; max-height: 200px;border-radius:50%;">
-                    @else
-                    <!-- Display a default image or message if profile_img is null -->
-                    <p>No profile image available.</p>
-                    @endif <br><br>
-                    <label for="profile_img" class="custom-file-upload">
-                      <span class="icon"> Upload New Profile Picture</span> 
-                  </label>
-                </div> 
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
 @endsection
 
 @section('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  function displayProfileImage(input) {
-      const profileImgPreview = document.getElementById('profileImgPreview');
-      console.log('Function called'); // Debugging: Check if the function is called
-      if (input.files && input.files[0]) {
-          console.log('File selected:', input.files[0].name); // Debugging: Check the selected file
-          const reader = new FileReader();
-          reader.onload = function(e) {
-              profileImgPreview.src = e.target.result;
-              profileImgPreview.style.display = 'block';
-          };
-          reader.readAsDataURL(input.files[0]);
-      } else {
-          console.log('No file selected'); // Debugging: Check if no file is selected
-          profileImgPreview.style.display = 'none';
+  $(document).ready(function() {
+      $('#togglePassword').on('click', function() {
+          togglePasswordVisibility('current_password');
+          togglePasswordVisibility('password');
+          togglePasswordVisibility('password_confirmation');
+          toggleButtonText();
+      });
+
+      function togglePasswordVisibility(inputId) {
+          const passwordInput = $('#' + inputId);
+          const type = passwordInput.attr('type');
+
+          if (type === 'password') {
+              passwordInput.attr('type', 'text');
+          } else {
+              passwordInput.attr('type', 'password');
+          }
       }
-  }
+
+      function toggleButtonText() {
+          const toggleButton = $('#togglePassword');
+          const currentText = toggleButton.text();
+
+          if (currentText.includes('Show')) {
+              toggleButton.html('<i class="fas fa-eye-slash"></i> Hide Password');
+              toggleButton.removeClass('btn-info').addClass('btn-danger');
+          } else {
+              toggleButton.html('<i class="fas fa-eye"></i> Show Password');
+              toggleButton.removeClass('btn-danger').addClass('btn-info');
+          }
+      }
+  });
 </script>
 
 @endsection

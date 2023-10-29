@@ -19,6 +19,9 @@ use App\Http\Controllers\Auth\DriverLoginController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\GeolocationController;
 use App\Http\Controllers\VehicleTracking;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,7 +43,7 @@ Auth::routes();
 
 Route::post('/contact', [TestController::class, 'sendEmail'])->name('contact.send');
 //VISITOR
-Route::get('/home', [App\Http\Controllers\VisitorController::class, 'tsdefault'])->name('home');
+//Route::get('/home', [App\Http\Controllers\VisitorController::class, 'tsdefault'])->name('home');
 Route::get('/', [App\Http\Controllers\VisitorController::class, 'tsdefault'])->name('home');
 Route::get('/aboutus', [App\Http\Controllers\VisitorController::class, 'tsabout'])->name('aboutus');
 Route::get('/fleet', [App\Http\Controllers\VisitorController::class, 'tsfleet'])->name('fleet');
@@ -92,7 +95,10 @@ Route::prefix('employee')->group(function(){
         });
 
         Route::post('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'register'])->name('employee.register.submit');
-        Route::get('/profile', [EmployeeController::class, 'profile'])->name('employee.profile');
+        Route::get('/change-password', [EmployeeController::class, 'profile'])->name('employee.password');
+        Route::post('/change-password', [EmployeeController::class, 'changePassword'])->name('password.update');
+        
+
     
     //LOGOUT
         Route::get('/logout', [App\Http\Controllers\Auth\EmployeeController::class, 'logout'])->name('employee.logout');
@@ -158,7 +164,9 @@ Route::prefix('employee')->group(function(){
 
     //REPORTS
         Route::get('/reports', [ReportsController::class, 'processReports'])->name('employee.reports');      
-
+    
+    //Feedback
+        Route::get('/feedback', [BookingRentalController::class, 'feedbackIndex'])->name('view.feedback');
     //DASHBOARD
         Route::get('/', [App\Http\Controllers\Auth\EmployeeController::class, 'showDashboard'])->name('employee.dashboard');
 
@@ -184,12 +192,22 @@ Route::prefix('driver')->group(function(){
     Route::post('/search/booking', [TestController::class, 'processSearch'])->name('searchbooking');
     Route::get('/checkbookingstatus{booking}', [TestController::class, 'bookingStatus'])->name('checkbookingstatus');
     Route::post('/checkoutbooking', [TestController::class, 'checkout'])->name('checkoutbooking');
+    Route::get('/feedback{id}', [TestController::class, 'feedback'])->name('create.feedback');
+    Route::post('/feedbackstore', [TestController::class, 'store'])->name('feedback.store');
     //});
 
     //Dont move this! AJAX Query 
     Route::get('/get-available-schedules/{vehicleId}', [MaintenanceController::class, 'getAvailableSchedules'])->name('get-available-schedules');
-
+    
 
     Route::middleware('auth:employee')->group(function () {
             Route::get('generate-pdf', [ReportsController::class, 'generatePDF'])->name('generate-pdf');
             });
+
+    //forgot password
+    Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.change');
+    
+

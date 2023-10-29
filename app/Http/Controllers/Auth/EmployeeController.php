@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
@@ -129,14 +130,111 @@ class EmployeeController extends Controller
 
     public function showDashboard()
     {
-        return view('employees.dashboard');
+        $schedules = $this->getAvailableSchedules();
+    
+        $formattedSchedules = [];
+
+        foreach ($schedules as $vehicleId => $scheduleData) {
+            foreach ($scheduleData['maintenance'] as $maintenanceDate) {
+                $formattedSchedules[] = [
+                    'type' => 'maintenance',
+                    'title' => 'Maintenance for ' . $maintenanceDate['vehicle']->registrationNumber,
+                    'unitName' => $maintenanceDate['vehicle']->unitName,
+                    'start' => $maintenanceDate['date'],
+                ];
+            }
+    
+            foreach ($scheduleData['booking'] as $bookingDate) {
+                $formattedSchedules[] = [
+                    'type' => 'booking',
+                    'title' => 'Booking for ' . $bookingDate['vehicle']->registrationNumber,
+                    'ownershipType'=>$maintenanceDate['vehicle']->ownership_type,
+                    'unitName' => $bookingDate['vehicle']->unitName,
+                    'trackingID' => optional($bookingDate['vehicle']->vehicleAssignments->first())->reserveID,
+                    'start' => $bookingDate['date'],
+                   
+                ];
+            }
+        }
+    
+         //dd($formattedSchedules);
+        return view('employees.dashboard', compact('formattedSchedules'));
     }
+    
+
+
+    
+
+
+public function getAvailableSchedules()
+{
+    // Get all vehicles
+    $vehicles = Vehicle::with('maintenances', 'vehicleAssignments.booking')->get();
+   
+    $schedules = [];
+
+    foreach ($vehicles as $vehicle) {
+        // Initialize arrays for maintenance and booking schedules
+        $maintenanceDates = [];
+        $bookingDates = [];
+
+        // Get all maintenance records for the vehicle
+        foreach ($vehicle->maintenances as $maintenance) {
+            if (in_array($maintenance->status, ['Scheduled', 'In Progress', 'Completed']) && $maintenance->status !== 'Cancelled') {
+                $maintenanceDates[] = [
+                    'type' => 'maintenance',
+                    'date' => \Carbon\Carbon::parse($maintenance->scheduleDate)->toDateString(),
+                    'vehicle' => $vehicle, // Include vehicle details with maintenance
+                ];
+            }
+        }
+
+        // Get all booking records for the vehicle
+        foreach ($vehicle->vehicleAssignments as $assignment) {
+            if ($assignment->booking && $assignment->booking->status !== 'Denied') {
+                $startDate = \Carbon\Carbon::parse($assignment->booking->startDate);
+                $endDate = \Carbon\Carbon::parse($assignment->booking->endDate);
+                
+
+                for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+                    $bookingDates[] = [
+                        'type' => 'booking',
+                        'date' => $date->toDateString(),
+                        'vehicle' => $vehicle, // Include vehicle details with booking
+                    ];
+                }   
+            }
+        }
+
+        // Use isset to append data without overwriting
+        if (!isset($schedules[$vehicle->id])) {
+            $schedules[$vehicle->id] = [
+                'maintenance' => $maintenanceDates,
+                'booking' => $bookingDates,
+            ];
+        } else {
+            $schedules[$vehicle->id]['maintenance'] = array_merge($schedules[$vehicle->id]['maintenance'], $maintenanceDates);
+            $schedules[$vehicle->id]['booking'] = array_merge($schedules[$vehicle->id]['booking'], $bookingDates);
+        }
+    }
+    //dd($schedules);
+    // Return the available schedules
+    return $schedules;
+}
+
+
+    
+    
+
+    
+    
+    
 
     public function logout(){
        
         Auth::guard('employee')->logout();
 
-        return redirect('/home');
+        return redirect('/');
     }
 
     public function edit($empID)
@@ -227,5 +325,24 @@ public function update(Request $request, $empID)
 
         // Pass the employee's data to the 'employee.profile' view
         return view('employees.profile', compact('employee'));
+    }
+
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required',
+            'password' => 'required|confirmed|min:8',
+        ]);
+        
+
+       
+        if (Hash::check($request->current_password, auth()->user()->password)) {
+            // Current password matches; update the password
+            auth()->user()->update(['password' => Hash::make($request->password)]);
+
+            return redirect()->back()->with('success', 'Password changed successfully.');
+        }
+
+        return back()->with('error', 'Current password is incorrect.');
     }
 }

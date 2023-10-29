@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>PDF Report</title>
+    <title>TS Tours Financial Report</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,7 +11,7 @@
         }
         .container {
             width: 100%;
-            margin: 0 ;
+            margin: 0;
             padding: 10px;
             background-color: #ffffff;
             border: 1px solid #e4e4e4;
@@ -43,15 +43,26 @@
             margin: 20px 0;
             color: #333;
         }
-        .data {
-            margin: 5px 0;
-            color: #666;
+        .summary-item {
+            display: flex;
+            align-items: center;
         }
-    .bar-graph {
-        background-color: #f2f2f2;
-        height: 20px;
-        margin: 5px 0;
-    }
+        .item-label {
+            flex: 1;
+            font-size: 18px;
+            color: #333;
+        }
+        .item-value {
+            flex: 1;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        .bar-graph {
+            background-color: #f2f2f2;
+            height: 20px;
+            margin: 5px 0;
+        }
     
     .bar {
         background-color: #007bff;
@@ -62,7 +73,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>TS Tours PDF Report</h1>
+        <h1>TS Tours Services Report</h1>
         @php
         $now = now();
         $startDate = $now; // Initialize the start date with the current date
@@ -83,21 +94,21 @@
         }
         // Format the dates
         $startDateFormatted = $startDate->format('F j, Y');
-    @endphp
-    
-    @if ($data['filter'] == '1D')
-        <p style="text-align: center">This is the report for Today <br> ({{ $startDateFormatted }}).</p>
-    @elseif ($data['filter'] == '5D')
-        <p style="text-align: center">This is the report for the last 5 days <br>({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
-    @elseif ($data['filter'] == '1M')
-        <p style="text-align: center">This is the report for the last month<br>({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
-    @elseif ($data['filter'] == '6M')
-        <p style="text-align: center">This is the report for the last 6 months <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
-    @elseif ($data['filter'] == '1Y')
-        <p style="text-align: center">This is the report for the last 1 year <br>({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
-    @elseif ($data['filter'] == 'MAX')
-        <p style="text-align: center">This is the report for the maximum available range.</p>
-    @endif
+        @endphp
+
+        @if ($data['filter'] == '1D')
+            <p style="text-align: center">This is the financial report for Today <br> ({{ $startDateFormatted }}).</p>
+        @elseif ($data['filter'] == '5D')
+            <p style="text-align: center">This is the financial report for the last 5 days <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
+        @elseif ($data['filter'] == '1M')
+            <p style="text-align: center">This is the financial report for the last month <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
+        @elseif ($data['filter'] == '6M')
+            <p style="text-align: center">This is the financial report for the last 6 months <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
+        @elseif ($data['filter'] == '1Y')
+            <p style="text-align: center">This is the financial report for the last 1 year <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
+        @elseif ($data['filter'] == 'MAX')
+            <p style="text-align: center">This is the financial report for the maximum available range.</p>
+        @endif
     
         <div class="section">
             <div class="section-title">Summary</div>
@@ -126,6 +137,18 @@
                     <div class="bar" style="width: {{ $data['bookingPercentage'] }}%;"></div>
                 </div>
             </div>
+
+            <div class="summary-item">
+                <div class="item-label">Average Rating:</div>
+                <div class="item-value" style="font-size: 20px">{{ $data['ratingAverage'] }}</div>
+                @php
+                $ratingPercentage = ($data['ratingAverage'] / 5) * 100;
+                @endphp
+                <div class="bar-graph">
+                    <div class="bar" style="width: {{ $ratingPercentage > 100 ? 100 : $ratingPercentage }}%;"></div>
+                </div>
+            </div>
+            
         
             <div class="summary-item">
                 <div class="item-label">Total Revenue:</div>
@@ -137,25 +160,31 @@
                 @php
                     $totalRevenue = (float)str_replace('₱', '', str_replace(',', '', $data['totalRevenue']));
                     $moneyRemitted = (float)str_replace('₱', '', str_replace(',', '', $data['moneyRemitted']));
-        
+            
                     // Calculate the percentage
                     $percentage = $totalRevenue > 0 ? number_format(($moneyRemitted / $totalRevenue) * 100, 2) : 0;
                     $unfilledPercentage = 100 - $percentage;
                 @endphp
-        
-                <div class="bar" style="width: {{ $percentage }}%;">
-                    <div class="percentage-text" style="text-align: center;">
-                        {{ $percentage }}%
-                    </div>
-                    <div class="bar-header" style="text-align: center;">
-                        Downpayment Received: {{ $data['downpaymentReceived'] }} 
-                    </div>
-                </div>
-        
-                @if ($moneyRemitted > 0)
-                    <div class="unfilled-bar" style="width: {{ $unfilledPercentage }}%; background-color: orange; float: right; height: 20px; height: 100%; margin-top: -20px;">
+            
+                @if ($percentage > 0)
+                    <div class="bar" style="width: {{ $unfilledPercentage }}%;">
                         <div class="percentage-text" style="text-align: center;">
                             {{ $unfilledPercentage }}%
+                        </div>
+                        <div class="bar-header" style="text-align: center;">
+                            Downpayment Received: {{ $data['downpaymentReceived'] }} 
+                        </div>
+                    </div>
+                @endif
+            
+                @if ($moneyRemitted > 0)
+                    @if ($percentage > 0)
+                        <div class="unfilled-bar" style="width: {{ $percentage }}%; background-color: orange; float: right; height: 20px; height: 100%; margin-top: -20px;">
+                    @else
+                        <div class="unfilled-bar" style="width: 100%; background-color: orange; float: right; height: 20px; height: 100%; margin-top: -20px;">
+                    @endif
+                        <div class="percentage-text" style="text-align: center;">
+                            {{ $percentage }}%
                         </div>
                         <div class="bar-header" style="text-align: center;">
                             Money Remitted: {{ $data['moneyRemitted'] }} 
@@ -163,6 +192,7 @@
                     </div>
                 @endif
             </div>
+            
         </div>
         
 
@@ -173,13 +203,23 @@
                     <th>Location</th>
                     <th>Booking Count</th>
                 </tr>
-                @if(!empty($data['secondFilterData']['topLocations']))
-                    @foreach($data['secondFilterData']['topLocations'] as $location => $count)
+                @if (!empty($data['secondFilterData']['topLocations']))
+                    @php
+                        $totalBookingCount = 0; // Initialize the total booking count
+                    @endphp
+                    @foreach ($data['secondFilterData']['topLocations'] as $location => $count)
                         <tr>
                             <td>{{ $location }}</td>
                             <td>{{ $count }}</td>
                         </tr>
+                        @php
+                            $totalBookingCount += $count; // Add to the total booking count
+                        @endphp
                     @endforeach
+                    <tr>
+                        <th>Total</th>
+                        <th>{{ $totalBookingCount }}</th> <!-- Display the total booking count -->
+                    </tr>
                 @else
                     <tr>
                         <td colspan="2">No data available</td>
@@ -187,6 +227,7 @@
                 @endif
             </table>
         </div>
+        
         
         <div class="section" style="page-break-before: left;">
             <div class="section-title">Top Active Vehicle Assigned</div>
@@ -196,14 +237,25 @@
                     <th>Registration Number</th>
                     <th>Assignment Count</th>
                 </tr>
-                @if(!empty($data['secondFilterData']['topVehicles']))
-                    @foreach($data['secondFilterData']['topVehicles'] as $vehicle)
+                @if (!empty($data['secondFilterData']['topVehicles']))
+                    @php
+                        $totalAssignmentCount = 0; // Initialize the total assignment count
+                    @endphp
+                    @foreach ($data['secondFilterData']['topVehicles'] as $vehicle)
                         <tr>
                             <td>{{ $vehicle['unitName'] }}</td>
                             <td>{{ $vehicle['registrationNumber'] }}</td>
                             <td>{{ $vehicle['assignment_count'] }}</td>
                         </tr>
+                        @php
+                            $totalAssignmentCount += $vehicle['assignment_count']; // Add to the total assignment count
+                        @endphp
                     @endforeach
+                    <tr>
+                        <th>Total</th>
+                        <th></th>
+                        <th>{{ $totalAssignmentCount }}</th> <!-- Display the total assignment count -->
+                    </tr>
                 @else
                     <tr>
                         <td colspan="3">No data available</td>
@@ -211,6 +263,7 @@
                 @endif
             </table>
         </div>
+        
         
         <div class="section" style="page-break-before: always;">
             <div class="section-title">Individual Fleet Record</div>

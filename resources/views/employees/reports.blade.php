@@ -86,7 +86,7 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card interactive-card">
                 <div class="card-body">
                     <h4 class="card-title"><i class="fas fa-wrench"></i> Maintenance</h4>
@@ -101,7 +101,7 @@
             </div>
         </div>
         
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card interactive-card">
                 <div class="card-body">
                     <h4 class="card-title"><i class="fa-solid fa-car-side"></i> Rentals</h4>
@@ -116,7 +116,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card interactive-card">
                 <div class="card-body">
                     <h4 class="card-title"><i class="fa-solid fa-laptop-file"></i> Bookings</h4>
@@ -130,7 +130,22 @@
                 </div>
             </div>
         </div>
-        
+
+        <div class="col-md-3">
+            <div class="card interactive-card">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fa-solid fa-star"></i> Rating</h4>
+                    <hr>
+                    <p class="card-text">
+                        <strong>Average:</strong> <span id="ratingAverageValue">Loading...</span>/5
+                        <div class="bar-container">
+                            <div class="statistics-bar" id="ratingBar" style="width: 0;"></div>
+                        </div>
+                    </p>
+                </div>
+            </div>
+        </div>
+           
 
         <div class="col-md-6">
             <div class ="card interactive-card">
@@ -146,8 +161,11 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <img src="{{ asset('images/Reports Grapiks.png') }}" alt="Reports Grapiks">
+            </div>
     </div>
-
+    
     <hr>
     
     <div class="row">
@@ -323,6 +341,12 @@ function updateSections(filter) {
                 $('#downpaymentReceived').text(data.downpaymentReceived);
                 $('#moneyRemitted').text(data.moneyRemitted);
 
+                const maxRating = 5; // Define the maximum rating value
+                const normalizedRating = Math.min(data.ratingAverage, maxRating); // Ensure rating is not higher than the maximum
+                $('#ratingAverageValue').text(data.ratingAverage); // Update the rating average value
+                const ratingWidth = (normalizedRating / maxRating) * 100;
+                $('#ratingBar').css('width', ratingWidth + '%');
+               
                 globalData = data;
             }
         },
