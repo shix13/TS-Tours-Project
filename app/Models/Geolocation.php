@@ -14,7 +14,7 @@ class Geolocation extends Model
     protected $primaryKey = 'geolocationID';
 
     protected $fillable = [
-        'assignmentID', 'latitude', 'longitude'
+        'assignedID', 'latitude', 'longitude'
     ];
 
     public function driver(){
@@ -23,5 +23,9 @@ class Geolocation extends Model
     
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function assignment(){
+        return $this->belongsTo(VehicleAssigned::class);
     }
 }

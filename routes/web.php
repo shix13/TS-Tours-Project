@@ -148,7 +148,7 @@ Route::prefix('employee')->group(function(){
 
     //VEHICLE TRACKING
         Route::get('/vehicle-tracking', [VehicleTracking::class, 'vehicleIndex'])->name('employee.vehicleTracking');
-
+        Route::get('/vehicle-tracking-update', [VehicleTracking::class, 'vehicleIndex'])->name('get.updated.data');
     //REMITTANCE
         Route::get('/remittance', [RemittanceController::class, 'remittanceIndex'])->name('employee.remittance');
         Route::get('/remittance/newremittance/selectrent', [RemittanceController::class, 'rentIndex'])->name('remittance.select-rent');

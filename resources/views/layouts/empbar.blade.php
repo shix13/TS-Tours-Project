@@ -73,7 +73,7 @@
                     </a>
                 </li>
                 
-                <li class="{{ Request::is('employee/vehicleTracking') ? 'active' : '' }}">
+                <li class="{{ Request::is('employee/vehicle-tracking') ? 'active' : '' }}">
                   <a href="{{ route('employee.vehicleTracking') }}">
                     <i class="now-ui-icons location_pin"></i>
                       <p>Vehicle Tracking</p>

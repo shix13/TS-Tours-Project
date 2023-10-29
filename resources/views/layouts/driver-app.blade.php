@@ -55,51 +55,80 @@
       color: #fff;
       margin-left: 10px;
     }
+
+    .sticky {
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    }
   </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
-        <div class="container">
-            <nav class="navbar navbar-expand-md" style="background: midnightblue; font-weight: 700">
-            <a class="navbar-brand" href="#">
-                <div class="navbar-brand-wrapper">
-                <img src="{{ asset('images/amvtsuKUK8PKSpZz1LvfqSL13YIbJSCv90KPx7kG.jpg') }}" alt="Company Logo">
-                <h3>TS Tours</h3>
-                </div>
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="col-md-7 mt-2 mt-md-0">
-                <div class="form-row bg-transparent p-3 rounded">
-                    <a class="dropdown-item" href="{{ route('driver.active') }}">
-                        {{ __('Active Tasks') }}
-                    </a>
-                </div>
-                <div class="form-row bg-transparent p-3 rounded">
-                    <a class="dropdown-item" href="{{ route('driver.upcoming') }}">
-                        {{ __('Upcoming Tasks') }}
-                    </a>
-                </div>
-                <div class="form-row bg-transparent p-3 rounded">
-                    <a class="dropdown-item" href="{{ route('driver.logout') }}">
-                        {{ __('Logout') }}
-                    </a>
-                </div>
-                </div>
-            </div>
-            </nav>
-        </div>
-        </div>
-    </div>
+  <nav class="navbar sticky" style="background: midnightblue; font-weight: 700;" id="navbar">
+    <a class="navbar-brand" href="#">
+      <div class="navbar-brand-wrapper">
+        <img src="{{ asset('images/amvtsuKUK8PKSpZz1LvfqSL13YIbJSCv90KPx7kG.jpg') }}" alt="Company Logo">
+        <h3>TS Tours</h3>
+      </div>
+    </a>
 
-    <main class="py-4">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fa-solid fa-bars" style="color: #ffffff;"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="col-md-7 mt-2 mt-md-0">
+      <div class="form-row bg-transparent p-3 rounded">
+          <a class="dropdown-item" href="{{ route('driver.active') }}">
+              {{ __('Active Tasks') }}
+          </a>
+      </div>
+      <div class="form-row bg-transparent p-3 rounded">
+          <a class="dropdown-item" href="{{ route('driver.upcoming') }}">
+              {{ __('Upcoming Tasks') }}
+          </a>
+      </div>
+      <div class="form-row bg-transparent p-3 rounded">
+          <a class="dropdown-item" href="{{ route('driver.logout') }}">
+              {{ __('Logout') }}
+          </a>
+      </div>
+      </div>
+    </div>
+  </nav>
+    <main style="margin-top:80px;" class="py-4">
     @yield('content')
     </main>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      /*
+      $(document).ready(function() {
+        // Get the initial position of the navbar
+        var navbar = $('#navbar');
+        var offset = navbar.offset().top;
+
+        // Function to add/remove the sticky class
+        function toggleStickyNavbar() {
+            if ($(window).scrollTop() > offset) {
+                navbar.addClass('sticky');
+            } else {
+                navbar.removeClass('sticky');
+            }
+        }
+
+        // Initial call to the function
+        toggleStickyNavbar();
+
+        // Call the function when the user scrolls
+        $(window).scroll(function() {
+            toggleStickyNavbar();
+        });
+      });
+      */
+    </script>
 </body>
 
 </html>

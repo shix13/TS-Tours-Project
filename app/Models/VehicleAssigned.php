@@ -40,6 +40,8 @@ class VehicleAssigned extends Model
         return $this->belongsTo(Employee::class, 'empID');
     }
     
-
-    
+    public function geolocation()
+    {
+        return $this->hasMany(Geolocation::class, 'assignedID');
+    }
 }

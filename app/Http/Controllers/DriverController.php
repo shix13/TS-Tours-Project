@@ -41,8 +41,6 @@ class DriverController extends Controller
             }])
             ->first();
 
-        $assignment = $activeTask->assignments->first();
-
         return view('drivers.activeTasks', compact('activeTask', 'driverID'));
     }
 

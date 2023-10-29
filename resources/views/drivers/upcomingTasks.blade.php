@@ -6,8 +6,8 @@
 
 @section('content')
 <div class="container">
+    @if(!$upcomingTasks->isEmpty())
     <h3 style="color: white">UPCOMING TASKS</h3>
-    @if($upcomingTasks)
         @foreach($upcomingTasks as $task)
             <div class="card">
                 <div class="card-body">
@@ -32,7 +32,7 @@
             </div>
         @endforeach
     @else
-        <p>There are no upcoming tasks</p>
+        <h3 style="color: white; text-align: center">You have no upcoming task</h3>
     @endif
 </div>
 
