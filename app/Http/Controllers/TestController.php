@@ -10,10 +10,14 @@ use App\Models\VehicleType;
 use App\Models\VehicleTypeBooked;
 use App\Models\Tariff;
 use App\Models\Booking;
+use App\Models\Rent;
+use App\Models\Feedback;
 use Illuminate\Support\Facades\Storage;
 use App\Mail\BookingConfirmation;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactUsMail;
+use App\Mail\FeedbackReceived;
+use Illuminate\Support\Facades\Auth;
 
 
 class TestController extends Controller
@@ -144,20 +148,20 @@ class TestController extends Controller
 
     public function processSearch(Request $request){
         $reserveID = $request->input('reserveID');
-        /*
-        $booking = Booking::with(['tariff' => function ($query){
-            $query->withTrashed(); //Include soft-deleted 'tariff' records
-            }])
-            ->find($bookingID);
-        */
-        $booking = Booking::where('reserveID', $reserveID)->first();
-            
+        $mobile = $request->input('mobile');
+    
+         // Check if the reserveID and mobileNum match in the Booking model
+        $booking = Booking::where('reserveID', $reserveID)
+        ->where('mobileNum', $mobile)
+        ->first();
+    
         if($booking){
             return redirect()->route('checkbookingstatus', $booking);
         } else {
-            return redirect()->route('search')->with('error', 'Booking not found');
+            return redirect()->route('search')->with('error', 'Booking not found, check the details you inputted');
         }
     }
+    
 
     public function bookingStatus(Booking $booking){
         $vehicleTypesBooked = $booking->vehicleTypesBooked;
@@ -185,20 +189,68 @@ class TestController extends Controller
     }
 
     public function sendEmail(Request $request)
-    {
-        $data = [
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'phone' => $request->input('phone'),
-            'message' => $request->input('message'),
-        ];
+{
+    $data = [
+        'name' => $request->input('name'),
+        'email' => $request->input('email'),
+        'phone' => $request->input('phone'),
+        'message' => $request->input('message'),
+    ];
 
+    try {
         // Send email
         Mail::to('tstoursduma@gmail.com')->send(new ContactUsMail($data));
-
+        
         // Redirect back with success message
         return redirect()->back()->with('success', 'Your message has been sent successfully!');
+    } catch (\Exception $e) {
+        // Handle email sending error
+        return redirect()->back()->with('error', 'An error occurred while sending the email. Please try again later.');
+    }
+}
+
+
+    public function feedback($id)
+    {
+        // Retrieve the feedback record based on the provided ID
+        $feedback = Rent::find($id);
+
+        if (!$feedback) {
+            // Handle the case where the feedback record is not found (e.g., show an error)
+            return view('errors.404'); // You can create an error view
+        }
+
+        return view('tests.feedback', ['feedback' => $feedback]);
     }
 
-    
+    public function store(Request $request)
+{
+    // Validate the form data
+    $this->validate($request, [
+        'rentID' => 'required', // Add validation rules for rentID
+        'feedback_Message' => 'required',
+    ]);
+
+    // Attempt to create a new feedback record in the database
+    try{
+        $rent = Rent::find($request->input('rentID'));
+        
+        $feedback = Feedback::create([
+            'rentID' => $request->input('rentID'), // Assuming rentID corresponds to reserveID
+            'feedback_Message' => $request->input('feedback_Message'),
+        ]);
+
+        
+        $companyEmail = 'tstoursduma@gmail.com'; 
+        Mail::to($companyEmail)->send(new FeedbackReceived($feedback, $rent));
+
+        return redirect()->back()->with('status', 'Feedback sent successfully.');
+    } catch (\Exception $e) {
+        // Handle any errors that occur during the creation of the feedback record
+        return back()->withErrors(['error' => 'An error occurred while sending feedback. Please try again.']);
+    }
+}
+
+
+
 }

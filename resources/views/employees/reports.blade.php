@@ -146,8 +146,11 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <img src="{{ asset('images/Reports Grapiks.png') }}" alt="Reports Grapiks">
+            </div>
     </div>
-
+    
     <hr>
     
     <div class="row">

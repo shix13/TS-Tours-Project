@@ -11,6 +11,8 @@
 <div class="content">
     <br><br>
 <div class="container">
+    
+    
     <div class="row">
         <div class="col">
             <div class="card-box bg-darkblu">
@@ -92,9 +94,55 @@
         </div>
     </div>
 </div>
+<hr>
+<h2 class="text-center" style="margin-top:5%">CALENDAR SCHEDULE</h2>
+<div class="mx-auto" id="calendar" style="width: 90%;"></div>
+    <hr>
 </div>
 @endsection
 
 @section('scripts')
-    
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/daygrid/main.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/daygrid/main.js"></script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: {!! json_encode($formattedSchedules) !!}, // Convert to JSON
+        eventRender: function(info) {
+            if (info.event.extendedProps.type === 'maintenance') {
+                info.el.style.backgroundColor = 'blue'; // Set the background color for maintenance events
+            }
+        },
+        eventClick: function(info) {
+            if (info.event.extendedProps.type === 'booking') {
+                // Handle booking event
+                alert(
+                    'Title: ' + info.event.title +
+                    '\nUnit Name: ' + info.event.extendedProps.unitName +
+                    '\nOwnership Type: ' + info.event.extendedProps.ownershipType +
+                    '\nTracking ID: ' + info.event.extendedProps.trackingID +
+                    '\nDate: ' + info.event.start.toISOString().slice(0, 10) 
+                );
+            } else if (info.event.extendedProps.type === 'maintenance') {
+                // Handle maintenance event
+                alert(
+                    'Title: ' + info.event.title +
+                    '\nUnit Name: ' + info.event.extendedProps.unitName +
+                    '\nDate: ' + info.event.start.toISOString().slice(0, 10) 
+                );
+            }
+        }
+    });
+    calendar.render();
+});
+
+
+
+</script>
 @endsection

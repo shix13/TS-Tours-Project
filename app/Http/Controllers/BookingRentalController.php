@@ -22,7 +22,7 @@ use App\Mail\BookingDeniedMail;
 use App\Mail\BookingApprovedMail;
 use Carbon\Carbon;
 use App\Models\Remittance;
-
+use App\Models\Feedback;
 
 class BookingRentalController extends Controller
 {
@@ -440,4 +440,16 @@ private function processRate($rate, $startDate, $endDate, $bookingType)
     // For example, throw an exception for unsupported booking types
     throw new \InvalidArgumentException('Invalid booking type: ' . $bookingType);
 }
+
+
+    public function feedbackIndex()
+    {
+        $feedbacks = Feedback::orderBy('created_at', 'desc')->paginate(20); // You can specify the number of items per page (e.g., 10)
+
+        return view('employees.feedbackView', compact('feedbacks'));
+    }
+
+
+
+    
 }

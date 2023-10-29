@@ -256,4 +256,6 @@ public function VtypeUpdate(Request $request){
     return redirect()->route('vehicleTypes.view')
         ->with('success', 'Vehicle updated successfully');
 }
+
+
 }

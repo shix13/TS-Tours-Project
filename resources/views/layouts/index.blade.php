@@ -16,8 +16,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;500;700&family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
   <!-- CSS Files -->
-  <link href="./assets/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="./assets_emp/css/now-ui-kit.css?v=1.3.0" rel="stylesheet" />
+  <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" />
+  <link href="{{ asset('assets_emp/css/now-ui-kit.css?v=1.3.0') }}" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ asset('assets/fontawesome-free-6.4.2-web/fontawesome-free-6.4.2-web/css/all.css') }}">
+
+
+
+  
 
   
 </head>
@@ -41,7 +46,7 @@
         <div class="collapse navbar-collapse justify-content-end" id="navigation"
             data-nav-image="">
             <ul class="navbar-nav ms-auto">
-              <li class="nav-item custom-nav-item {{ Request::is('home') ? 'active' : '' }}"><a class="nav-link"
+              <li class="nav-item custom-nav-item {{ Request::is('/') ? 'active' : '' }}"><a class="nav-link"
                 href="{{ route('home') }}">Home</a></li>
               <li class="nav-item custom-nav-item {{ Request::is('selectvehicles') ? 'active' : '' }}"><a class="nav-link"
                       href="{{ route('selectvehicles') }}">Vehicles</a></li>

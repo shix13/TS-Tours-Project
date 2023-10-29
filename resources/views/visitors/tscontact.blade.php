@@ -33,6 +33,20 @@
             <h1><strong>Contact Us</strong></h1>
             <p style="font-size: 20px">We'd love to hear from you.<strong> Get in touch with us</strong>! </p>
                 <br>
+
+                @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+                @endif
+
+    
                 <form action="{{ route('contact.send') }}" method="post">
                     @csrf <!-- CSRF protection -->
                     <div class="form-group">
@@ -55,7 +69,7 @@
                         <textarea id="message" name="message" class="form-control" rows="4" required placeholder="Your Message"></textarea>
                     </div>
                 
-                    <button type="submit" class="btn btn-primary">Send</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send</button>
                 </form>
                 
         </div>

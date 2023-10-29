@@ -21,7 +21,7 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
 </head>
-<body >
+<body style="background: radial-gradient(circle, rgba(234,235,238,1) 0%, rgba(226,228,231,1) 23%, rgba(211,211,224,1) 50%, rgba(221,221,232,1) 79%, rgba(205,207,209,1) 100%);" >
     <div id="app" style="font-family: 'Montserrat', sans-serif;">
         <nav class="navbar navbar-expand-md navbar-light  shadow-sm" style="background-color: #122E50;padding:10px;font-size:15px">
             <div class="container"  >
@@ -73,7 +73,7 @@
             </div>
         </nav>
     </div>
-        <main class="py-4" style="background: radial-gradient(circle, rgba(234,235,238,1) 0%, rgba(226,228,231,1) 23%, rgba(211,211,224,1) 50%, rgba(221,221,232,1) 79%, rgba(205,207,209,1) 100%);">
+        <main class="py-4" >
             @yield('content')
         </main>
     
