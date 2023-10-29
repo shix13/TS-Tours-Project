@@ -27,7 +27,7 @@
             <div class="container"  >
                 
                 <a class="navbar-brand" href="{{ url('employee') }}" style="color:white;font-size:25px"><img src="{{ asset('images/TS Tours.jpg') }}" alt="TS logo" style="width: 60px;border-radius:20%">
-                   <strong>TS Tours Services</strong>  | Employee Online Account 
+                   <strong>TS Tours Services</strong>  | Employee Online System 
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>

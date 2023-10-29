@@ -30,7 +30,7 @@
         <div class="col-md-6">
             <div class="form-row" style="background-color: hsla(0, 0%, 100%, 0.7); padding: 10px;margin-right:-180px; border-radius: 5px; margin-bottom: 20px;">
                 <div class="form-group col-md-8">
-                    <input type="text" id="search" class="form-control" placeholder="Search by Fleet, Mechanic, Notes, Scheduled By">
+                    <input type="text" id="search" class="form-control" placeholder="Search by Fleet Name, Notes, Schedule Date">
                 </div>
                 <div class="col-md-4">
                     <select id="statusFilter" class="form-control">
