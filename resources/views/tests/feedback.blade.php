@@ -24,26 +24,33 @@
     <form method="post" action="{{ route('feedback.store') }}">
         @csrf
         <div class="form-group" style="font-size: 20px" hidden>
-            <label  for="rentID">
+            <label for="rentID">
                 <i class="fas fa-barcode"></i> RentID:
             </label>
             <input type="text" id="rentID" name="rentID" value="{{ $feedback->rentID }}" class="form-control">
         </div>
         <div class="form-group" style="font-size: 20px">
-            <label  for="TrackingID">
+            <label for="TrackingID">
                 <i class="fas fa-barcode"></i> Tracking ID:
             </label>
-            <input type="text" id="TrackingID" name="TrackingID" value="{{ $feedback->reserveID }}" class="form-control">
+            <input style="background: white;color:black" type="text" id="TrackingID" name="TrackingID" value="{{ $feedback->reserveID }}" class="form-control" readonly>
+        </div>
+        <div class="form-group" style="font-size: 20px">
+            <label for="rating">
+                <i class="fas fa-star"></i> Rating (1-5):
+            </label>
+            <input type="number" id="rating" name="rating" min="1" max="5" class="form-control">
         </div>
         <div class="form-group" style="font-size: 20px">
             <label for="feedback_Message">
-                <i class="fas fa-comments"></i>  Feedback Message:
+                <i class="fas fa-comments"></i> Feedback Message:
             </label>
-            <textarea  id="feedback_Message" name="feedback_Message" class="form-control">{{ $feedback->feedback_Message }}</textarea>
+            <textarea id="feedback_Message" name="feedback_Message" class="form-control">{{ $feedback->feedback_Message }}</textarea>
         </div>
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-paper-plane"></i> Send
         </button>
     </form>
+    
 </div>
 @endsection

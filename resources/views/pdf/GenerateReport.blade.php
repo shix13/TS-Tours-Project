@@ -73,7 +73,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>TS Tours Financial Report</h1>
+        <h1>TS Tours Services Report</h1>
         @php
         $now = now();
         $startDate = $now; // Initialize the start date with the current date
@@ -137,6 +137,18 @@
                     <div class="bar" style="width: {{ $data['bookingPercentage'] }}%;"></div>
                 </div>
             </div>
+
+            <div class="summary-item">
+                <div class="item-label">Average Rating:</div>
+                <div class="item-value" style="font-size: 20px">{{ $data['ratingAverage'] }}</div>
+                @php
+                $ratingPercentage = ($data['ratingAverage'] / 5) * 100;
+                @endphp
+                <div class="bar-graph">
+                    <div class="bar" style="width: {{ $ratingPercentage > 100 ? 100 : $ratingPercentage }}%;"></div>
+                </div>
+            </div>
+            
         
             <div class="summary-item">
                 <div class="item-label">Total Revenue:</div>
@@ -155,9 +167,9 @@
                 @endphp
             
                 @if ($percentage > 0)
-                    <div class="bar" style="width: {{ $percentage }}%;">
+                    <div class="bar" style="width: {{ $unfilledPercentage }}%;">
                         <div class="percentage-text" style="text-align: center;">
-                            {{ $percentage }}%
+                            {{ $unfilledPercentage }}%
                         </div>
                         <div class="bar-header" style="text-align: center;">
                             Downpayment Received: {{ $data['downpaymentReceived'] }} 
@@ -167,12 +179,12 @@
             
                 @if ($moneyRemitted > 0)
                     @if ($percentage > 0)
-                        <div class="unfilled-bar" style="width: {{ $unfilledPercentage }}%; background-color: orange; float: right; height: 20px; height: 100%; margin-top: -20px;">
+                        <div class="unfilled-bar" style="width: {{ $percentage }}%; background-color: orange; float: right; height: 20px; height: 100%; margin-top: -20px;">
                     @else
                         <div class="unfilled-bar" style="width: 100%; background-color: orange; float: right; height: 20px; height: 100%; margin-top: -20px;">
                     @endif
                         <div class="percentage-text" style="text-align: center;">
-                            {{ $unfilledPercentage }}%
+                            {{ $percentage }}%
                         </div>
                         <div class="bar-header" style="text-align: center;">
                             Money Remitted: {{ $data['moneyRemitted'] }} 

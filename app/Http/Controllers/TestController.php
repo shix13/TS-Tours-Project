@@ -227,21 +227,23 @@ class TestController extends Controller
 {
     // Validate the form data
     $this->validate($request, [
-        'rentID' => 'required', // Add validation rules for rentID
+        'rentID' => 'required', // Update the validation rule for TrackingID
+        'rating' => 'required|integer|min:1|max:5', // Add validation rules for rating
         'feedback_Message' => 'required',
     ]);
+  
 
     // Attempt to create a new feedback record in the database
-    try{
+    try {
         $rent = Rent::find($request->input('rentID'));
-        
+
         $feedback = Feedback::create([
             'rentID' => $request->input('rentID'), // Assuming rentID corresponds to reserveID
+            'rating' => $request->input('rating'), // Save the rating
             'feedback_Message' => $request->input('feedback_Message'),
         ]);
-
         
-        $companyEmail = 'tstoursduma@gmail.com'; 
+        $companyEmail = 'tstoursduma@gmail.com';
         Mail::to($companyEmail)->send(new FeedbackReceived($feedback, $rent));
 
         return redirect()->back()->with('status', 'Feedback sent successfully.');
@@ -250,6 +252,7 @@ class TestController extends Controller
         return back()->withErrors(['error' => 'An error occurred while sending feedback. Please try again.']);
     }
 }
+
 
 
 

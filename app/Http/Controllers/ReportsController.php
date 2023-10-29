@@ -14,6 +14,7 @@ use App\Models\VehicleTypeBooked;
 use App\Models\VehicleAssigned;
 use App\Models\Maintenance;
 use App\Models\Remittance;
+use App\Models\Feedback;
 use Illuminate\Support\Facades\Storage;
 use PDF;
 
@@ -37,7 +38,8 @@ class ReportsController extends Controller
         $downpaymentReceived = 0;
         $moneyRemitted = 0; 
         $totalBookings = 0;  
-        
+        $ratingAverage=0;
+
         if ($filter === '1D') {
             $totalMaintenance = Maintenance::whereDate('created_at', today())->count();
             $totalRentals = Rent::whereDate('created_at', today())->count();
@@ -45,6 +47,7 @@ class ReportsController extends Controller
             $totalRevenue = Remittance::whereDate('created_at', today())->sum('amount') + Booking::whereDate('created_at', today())->sum('downpayment_fee');
             $downpaymentReceived = Booking::whereDate('created_at', today())->sum('downpayment_fee');
             $moneyRemitted = Remittance::whereDate('created_at', today())->sum('amount');
+            $ratingAverage = Feedback::whereDate('created_at', today())->avg('rating');
         } elseif ($filter === '5D') {
             $totalMaintenance = Maintenance::where('created_at', '>=', now()->subDays(5))->count();
             $totalRentals = Rent::where('created_at', '>=', now()->subDays(5))->count();
@@ -52,6 +55,7 @@ class ReportsController extends Controller
             $totalRevenue = Remittance::where('created_at', '>=', now()->subDays(5))->sum('amount') + Booking::where('created_at', '>=', now()->subDays(5))->sum('downpayment_fee');
             $downpaymentReceived = Booking::where('created_at', '>=', now()->subDays(5))->sum('downpayment_fee');
             $moneyRemitted = Remittance::where('created_at', '>=', now()->subDays(5))->sum('amount');
+            $ratingAverage = Feedback::where('created_at', '>=', now()->subDays(5))->avg('rating');
         } elseif ($filter === '1M') {
             $totalMaintenance = Maintenance::whereMonth('created_at', now()->month)->count();
             $totalRentals = Rent::whereMonth('created_at', now()->month)->count();
@@ -59,6 +63,7 @@ class ReportsController extends Controller
             $totalRevenue = Remittance::whereMonth('created_at', now()->month)->sum('amount') + Booking::whereMonth('created_at', now()->month)->sum('downpayment_fee');
             $downpaymentReceived = Booking::whereMonth('created_at', now()->month)->sum('downpayment_fee');
             $moneyRemitted = Remittance::whereMonth('created_at', now()->month)->sum('amount');
+            $ratingAverage = Feedback::where('created_at', '>=', now()->subMonth())->avg('rating');
         } elseif ($filter === '6M') {
             $totalMaintenance = Maintenance::where('created_at', '>=', now()->subMonths(6))->count();
             $totalRentals = Rent::where('created_at', '>=', now()->subMonths(6))->count();
@@ -66,6 +71,7 @@ class ReportsController extends Controller
             $totalRevenue = Remittance::where('created_at', '>=', now()->subMonths(6))->sum('amount') + Booking::where('created_at', '>=', now()->subMonths(6))->sum('downpayment_fee');
             $downpaymentReceived = Booking::where('created_at', '>=', now()->subMonths(6))->sum('downpayment_fee');
             $moneyRemitted = Remittance::where('created_at', '>=', now()->subMonths(6))->sum('amount');
+            $ratingAverage = Feedback::where('created_at', '>=', now()->subMonths(6))->avg('rating');
         } elseif ($filter === '1Y') {
             $totalMaintenance = Maintenance::whereYear('created_at', now()->year)->count();
             $totalRentals = Rent::whereYear('created_at', now()->year)->count();
@@ -73,6 +79,7 @@ class ReportsController extends Controller
             $totalRevenue = Remittance::whereYear('created_at', now()->year)->sum('amount') + Booking::whereYear('created_at', now()->year)->sum('downpayment_fee');
             $downpaymentReceived = Booking::whereYear('created_at', now()->year)->sum('downpayment_fee');
             $moneyRemitted = Remittance::whereYear('created_at', now()->year)->sum('amount');
+            $ratingAverage = Feedback::where('created_at', '>=', now()->subYear())->avg('rating');
         } elseif ($filter === 'MAX') {
             $totalMaintenance = Maintenance::count();
             $totalRentals = Rent::count();
@@ -80,6 +87,7 @@ class ReportsController extends Controller
             $totalRevenue = Remittance::sum('amount') + Booking::sum('downpayment_fee');
             $downpaymentReceived = Booking::sum('downpayment_fee');
             $moneyRemitted = Remittance::sum('amount');
+            $ratingAverage = DB::table('feedbacks')->avg('rating');
         }
     
             // Calculate percentages for the first filter
@@ -107,6 +115,7 @@ class ReportsController extends Controller
             'moneyRemitted' =>  number_format($moneyRemitted, 2),
             'secondFilterData' => $secondFilterData, // Include the second filter data
             'topVehicleAssignments' => $topVehicleAssignments, // Include top vehicle assignments
+            'ratingAverage' => number_format($ratingAverage, 2),
             'filter' => $filter,
         ];
        

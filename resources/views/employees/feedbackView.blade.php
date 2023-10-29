@@ -22,6 +22,7 @@
                                 <tr>
                                     <th class="bold-text"> <strong>Index</strong></th>
                                     <th class="bold-text"><strong>Tracking ID</strong></th>
+                                    <th class="bold-text"><strong>Rating</strong></th>
                                     <th class="bold-text"><strong>Feedback Message</strong></th>
                                     <th class="bold-text"><strong>Created At</strong></th>
                                 </tr>
@@ -31,6 +32,7 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $feedback->rental->reserveID }}</td>
+                                        <td class="text-center" ><strong>{{ $feedback->rating }}</strong></td>
                                         <td>{{ $feedback->feedback_Message }}</td>
                                         <td>{{ $feedback->created_at->format('F j, Y  | H:i a') }}</td>
                                     </tr>

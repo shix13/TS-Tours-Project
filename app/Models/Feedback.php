@@ -22,7 +22,7 @@ class Feedback extends Authenticatable
     protected $table = 'feedbacks';
     protected $primaryKey = 'feedbackID';
      protected $fillable = [
-        'custID', 'rentID', 'feedback_Message'
+        'rentID','rating', 'feedback_Message'
     ];
 
     /**

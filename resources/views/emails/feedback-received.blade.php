@@ -14,6 +14,10 @@
             <p style="color: #555; font-size: 16px; line-height: 1.6;">
                 <strong>Tracking ID:</strong> {{ $rent->reserveID }}
             </p>
+
+            <p style="color: #555; font-size: 16px; line-height: 1.6;">
+                <strong>Rating:</strong> {{ $feedback->rating }}
+            </p>
             
             <p style="color: #555; font-size: 16px; line-height: 1.6;">
                 <strong>Feedback Message:</strong>
