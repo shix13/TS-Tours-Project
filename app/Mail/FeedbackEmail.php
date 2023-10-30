@@ -11,11 +11,12 @@ class FeedbackEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $feedback;
+    public $booking,$rent;
 
-    public function __construct($feedback)
+    public function __construct($booking,$rent)
     {
-        $this->feedback = $feedback;
+        $this->booking = $booking;
+        $this->rent= $rent;
     }
 
     public function build()

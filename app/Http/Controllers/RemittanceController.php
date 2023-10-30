@@ -7,6 +7,8 @@ use App\Models\Remittance;
 use App\Models\Rent;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\FeedbackEmail;
 
 class RemittanceController extends Controller
 {
@@ -52,7 +54,10 @@ class RemittanceController extends Controller
         'amount' => 'required|numeric',
         'paymentType' => 'required|in:Cash,GCash',
     ]);
-    
+    $rentData = Rent::find($data['rent']);
+    $bookingData = $rentData->booking; // Define $bookingData before using it
+    $email = $bookingData->cust_email; // Define $email using $bookingData
+
     // Create a new record in the 'rent' table
     Remittance::create([
         'clerkID' => $data['clerkID'],
@@ -64,9 +69,11 @@ class RemittanceController extends Controller
     ]);
 
     $rentData = Rent::find($data['rent']);
-
+    $bookingData = $rentData->booking;
+   // dd($bookingData->cust_email);
 if ($rentData->balance <= $data['amount']) {
     $rentData->payment_Status = 'Paid';
+    Mail::to($email)->send(new FeedbackEmail($bookingData,$rentData)); 
 }
 
 $rentData->balance -= $data['amount'];
@@ -81,6 +88,7 @@ $rentData->save();
         // Retrieve a list of rentals from the database 
         $rents = Rent::with('assignments')
             ->where('payment_Status','=','Pending')
+            ->where('rent_Period_Status','!=','Cancelled')
             ->get();
 
         // Pass the data to the Blade view

@@ -79,14 +79,14 @@
 
         <div class="content">
             <p>
-                Dear {{ $customerFirstName }} {{ $customerLastName }},<br>
+                Dear {{ $booking->cust_first_name }} {{ $booking->cust_last_name }},<br>
                 We want to express our heartfelt gratitude for choosing TS Tours Services. Your trust in our service is greatly appreciated.
 
-                We are committed to providing you with the best travel experience, and we're excited to be a part of your journey. Your Tracking ID: <strong>{{ $reserveID }}</strong> has been approved!
+                We are committed to providing you with the best travel experience, and we're excited to be a part of your journey. Your Tracking ID: <strong>{{ $booking->reserveID }}</strong> has been completed!
 
-                To enhance our services and serve you better, we would love to hear your feedback. Please take a moment to share your thoughts by clicking the following link: <br>
+                To enhance our services and serve you better, we would love to hear your feedback. Please take a moment to share your thoughts by clicking the following link: <br><br>
 
-                <a href="{{ route('create.feedback', ['id' => $reserveID]) }}" class="button" style="background: orangered;color:black">Provide Feedback</a>
+                <a href="{{ route('create.feedback', ['id' => $rent->rentID]) }}" class="button" style="background: orangered;color:black">Provide Feedback</a>
             </p>
 
             <p>

@@ -38,6 +38,6 @@ class Remittance extends Model
 
     public function rent()
     {
-        return $this->belongsTo(Rent::class, 'rentID', 'rentID');
+        return $this->belongsTo(Rent::class, 'rentID');
     }
 }
