@@ -76,7 +76,7 @@ Route::prefix('employee')->group(function(){
 
      //Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
      //Route::post('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'register'])->name('employee.register.submit');
-
+    
     Route::middleware('auth:employee')->group(function () {
     //ACCOUNTS
         Route::middleware(['manager'])->group(function (){

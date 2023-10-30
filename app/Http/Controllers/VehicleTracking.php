@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\VehicleAssigned;
+use App\Models\Geolocation;
 use App\Models\Rent;
 use GuzzleHttp\Client;
 
@@ -18,22 +19,19 @@ class VehicleTracking extends Controller
         foreach($activeTasks as $activeTask){
             $assignments = $activeTask->assignments;
         }
-        
-        return view('employees.vehicleTracking', compact('activeTasks', 'assignments'));
+        return view('employees.vehicleTracking', compact('activeTasks'));
     }
 
-    public function getUpdatedData() {
-        // Your logic to fetch updated data here
-        // This can be similar to your "vehicleIndex" method, but return JSON data instead
-        $activeTasks = Rent::whereIn('rent_Period_Status', ['Ongoing'])
-        ->with(['assignments.geolocation'])
-        ->get();; // Retrieve the updated data
-    
-        foreach($activeTasks as $activeTask){
-            $assignments = $activeTask->assignments;
-        }
+    public function getLatestGeolocation(Request $request) {
+        // Retrieve the assignment ID from the request
+        $assignmentId = $request->input('assignmentId');
 
-        return response()->json(['data' => $assignments]);
+        // Query the geolocation data for the specific assignment
+        $latestGeolocation = Geolocation::where('assignedID', $assignmentId)
+        ->latest('created_at')
+        ->first();
+    
+        return response()->json(['data' => $latestGeolocation]);
     }    
 
     /*
