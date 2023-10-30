@@ -148,15 +148,16 @@ class EmployeeController extends Controller
                 $formattedSchedules[] = [
                     'type' => 'booking',
                     'title' => 'Booking for ' . $bookingDate['vehicle']->registrationNumber,
-                    'ownershipType'=>$maintenanceDate['vehicle']->ownership_type,
+                    'ownershipType'=>$bookingDate['vehicle']->ownership_type,
                     'unitName' => $bookingDate['vehicle']->unitName,
-                    'trackingID' => optional($bookingDate['vehicle']->vehicleAssignments->first())->reserveID,
+                    'trackingID' => $bookingDate['trackingID']->reserveID,
                     'start' => $bookingDate['date'],
+                    'dateRange' => $bookingDate['dateRange']
                    
                 ];
             }
         }
-    
+       
          //dd($formattedSchedules);
         return view('employees.dashboard', compact('formattedSchedules'));
     }
@@ -195,12 +196,16 @@ public function getAvailableSchedules()
                 $startDate = \Carbon\Carbon::parse($assignment->booking->startDate);
                 $endDate = \Carbon\Carbon::parse($assignment->booking->endDate);
                 
+                 // Create a date range string
+                $dateRange = $startDate->format('Y-m-d') . ' to ' . $endDate->format('Y-m-d');
 
                 for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
                     $bookingDates[] = [
                         'type' => 'booking',
-                        'date' => $date->toDateString(),
-                        'vehicle' => $vehicle, // Include vehicle details with booking
+                        'date' => $date->format('Y-m-d'),
+                        'dateRange' =>$dateRange,
+                        'vehicle' => $vehicle, 
+                        'trackingID' => $assignment->booking,
                     ];
                 }   
             }

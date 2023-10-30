@@ -127,8 +127,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     '\nUnit Name: ' + info.event.extendedProps.unitName +
                     '\nOwnership Type: ' + info.event.extendedProps.ownershipType +
                     '\nTracking ID: ' + info.event.extendedProps.trackingID +
-                    '\nDate: ' + info.event.start.toISOString().slice(0, 10) 
+                    '\nDate Range: ' + info.event.extendedProps.dateRange
                 );
+
             } else if (info.event.extendedProps.type === 'maintenance') {
                 // Handle maintenance event
                 alert(

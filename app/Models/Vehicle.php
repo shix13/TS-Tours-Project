@@ -65,4 +65,5 @@ class Vehicle extends Authenticatable
     {
         return $this->hasMany(VehicleAssigned::class, 'unitID');
     }
+
 }

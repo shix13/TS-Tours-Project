@@ -107,9 +107,9 @@
                                 <tr class="text-center">
                                     <td>{{ $counter++ }}</td>
                                     <td><strong>{{ $rent->reserveID }}</strong></td>
-                                    <td style="color: {{ $rent->rent_Period_Status === 'In Progress' ? 'orange' : ($rent->rent_Period_Status === 'Scheduled' ? 'blue' : ($rent->rent_Period_Status === 'Ongoing' ? 'orange' : 'red')) }}">
+                                    <td style="color: {{ $rent->rent_Period_Status === 'Scheduled' ? 'blue' : ($rent->rent_Period_Status === 'Ongoing' ? 'orange' : 'red') }}">
                                         <strong>{{ $rent->rent_Period_Status }} </strong>
-                                    </td>                                    
+                                    </td>                                                                        
                                     <td>{{ $rent->payment_Status }}</td>
                                     <td>{{ $rent->extra_Hours !== null ? $rent->extra_Hours : '--none--' }}</td>
                                     <td>₱ {{ $rent->total_Price }}</td>
