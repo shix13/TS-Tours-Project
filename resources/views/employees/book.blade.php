@@ -74,7 +74,7 @@
                             <strong>Customer Name</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Email</strong>
+                            <strong>Booking Type</strong>
                         </th>
                         <th class="bold-text">
                             <strong>Contact Number</strong>
@@ -112,10 +112,12 @@
                             <tr class="{{ $pendingBooking->status === 'Approved' ? 'table-success' : ($pendingBooking->status === 'Denied' ? 'table-danger' : '') }} text-center">
                                     <td>{{ $counter++ }}</td>
                                     <td>{{ $pendingBooking->cust_first_name }} {{ $pendingBooking->cust_last_name }}</td>
-                                    <td>{{ $pendingBooking->cust_email }}</td>
+                                    <td style="color: {{ $pendingBooking->bookingType === 'Rent' ? 'blue' : 'green' }};font-weight:700">
+                                        {{ $pendingBooking->bookingType }}
+                                    </td>                                    
                                     <td>{{ $pendingBooking->mobileNum }}</td>
                                     <td>{{ $pendingBooking->tariff->location }}</td>
-                                    <td>{!! \Carbon\Carbon::parse($pendingBooking->startDate)->format(' M d, Y <br>H:i A') !!}</td>
+                                    <td>{!! \Carbon\Carbon::parse($pendingBooking->startDate)->format(' M d, Y ') !!}</td>
                                     <td>{!! \Carbon\Carbon::parse($pendingBooking->endDate)->format('M d, Y ') !!}</td>
                                     <td>{{ $pendingBooking->pickUp_Address }}</td>
                                     <td>{{ $pendingBooking->note }}</td>

@@ -179,10 +179,10 @@
                                            Ongoing
                                         </option>
                                         <option value="Completed" {{ $rents[0]->rent_Period_Status === 'Completed' ? 'selected' : '' }}>
-                                             Completed
+                                             Complete
                                         </option>
-                                        <option value="Completed" {{ $rents[0]->rent_Period_Status === 'Cancelled' ? 'selected' : '' }}>
-                                             Cancelled
+                                        <option value="Cancelled" {{ $rents[0]->rent_Period_Status === 'Cancelled' ? 'selected' : '' }}>
+                                             Cancel
                                         </option>
                                     </select>
                                 </div>
@@ -285,13 +285,13 @@
                                 <select class="form-control" id="vehicleDropdown" name="unitID" style="font-size: 18px">
                                     @foreach($vehiclesAssigned as $vehicleAssigned)
                                         <option value="{{ $vehicleAssigned->vehicle->unitID }}">
-                                            {{ $vehicleAssigned->vehicle->unitName }}
+                                            {{ $vehicleAssigned->vehicle->unitName }} {{ $vehicleAssigned->vehicle->registrationNumber }}
                                         </option>
                                     @endforeach
                                     @foreach($availableVehicles as $vehicle)
                                         @if (!$vehiclesAssigned->contains('vehicle.unitID', $vehicle->unitID))
                                             <option value="{{ $vehicle->unitID }}">
-                                                {{ $vehicle->unitName }}
+                                                {{ $vehicle->unitName }}  {{ $vehicle->registrationNumber }}
                                             </option>
                                         @endif
                                     @endforeach
@@ -317,7 +317,7 @@
                         </div>
                         
                         <br>
-                        @if ($rents[0]->rent_Period_Status !== 'Completed')
+                        @if ($rents[0]->rent_Period_Status !== 'Completed' && $rents[0]->rent_Period_Status !== 'Cancelled')
                             <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
                         @endif
                         
