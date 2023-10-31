@@ -74,7 +74,7 @@
 
 <div id="postPay" class="row" style="display: none;padding: 10px;">
     <h1 style="font-weight: 700;width:100%">Payment Under Review</h1>
-    <div class="row" style="padding: 10px;">
+    <div class="row" style="padding: 10px;width:100%">
         <p style="font-weight:700;font-size:20px">Your downpayment is being reviewed. </p>
         <p><hr>You can check your email regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.</p>
         <p style="margin-top:30px;font-weight:700">Thank You for choosing TS Tours Services!</p>
@@ -82,8 +82,8 @@
 </div>
 
 <div id="approved" class="row" style="display: none;padding: 10px;">
-    <h1 style="font-weight: 700;width:100%">Payment Approved</h1>
-    <div class="row" style="padding: 10px;">
+    <h1 style="font-weight: 700;width:100%">Payment Approved</h1> 
+    <div class="row" style="padding: 10px;width:100%">
         <p style="font-weight:700;font-size:20px">Your booking has been approved. </p>
         <p><hr>You can check your email regarding the confirmation of your booking. <br>Advisory Letter(?) Cancellation of bookings can only take place up until 3 days before pickup date and time and is non-refundable.</p>
         <p style="margin-top:30px;font-weight:700">Thank You for choosing TS Tours Services!</p>

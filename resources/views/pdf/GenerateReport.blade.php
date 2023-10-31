@@ -110,90 +110,54 @@
             <p style="text-align: center">This is the financial report for the maximum available range.</p>
         @endif
     
-        <div class="section">
-            <div class="section-title">Summary</div>
-            <hr>
-        
-            <div class="summary-item">
-                <div class="item-label">Total Maintenance:</div>
-                <div class="item-value" style="font-size: 20px">{{ $data['totalMaintenance'] }}</div>
-                <div class="bar-graph">
-                    <div class="bar" style="width: {{ $data['maintenancePercentage'] }}%;"></div>
-                </div>
+        <div class="section" style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border: 1px solid #ddd;">
+            <div class="section-title" style="font-size: 28px; font-weight: bold; color: #333; margin-bottom: 20px;">Summary Report</div>
+            <hr style="border: none; height: 2px; background-color: #3498db; margin-bottom: 20px;">
+            
+            <div class="summary-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                <div class="item-icon" style="color: #e74c3c; font-size: 30px;"><i class="fas fa-tools"></i></div>
+                <div class="item-label" style="font-weight: bold; color: #333;">Total Maintenance</div>
+                <div class="item-value" style="font-size: 24px; color: #333;">{{ $data['totalMaintenance'] }}</div>
             </div>
         
-            <div class="summary-item">
-                <div class="item-label">Total Rentals:</div>
-                <div class="item-value" style="font-size: 20px">{{ $data['totalRentals'] }}</div>
-                <div class="bar-graph">
-                    <div class="bar" style="width: {{ $data['rentalsPercentage'] }}%;"></div>
-                </div>
+            <div class="summary-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                <div class="item-icon" style="color: #3498db; font-size: 30px;"><i class="fas fa-car"></i></div>
+                <div class="item-label" style="font-weight: bold; color: #333;">Total Rentals</div>
+                <div class="item-value" style="font-size: 24px; color: #333;">{{ $data['totalRentals'] }}</div>
             </div>
         
-            <div class="summary-item">
-                <div class="item-label">Total Bookings:</div>
-                <div class="item-value" style="font-size: 20px" >{{ $data['totalBookings'] }}</div>
-                <div class="bar-graph">
-                    <div class="bar" style="width: {{ $data['bookingPercentage'] }}%;"></div>
-                </div>
-            </div>
-
-            <div class="summary-item">
-                <div class="item-label">Average Rating:</div>
-                <div class="item-value" style="font-size: 20px">{{ $data['ratingAverage'] }}</div>
-                @php
-                $ratingPercentage = ($data['ratingAverage'] / 5) * 100;
-                @endphp
-                <div class="bar-graph">
-                    <div class="bar" style="width: {{ $ratingPercentage > 100 ? 100 : $ratingPercentage }}%;"></div>
-                </div>
-            </div>
-            
-        
-            <div class="summary-item">
-                <div class="item-label">Total Revenue:</div>
-                <div class="item-value" style="font-size: 20px">{{ $data['totalRevenue'] }} Pesos</div>
+            <div class="summary-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                <div class="item-icon" style="color: #27ae60; font-size: 30px;"><i class="fas fa-book"></i></div>
+                <div class="item-label" style="font-weight: bold; color: #333;">Total Bookings</div>
+                <div class="item-value" style="font-size: 24px; color: #333;">{{ $data['totalBookings'] }}</div>
             </div>
         
-            <!-- Add a bar graph to show the difference -->
-            <div class="bar-graph">
-                @php
-                    $totalRevenue = (float)str_replace('₱', '', str_replace(',', '', $data['totalRevenue']));
-                    $moneyRemitted = (float)str_replace('₱', '', str_replace(',', '', $data['moneyRemitted']));
-            
-                    // Calculate the percentage
-                    $percentage = $totalRevenue > 0 ? number_format(($moneyRemitted / $totalRevenue) * 100, 2) : 0;
-                    $unfilledPercentage = 100 - $percentage;
-                @endphp
-            
-                @if ($percentage > 0)
-                    <div class="bar" style="width: {{ $unfilledPercentage }}%;">
-                        <div class="percentage-text" style="text-align: center;">
-                            {{ $unfilledPercentage }}%
-                        </div>
-                        <div class="bar-header" style="text-align: center;">
-                            Downpayment Received: {{ $data['downpaymentReceived'] }} 
-                        </div>
-                    </div>
-                @endif
-            
-                @if ($moneyRemitted > 0)
-                    @if ($percentage > 0)
-                        <div class="unfilled-bar" style="width: {{ $percentage }}%; background-color: orange; float: right; height: 20px; height: 100%; margin-top: -20px;">
-                    @else
-                        <div class="unfilled-bar" style="width: 100%; background-color: orange; float: right; height: 20px; height: 100%; margin-top: -20px;">
-                    @endif
-                        <div class="percentage-text" style="text-align: center;">
-                            {{ $percentage }}%
-                        </div>
-                        <div class="bar-header" style="text-align: center;">
-                            Money Remitted: {{ $data['moneyRemitted'] }} 
-                        </div>
-                    </div>
-                @endif
+            <div class="summary-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                <div class="item-icon" style="color: #f1c40f; font-size: 30px;"><i class="fas fa-star"></i></div>
+                <div class="item-label" style="font-weight: bold; color: #333;">Average Rating</div>
+                <div class="item-value" style="font-size: 24px; color: #333;">{{ $data['ratingAverage'] }}/5</div>
             </div>
-            
+        
+            <div class="summary-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                <div class="item-icon" style="color: #9b59b6; font-size: 30px;"><i class="fas fa-dollar-sign"></i></div>
+                <div class="item-label" style="font-weight: bold; color: #333;">Total Revenue</div>
+                <div class="item-value" style="font-size: 24px; color: #333;">{{ $data['totalRevenue'] }} Pesos</div>
+            </div>
+        
+            <div class="summary-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                <div class="item-icon" style="color: #e67e22; font-size: 30px;"><i class="fas fa-hand-holding-usd"></i></div>
+                <div class="item-label" style="font-weight: bold; color: #333;">Money Remitted</div>
+                <div class="item-value" style="font-size: 24px; color: #333;">{{ $data['moneyRemitted'] }} Pesos</div>
+            </div>
+        
+            <div class="summary-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                <div class="item-icon" style="color: #e74c3c; font-size: 30px;"><i class="fas fa-coins"></i></div>
+                <div class="item-label" style="font-weight: bold; color: #333;">Downpayment Received</div>
+                <div class="item-value" style="font-size: 24px; color: #333;">{{ $data['downpaymentReceived'] }} Pesos</div>
+            </div>
         </div>
+        
+        
         
 
         <div class="section" style="page-break-before: left;">
@@ -266,7 +230,7 @@
         
         
         <div class="section" style="page-break-before: always;">
-            <div class="section-title">Individual Fleet Record</div>
+            <div class="section-title"> Overall Individual Fleet Record</div>
             <table>
                 <tr>
                     <th>Unit Name</th>

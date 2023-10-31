@@ -236,23 +236,23 @@ public function rentalView($id)
 
 public function update(Request $request, $id)
 {
-    // Find the rental by ID
-    $rental = Rent::find($id);
-
-    // Check if the rental exists
-    if (!$rental) {
-        return redirect()->back()->with('error', 'Rental not found.');
-    }
-
-    // Find the related booking by reserveID
-    $booking = Booking::where('reserveID', $rental->reserveID)->first();
-
-    // Check if the booking exists
-    if (!$booking) {
-        return redirect()->back()->with('error', 'Booking not found.');
-    }
-
     try {
+        // Find the rental by ID
+        $rental = Rent::find($id);
+
+        // Check if the rental exists
+        if (!$rental) {
+            return redirect()->back()->with('error', 'Rental not found.');
+        }
+
+        // Find the related booking by reserveID
+        $booking = Booking::where('reserveID', $rental->reserveID)->first();
+
+        // Check if the booking exists
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Booking not found.');
+        }
+
         // Combine pickup_date and pickup_time into a single datetime string
         $pickupDateTime = $request->input('pickup_date') . ' ' . $request->input('pickup_time');
         $combinedStartDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $pickupDateTime);
@@ -261,9 +261,12 @@ public function update(Request $request, $id)
         $dropoffDateTime = $request->input('dropoff_date') . ' ' . $request->input('dropoff_time');
         $combinedEndDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $dropoffDateTime);
 
+        // Calculate the difference in hours between the new start and end dates
+        $newHours = $combinedEndDate->diffInHours($combinedStartDate);
+
         // Calculate subtotal based on changes in dates and booking type
-        $subtotal = $this->processRate($booking->tariff->rate_Per_Day, $combinedStartDate, $combinedEndDate, $booking->bookingType);
-        
+        $subtotal = $this->processRate($booking->tariff, $combinedStartDate, $combinedEndDate, $booking->bookingType);
+
         // Calculate extra hour fees
         $extraHours = $request->input('extra_hours', 0);
         $ratePerHour = $booking->tariff->rent_Per_Hour;
@@ -278,10 +281,11 @@ public function update(Request $request, $id)
         // Calculate the new total price by adding Extra Hour Fees to the Subtotal
         $newTotalPrice = max($subtotal, $subtotal + $extraHourFees);
 
+        // Calculate the remittance total
         $remittanceTotal = Remittance::where('rentID', $rental->id)->sum('amount');
-        
+
         // Calculate the new balance ensuring it doesn't go negative
-        $newBalance = $newTotalPrice- ($remittanceTotal + $booking->downpayment_Fee) ;
+        $newBalance = max(0, $newTotalPrice - ($remittanceTotal + $booking->downpayment_Fee));
         
         // Update the rental information
         $rental->update([
@@ -290,7 +294,7 @@ public function update(Request $request, $id)
             'total_Price' => $newTotalPrice,
             'balance' => $newBalance,
         ]);
-        
+
         // Update vehicles assigned based on reserveID
         $unitIDs = $request->input('unitID', []); // Provide an empty array as default
         $empIDs = $request->input('empID', []); // Provide an empty array as default
@@ -314,6 +318,7 @@ public function update(Request $request, $id)
         return redirect()->back()->with('error', 'An error occurred while updating rental information: ' . $e->getMessage());
     }
 }
+
 
 
 
@@ -417,7 +422,7 @@ public function preApproved(){
     return view('employees.preApproved', compact('preApprovedBookings'));
 }
 
-private function processRate($rate, $startDate, $endDate, $bookingType)
+private function processRate($tariff, $startDate, $endDate, $bookingType)
 {  // dd($rate);
     // Parse the start and end dates using Carbon
     $startDateTime = Carbon::parse($startDate);
@@ -428,11 +433,13 @@ private function processRate($rate, $startDate, $endDate, $bookingType)
 
     if ($bookingType === 'Rent') {
         // For Rent bookings, calculate the total rate based on the daily rate
-       
-        return $rate * ($diffInDays + 1); // Add 1 to include both the start and end dates
+        
+        return $tariff->rate_Per_Day * ($diffInDays + 1); // Add 1 to include both the start and end dates
+
     } elseif ($bookingType === 'Pickup/Dropoff') {
         // For Pickup/Dropoff bookings, the rate is already fixed, return it directly
-        return $rate;
+       
+        return $tariff->do_pu;
     }
 
     // Handle other booking types or provide default logic as needed

@@ -55,18 +55,7 @@
         font-size: 17px;
     }
 
-    .statistics-bar {
-        height: 20px;
-        background-color: #3498db;
-        margin-top: 0px;
-        border-radius: 5px;
-    }
 
-    .bar-container {
-        background-color: #eee;
-        border-radius: 5px;
-        border: 1px solid gray;
-    }
 </style>
 
 <div class="container" style="padding: 20px;">
@@ -91,11 +80,8 @@
                 <div class="card-body">
                     <h4 class="card-title"><i class="fas fa-wrench"></i> Maintenance</h4>
                     <hr>
-                    <p class="card-text">
-                        <strong>Count:</strong> <span id="totalMaintenance">Loading...</span>
-                        <div class="bar-container">
-                            <div class="statistics-bar" id="maintenanceBar" style="width: 0;"></div>
-                        </div>
+                    <p class="card-text text-center" >
+                        <strong>Count:</strong> <br><span style="font-size: 60px;font-weight:700" id="totalMaintenance">Loading...</span>
                     </p>
                 </div>
             </div>
@@ -103,14 +89,11 @@
         
         <div class="col-md-3">
             <div class="card interactive-card">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <h4 class="card-title"><i class="fa-solid fa-car-side"></i> Rentals</h4>
                     <hr>
                     <p class="card-text">
-                        <strong>Count:</strong> <span id="totalFleetRentals">Loading...</span>
-                        <div class="bar-container">
-                            <div class="statistics-bar" id="fleetRentalsBar" style="width: 0;"></div>
-                        </div>
+                        <strong>Count:</strong><br> <span style="font-size: 60px;font-weight:700" id="totalFleetRentals">Loading...</span>
                     </p>
                 </div>
             </div>
@@ -118,14 +101,11 @@
 
         <div class="col-md-3">
             <div class="card interactive-card">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <h4 class="card-title"><i class="fa-solid fa-laptop-file"></i> Bookings</h4>
                     <hr>
                     <p class="card-text">
-                        <strong>Count:</strong> <span id="totalBookings">Loading...</span>
-                        <div class="bar-container">
-                            <div class="statistics-bar" id="bookingBar" style="width: 0;"></div>
-                        </div>
+                        <strong>Count:</strong><br> <span style="font-size: 60px;font-weight:700" id="totalBookings">Loading...</span>
                     </p>
                 </div>
             </div>
@@ -133,14 +113,11 @@
 
         <div class="col-md-3">
             <div class="card interactive-card">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <h4 class="card-title"><i class="fa-solid fa-star"></i> Rating</h4>
                     <hr>
                     <p class="card-text">
-                        <strong>Average:</strong> <span id="ratingAverageValue">Loading...</span>/5
-                        <div class="bar-container">
-                            <div class="statistics-bar" id="ratingBar" style="width: 0;"></div>
-                        </div>
+                        <strong>Average:</strong><br> <span style="font-size: 60px;font-weight:700" id="ratingAverageValue">Loading...</span>/5
                     </p>
                 </div>
             </div>
@@ -165,8 +142,7 @@
             <img src="{{ asset('images/Reports Grapiks.png') }}" alt="Reports Grapiks">
             </div>
     </div>
-    
-    <hr>
+
     
     <div class="row">
         <div class="col-md-6">
@@ -197,10 +173,12 @@
                 </div>
             </div>            
         </div>
+    </div>
+    <hr>
         <div class="col-md-12">
             <div class="card interactive-card">
                 <div class="card-body">
-                    <h4 class="card-title" style="font-weight: 700"><i class="fa-solid fa-car-side"></i> Fleet Schedules Created </h4>
+                    <h4 class="card-title" style="font-weight: 700"><i class="fa-solid fa-car-side"></i> Overall Individual Fleet Record </h4>
                     <hr>
                     <table class="table" id="topVehiclesTable">
    
@@ -211,7 +189,7 @@
                 </div>
             </div>            
         </div>
-    </div>
+    
 </div>
 @endsection
 
@@ -296,14 +274,8 @@ function updateSections(filter) {
                             <tr>
                                 <td>${index + 1}. ${assignment.unitName} - ${assignment.registrationNumber}</td>
                                 <td>Maintenance Count: ${assignment.maintenance_count} 
-                                    <div class="bar-container">
-                                        <div class="statistics-bar" style="width: ${maintenancePercentage.toFixed(2)}%;"></div>
-                                    </div>
                                 </td>
                                 <td>Assignment Count: ${assignment.assignment_count} 
-                                    <div class="bar-container">
-                                        <div class="statistics-bar" style="width: ${assignmentPercentage.toFixed(2)}%;"></div>
-                                    </div>
                                 </td>
                             </tr>`;
 
