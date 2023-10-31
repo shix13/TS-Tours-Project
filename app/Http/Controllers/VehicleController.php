@@ -48,7 +48,7 @@ public function create()
     // Fetch the vehicle types from the database
     $vehicleTypes = VehicleType::all();
 
-    return view('employees.vehiclecreate', compact('vehicleTypes'));
+    return view('employees.vehicleCreate', compact('vehicleTypes'));
 }
 
 public function store(Request $request)
