@@ -59,7 +59,10 @@
         
     <div class="card">
         <div class="card-header">
-            <h4 class="card-title" style="font-weight: 700">Pre-Approved Booking</h4>
+            <div class="btn-group" role="group" aria-label="Button Group">
+                <a href="{{ route('employee.preapproved') }}" class="btn btn-primary {{ Route::is('employee.preapproved') ? 'active' : '' }}">Pre-approved Booking</a>
+                <a href="{{ route('employee.paymentHistory') }}" class="btn btn-primary {{ Route::is('employee.paymentHistory') ? 'active' : '' }}">Payment History</a>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">

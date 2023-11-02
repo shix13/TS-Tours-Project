@@ -422,7 +422,16 @@ public function preApproved(){
     return view('employees.preApproved', compact('preApprovedBookings'));
 }
 
-private function processRate($tariff, $startDate, $endDate, $bookingType)
+public function paymentHistory(){
+    $paidBookings = Booking::where('status', '!=', 'Pending')
+    ->whereNotNull('downpayment_Fee')
+    ->whereNotNull('gcash_RefNum')
+    ->get();
+
+    return view('employees.paymentHistory', compact('paidBookings'));
+}
+
+private function processRate($rate, $startDate, $endDate, $bookingType)
 {  // dd($rate);
     // Parse the start and end dates using Carbon
     $startDateTime = Carbon::parse($startDate);
