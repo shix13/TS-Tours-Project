@@ -93,7 +93,7 @@
 
     <div class="row">
         <div class="col">
-            <h4><strong>Booking Details</strong> | Tracking Number: {{ $booking['reserveID'] }}</h4>
+            <h4><strong>Booking Details</strong> | Booking Number: {{ $booking['reserveID'] }}</h4>
             <div class="container">
                 <div class="row">
                     <div class="col">

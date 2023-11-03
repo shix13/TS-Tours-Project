@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Title: ' + info.event.title +
                     '\nUnit Name: ' + info.event.extendedProps.unitName +
                     '\nOwnership Type: ' + info.event.extendedProps.ownershipType +
-                    '\nTracking ID: ' + info.event.extendedProps.trackingID +
+                    '\nBooking Number: ' + info.event.extendedProps.trackingID +
                     '\nDate Range: ' + info.event.extendedProps.dateRange
                 );
 

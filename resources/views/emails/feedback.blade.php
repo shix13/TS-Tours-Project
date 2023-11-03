@@ -82,7 +82,7 @@
                 Dear {{ $booking->cust_first_name }} {{ $booking->cust_last_name }},<br>
                 We want to express our heartfelt gratitude for choosing TS Tours Services. Your trust in our service is greatly appreciated.
 
-                We are committed to providing you with the best travel experience, and we're excited to be a part of your journey. Your Tracking ID: <strong>{{ $booking->reserveID }}</strong> has been completed!
+                We are committed to providing you with the best travel experience, and we're excited to be a part of your journey. Your Booking Number: <strong>{{ $booking->reserveID }}</strong> has been completed!
 
                 To enhance our services and serve you better, we would love to hear your feedback. Please take a moment to share your thoughts by clicking the following link: <br><br>
 

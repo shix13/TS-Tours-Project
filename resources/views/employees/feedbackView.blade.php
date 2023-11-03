@@ -21,7 +21,7 @@
                             <thead class="text-primary font-montserrat ">
                                 <tr>
                                     <th class="bold-text"> <strong>Index</strong></th>
-                                    <th class="bold-text"><strong>Tracking ID</strong></th>
+                                    <th class="bold-text"><strong>Booking Number</strong></th>
                                     <th class="bold-text"><strong>Rating</strong></th>
                                     <th class="bold-text"><strong>Feedback Message</strong></th>
                                     <th class="bold-text"><strong>Created At</strong></th>

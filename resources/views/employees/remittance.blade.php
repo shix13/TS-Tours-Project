@@ -64,7 +64,7 @@
                             <strong>Sent by</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Tracking ID</strong>
+                            <strong>Booking Number</strong>
                         </th>
                         <th class="bold-text">
                             <strong>Receipt Number</strong>

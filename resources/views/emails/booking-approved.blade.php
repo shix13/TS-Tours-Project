@@ -85,7 +85,7 @@
         <div class="content">
             <p>
                 Dear {{ $booking->cust_first_name }} {{ $booking->cust_last_name }},<br>
-                Your payment under tracking ID: <strong>{{ $booking->reserveID }}</strong> has been approved.
+                Your payment under Booking Number: <strong>{{ $booking->reserveID }}</strong> has been approved.
             </p>
             <p>Thank you for your booking with TS Tours Services. Below are the details of your booking:</p>
  

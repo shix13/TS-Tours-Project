@@ -62,7 +62,7 @@
 
                         <div class="form-group">
                             <label for="tracking" style="color: black">
-                                <i class="fas fa-file-alt"></i> Tracking ID
+                                <i class="fas fa-file-alt"></i> Booking Number
                             </label>
                             <input type="text"  style="background: white;color:black;font-size:17px"" name="tracking" id="tracking" class="form-control" value="{{ $rent->reserveID }}" readonly>
                         </div>

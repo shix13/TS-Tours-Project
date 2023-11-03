@@ -80,7 +80,7 @@
         <div class="content">
             <p>
                 Dear {{ $customerFirstName }} {{ $customerLastName }},<br>
-                Thank you for choosing TS Tours Services. Your Tracking ID: <strong>{{ $reserveID }}</strong> has been approved!<br>
+                Thank you for choosing TS Tours Services. Your Booking Number: <strong>{{ $reserveID }}</strong> has been approved!<br>
                 To proceed, please click the following link to pay the down payment fee.
             </p>
 
