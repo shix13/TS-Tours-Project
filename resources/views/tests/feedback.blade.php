@@ -31,7 +31,7 @@
         </div>
         <div class="form-group" style="font-size: 20px">
             <label for="TrackingID">
-                <i class="fas fa-barcode"></i> Tracking ID:
+                <i class="fas fa-barcode"></i> Booking Number:
             </label>
             <input style="background: white;color:black" type="text" id="TrackingID" name="TrackingID" value="{{ $feedback->reserveID }}" class="form-control" readonly>
         </div>

@@ -13,8 +13,8 @@
     </div>
     @endif
         <div class="col-md-6 mx-auto" style="font-size: 20px">
-            <label for="reserveID">Tracking ID:</label>
-            <input name="reserveID" type="text" class="form-control" placeholder="Enter tracking ID" style="background: white; padding: 20px; border: 2px solid midnightblue;">
+            <label for="reserveID">Booking Number:</label>
+            <input name="reserveID" type="text" class="form-control" placeholder="Enter Booking Number" style="background: white; padding: 20px; border: 2px solid midnightblue;">
         </div>
         <br>
         <div class="col-md-6 mx-auto"  style="font-size: 20px">
