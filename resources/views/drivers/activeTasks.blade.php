@@ -174,6 +174,33 @@
 <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
+function getGeolocationOnLoad(){
+    if (navigator.geolocation) {
+        
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            // Send this data to your Laravel application using an HTTP request (e.g., Axios or Fetch).
+            // Include the rider's ID or any relevant information.
+
+            // Update the content of the HTML elements
+            document.getElementById("latitude").textContent = position.coords.latitude;
+            document.getElementById("longitude").textContent = position.coords.longitude;
+
+            // Get the text from the <span> elements
+            var latitudeText = document.getElementById('latitude').textContent;
+            var longitudeText = document.getElementById('longitude').textContent;
+
+            // Set the text in hidden input fields
+            document.getElementById('latitudeInput').value = latitudeText;
+            document.getElementById('longitudeInput').value = longitudeText;
+        });
+    }
+    else {
+        alert("Geolocation is not supported by your browser.");
+    }
+}
+
 function getGeolocation(){
     if (navigator.geolocation) {
         
@@ -200,17 +227,14 @@ function getGeolocation(){
          // Submit the form
          setTimeout(function() {
             document.querySelector('form').submit();
-        }, 2000);
+        }, 5000);
     }
     else {
         alert("Geolocation is not supported by your browser.");
     }
 }
 
-function showPosition(position) {
-    document.getElementById("latitude").textContent = position.coords.latitude;
-    document.getElementById("longitude").textContent = position.coords.longitude;
-}
+window.addEventListener('load', getGeolocationOnLoad);
 
 </script>
 @endsection

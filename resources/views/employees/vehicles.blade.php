@@ -163,8 +163,6 @@
                                     <td class="status col-md-1 align-middle text-center">
                                         <a href="{{ route('vehicles.edit', $vehicle->unitID) }}" class="btn btn-primary"> <i class="fas fa-edit"></i>EDIT</a>
                                         
-                                       <!-- <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $vehicle->unitID }}">DELETE</button>
-                                        @include('employees.vehiclemodal') -->
                                     </td>
                                 </tr>
                             @endforeach

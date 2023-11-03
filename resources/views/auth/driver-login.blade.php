@@ -50,7 +50,7 @@
             @csrf
               <div class="form-group">
                 <label for="mobileNum">Mobile Number</label>
-                <input name="mobileNum" type="text" class="form-control" id="mobileNum" placeholder="Enter your mobile number" required>
+                <input name="mobileNum" type="text" class="form-control @error('mobileNum') is-invalid @enderror" id="mobileNum" placeholder="Enter your mobile number" required>
                 @error('mobileNum')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -59,7 +59,12 @@
             </div>
               <div class="form-group">
                 <label for="password">Password</label>
-                <input name="password" type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                <input name="password" type="password" class="form-control @error('password') is-invalid @enderror" id="password" placeholder="Enter your password" required>
+                @error('password')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
               </div>
               <button type="submit" class="btn btn-primary btn-block">Login</button>
             </form>

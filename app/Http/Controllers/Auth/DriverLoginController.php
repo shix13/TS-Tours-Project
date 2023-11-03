@@ -49,8 +49,11 @@ class DriverLoginController extends Controller
             //      intended resulted to go back to login when not logged in as customer (?)
         }
 
-        return redirect('/driver/login')->withInput($request->only('mobileNum', 'remember'))->withErrors([
-            'mobileNum' => 'These credentials do not match our records.',
+        return redirect('/driver/login')
+        ->withInput($request->only('mobileNum', 'remember'))
+        ->withErrors([
+            'mobileNum' => 'The provided mobile number does not exist in our records.',
+            'password' => 'The password is incorrect. Please try again.',
         ]);
     }
 

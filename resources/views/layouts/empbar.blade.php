@@ -18,9 +18,7 @@
   <link href="{{ asset('assets/css/now-ui-dashboard.css?v=1.5.1') }}" rel="stylesheet" /> 
   <link rel="stylesheet" href="{{ asset('assets/fontawesome-free-6.4.2-web/fontawesome-free-6.4.2-web/css/all.css') }}">
   
-  
 
-  
 
   <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
