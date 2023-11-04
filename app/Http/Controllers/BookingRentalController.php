@@ -70,9 +70,9 @@ public function rentHistory()
 
 
 public function approveBooking($bookingId)
-{   
+{  
     try {
-        $user = Auth::user();
+        $user = Auth::guard('employee')->user();
         $booking = Booking::findOrFail($bookingId);
         $booking->status = 'Approved';
         $booking->save();
@@ -263,10 +263,12 @@ public function update(Request $request, $id)
 
         // Calculate the difference in hours between the new start and end dates
         $newHours = $combinedEndDate->diffInHours($combinedStartDate);
-
+       
+        $numVehiclesAssigned = count($request->input('unitID', []));
+        
         // Calculate subtotal based on changes in dates and booking type
-        $subtotal = $this->processRate($booking->tariff, $combinedStartDate, $combinedEndDate, $booking->bookingType);
-
+        $subtotal = $this->processRate($booking->tariff, $combinedStartDate, $combinedEndDate, $booking->bookingType,$numVehiclesAssigned);
+    
         // Calculate extra hour fees
         $extraHours = $request->input('extra_hours', 0);
         $ratePerHour = $booking->tariff->rent_Per_Hour;
@@ -431,7 +433,7 @@ public function paymentHistory(){
     return view('employees.paymentHistory', compact('paidBookings'));
 }
 
-private function processRate($rate, $startDate, $endDate, $bookingType)
+private function processRate($tariff, $startDate, $endDate, $bookingType,$numVehiclesAssigned)
 {  // dd($rate);
     // Parse the start and end dates using Carbon
     $startDateTime = Carbon::parse($startDate);
@@ -443,12 +445,12 @@ private function processRate($rate, $startDate, $endDate, $bookingType)
     if ($bookingType === 'Rent') {
         // For Rent bookings, calculate the total rate based on the daily rate
         
-        return $tariff->rate_Per_Day * ($diffInDays + 1); // Add 1 to include both the start and end dates
+        return $tariff->rate_Per_Day * ($diffInDays + 1)* $numVehiclesAssigned; // Add 1 to include both the start and end dates
 
     } elseif ($bookingType === 'Pickup/Dropoff') {
         // For Pickup/Dropoff bookings, the rate is already fixed, return it directly
        
-        return $tariff->do_pu;
+        return $tariff->do_pu * $numVehiclesAssigned;
     }
 
     // Handle other booking types or provide default logic as needed
