@@ -44,9 +44,9 @@
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
                         @guest('employee')
-                            @if (Route::has('employee.login'))
+                            @if (Route::has('login'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('employee.login') }}" style="color:white;">{{ __('Login') }}</a>
+                                    <a class="nav-link" href="{{ route('login') }}" style="color:white;">{{ __('Login') }}</a>
                                 </li>
                             @endif
 

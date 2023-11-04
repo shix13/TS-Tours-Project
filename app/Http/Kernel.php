@@ -70,11 +70,12 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         
+        
     ];
 
     protected $routeMiddleware = [
         'Manager' => \App\Http\Middleware\ManagerMiddleware::class,
-        'employee' => \App\Http\Middleware\RedirectIfNotAuthenticated::class,
-        'customer' => \App\Http\Middleware\Authenticate::class,
+        'auth.guard' => \App\Http\Middleware\RedirectIfNotAuthenticated::class,
+        //'customer' => \App\Http\Middleware\Authenticate::class,
     ];
 }

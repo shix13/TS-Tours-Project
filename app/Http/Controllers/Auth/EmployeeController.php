@@ -141,8 +141,10 @@ class EmployeeController extends Controller
                     'title' => 'Maintenance for ' . $maintenanceDate['vehicle']->registrationNumber,
                     'unitName' => $maintenanceDate['vehicle']->unitName,
                     'start' => $maintenanceDate['date'],
+                    'status' => $maintenanceDate['status'],
                 ];
             }
+            
     
             foreach ($scheduleData['booking'] as $bookingDate) {
                 $formattedSchedules[] = [
@@ -152,13 +154,14 @@ class EmployeeController extends Controller
                     'unitName' => $bookingDate['vehicle']->unitName,
                     'trackingID' => $bookingDate['trackingID']->reserveID,
                     'start' => $bookingDate['date'],
-                    'dateRange' => $bookingDate['dateRange']
-                   
+                    'dateRange' => $bookingDate['dateRange'],
+                    'bookingstatus' => $bookingDate['booking status'],
+                    'rentstatus' => $bookingDate['rent status'],
                 ];
             }
         }
        
-         //dd($formattedSchedules);
+        //dd($formattedSchedules);
         return view('employees.dashboard', compact('formattedSchedules'));
     }
     
@@ -186,6 +189,7 @@ public function getAvailableSchedules()
                     'type' => 'maintenance',
                     'date' => \Carbon\Carbon::parse($maintenance->scheduleDate)->toDateString(),
                     'vehicle' => $vehicle, // Include vehicle details with maintenance
+                    'status' => $maintenance->status,
                 ];
             }
         }
@@ -196,20 +200,30 @@ public function getAvailableSchedules()
                 $startDate = \Carbon\Carbon::parse($assignment->booking->startDate);
                 $endDate = \Carbon\Carbon::parse($assignment->booking->endDate);
                 
-                 // Create a date range string
                 $dateRange = $startDate->format('Y-m-d') . ' to ' . $endDate->format('Y-m-d');
-
+        
                 for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
-                    $bookingDates[] = [
+                    $assignmentData = [
                         'type' => 'booking',
                         'date' => $date->format('Y-m-d'),
                         'dateRange' =>$dateRange,
                         'vehicle' => $vehicle, 
                         'trackingID' => $assignment->booking,
+                        'booking status' => $assignment->booking->status,
                     ];
-                }   
+        
+                    // Check if there is associated rent
+                    if ($assignment->rent) {
+                        $assignmentData['rent status'] = $assignment->rent->rent_Period_Status;
+                    } else {
+                        $assignmentData['rent status'] = null; // Or you can set it to any default value
+                    }
+        
+                    $bookingDates[] = $assignmentData;
+                }
             }
         }
+        
 
         // Use isset to append data without overwriting
         if (!isset($schedules[$vehicle->id])) {
@@ -227,11 +241,6 @@ public function getAvailableSchedules()
     return $schedules;
 }
 
-
-    
-    
-
-    
     
     
 
@@ -260,18 +269,6 @@ public function update(Request $request, $empID)
         'ProfileImage' => 'image|max:2048',
         'FirstName' => 'required|string|max:255',
         'LastName' => 'required|string|max:255',
-        'Email' => [
-            'required',
-            'email',
-            Rule::unique('employees')->ignore($request->id)->whereNull('deleted_at'),
-        ],
-        'MobileNum' => [
-            'required',
-            'string',
-            'min:11',
-            'max:11',
-            Rule::unique('employees')->ignore($request->id)->whereNull('deleted_at'),
-        ],
         'AccountType' => 'required|string',
     ]);
 
@@ -281,8 +278,6 @@ public function update(Request $request, $empID)
     // Update the employee's information
     $employee->firstName = $request->input('FirstName');
     $employee->lastName = $request->input('LastName');
-    $employee->email = $request->input('Email');
-    $employee->mobileNum = $request->input('MobileNum');
     $employee->accountType = $request->input('AccountType');
 
     // Handle profile image upload
@@ -341,9 +336,9 @@ public function update(Request $request, $empID)
         
 
        
-        if (Hash::check($request->current_password, auth()->user()->password)) {
+        if (Hash::check($request->current_password, auth('employee')->user()->password)) {
             // Current password matches; update the password
-            auth()->user()->update(['password' => Hash::make($request->password)]);
+            auth('employee')->user()->update(['password' => Hash::make($request->password)]);
 
             return redirect()->back()->with('success', 'Password changed successfully.');
         }

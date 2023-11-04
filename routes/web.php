@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\EmployeeController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\TariffController;
@@ -41,6 +42,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::middleware(['auth.guard:employee','manager'])->group(function (){
+     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+});
+
 Route::post('/contact', [TestController::class, 'sendEmail'])->name('contact.send');
 //VISITOR
 //Route::get('/home', [App\Http\Controllers\VisitorController::class, 'tsdefault'])->name('home');
@@ -77,7 +82,7 @@ Route::prefix('employee')->group(function(){
      //Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
      //Route::post('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'register'])->name('employee.register.submit');
     
-    Route::middleware('auth:employee')->group(function () {
+    Route::middleware('auth.guard:employee')->group(function () {
     //ACCOUNTS
         Route::middleware(['manager'])->group(function (){
         Route::get('/register', [EmployeeController::class, 'showRegisterForm'])->name('employee.register');
@@ -85,13 +90,11 @@ Route::prefix('employee')->group(function(){
         Route::put('/account/{empID}', [EmployeeController::class, 'update'])->name('employee.update');
         Route::get('/account', [AccountsController::class, 'accountIndex'])->name('employee.accounts');
         Route::delete('/employee/{empID}', [EmployeeController::class, 'delete'])->name('employee.delete');
-
-           //REPORTS
-       
+        Route::get('/reports', [ReportsController::class, 'processReports'])->name('employee.reports');      
+        
+        //REPORTS
         Route::match(['get', 'post'], '/fetch-data', [ReportsController::class, 'fetchData'])->name('fetchData');
         
-        //Route::match(['get', 'post'],'/fetch-data-second-filter', [ReportsController::class, 'fetchDataSecondFilter'])->name('fetchDataSecondFilter');
-        //Route::get('/fleetReport{fleetId}',[ReportsController::class, 'showReport']);
         });
 
         Route::post('/register', [App\Http\Controllers\Auth\EmployeeController::class, 'register'])->name('employee.register.submit');
@@ -162,8 +165,6 @@ Route::prefix('employee')->group(function(){
         Route::get('/remittance/{id}/remittancecreate', [RemittanceController::class, 'create'])->name('remittance.create');
         Route::post('/remittance/store', [RemittanceController::class, 'store'])->name('remittance.store');
 
-    //REPORTS
-        Route::get('/reports', [ReportsController::class, 'processReports'])->name('employee.reports');      
     
     //Feedback
         Route::get('/feedback', [BookingRentalController::class, 'feedbackIndex'])->name('view.feedback');
@@ -200,9 +201,7 @@ Route::prefix('driver')->group(function(){
     Route::get('/get-available-schedules/{vehicleId}', [MaintenanceController::class, 'getAvailableSchedules'])->name('get-available-schedules');
     
 
-    Route::middleware('auth:employee')->group(function () {
-            Route::get('generate-pdf', [ReportsController::class, 'generatePDF'])->name('generate-pdf');
-            });
+    Route::get('generate-pdf', [ReportsController::class, 'generatePDF'])->name('generate-pdf');
 
     //forgot password
     Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');

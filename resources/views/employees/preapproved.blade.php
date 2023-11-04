@@ -60,8 +60,8 @@
     <div class="card">
         <div class="card-header">
             <div class="btn-group" role="group" aria-label="Button Group">
-                <a href="{{ route('employee.preapproved') }}" class="btn btn-primary {{ Route::is('employee.preapproved') ? 'active' : '' }}">Pre-approved Booking</a>
-                <a href="{{ route('employee.paymentHistory') }}" class="btn btn-primary {{ Route::is('employee.paymentHistory') ? 'active' : '' }}">Payment History</a>
+                <a href="{{ route('employee.preapproved') }}" class="btn btn-info ">Pre-approved Booking</a>
+                <a href="{{ route('employee.paymentHistory') }}" class="btn btn-primary ">Payment History</a>
             </div>
         </div>
         <div class="card-body">

@@ -93,12 +93,14 @@
                       <p>Customer Feedbacks</p>
                   </a>
               </li>
+              @if(Auth::guard('employee')->check() && Auth::guard('employee')->user()->accountType == 'Manager')
                 <li class="{{ Request::is('employee/reports') ? 'active' : '' }}">
                   <a href="{{ route('employee.reports') }}">
                     <i class="now-ui-icons files_single-copy-04"></i>
                       <p>Reports</p>
                   </a>
                 </li>
+                @endif
             </ul>
         </div>
     </div>
@@ -127,9 +129,9 @@
               <li class="nav-item">
                  <!-- Authentication Links -->
                  @guest('employee')
-                 @if (Route::has('employee.login'))
+                 @if (Route::has('login'))
                      <li class="nav-item">
-                         <a class="nav-link" href="{{ route('employee.login') }}">{{ __('Login') }}</a>
+                         <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                      </li>
                  @endif
              @else
@@ -173,15 +175,14 @@
 <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
 <script src="{{ asset('assets/js/plugins/perfect-scrollbar.jquery.min.js') }}"></script>
 
-  <!--  Google Maps Plugin    -->
-  <!--<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>-->
-  <!-- Chart JS -->
-  <!--<script src="../assets/js/plugins/chartjs.min.js"></script>-->
-  <!--  Notifications Plugin    -->
-  <script src="../assets/js/plugins/bootstrap-notify.js"></script>
-  <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="../assets/js/now-ui-dashboard.min.js?v=1.5.0" type="text/javascript"></script><!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
-  <script src="../assets/demo/demo.js"></script>
+
+<!-- Notifications Plugin -->
+<script src="{{ asset('assets/js/plugins/bootstrap-notify.js') }}"></script>
+<!-- Control Center for Now Ui Dashboard -->
+<script src="{{ asset('assets/js/now-ui-dashboard.min.js?v=1.5.0') }}" type="text/javascript"></script>
+<!-- Now Ui Dashboard DEMO methods (don't include in production) -->
+<script src="{{ asset('assets/demo/demo.js') }}"></script>
+
   <!--bootstrap-->
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

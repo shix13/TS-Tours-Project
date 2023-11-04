@@ -127,7 +127,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     '\nUnit Name: ' + info.event.extendedProps.unitName +
                     '\nOwnership Type: ' + info.event.extendedProps.ownershipType +
                     '\nBooking Number: ' + info.event.extendedProps.trackingID +
-                    '\nDate Range: ' + info.event.extendedProps.dateRange
+                    '\nDate Range: ' + info.event.extendedProps.dateRange+
+                    '\nBooking Status: ' + info.event.extendedProps.bookingstatus +
+                    '\nRent Status: ' + info.event.extendedProps.rentstatus 
                 );
 
             } else if (info.event.extendedProps.type === 'maintenance') {
@@ -135,7 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(
                     'Title: ' + info.event.title +
                     '\nUnit Name: ' + info.event.extendedProps.unitName +
-                    '\nDate: ' + info.event.start.toISOString().slice(0, 10) 
+                    '\nDate: ' + info.event.start.toISOString().slice(0, 10) +
+                    '\nStatus: ' + info.event.extendedProps.status 
                 );
             }
         }

@@ -77,11 +77,11 @@
     <div class="row">
         <div class="col-md-3">
             <div class="card interactive-card">
-                <div class="card-body">
-                    <h4 class="card-title"><i class="fas fa-wrench"></i> Maintenance</h4>
+                <div class="card-body" style="padding: 9px">
+                    <h4 class="card-title" ><i class="fas fa-wrench"></i>Maintenance</h4>
                     <hr>
                     <p class="card-text text-center" >
-                        <strong>Count:</strong> <br><span style="font-size: 60px;font-weight:700" id="totalMaintenance">Loading...</span>
+                        <strong>Count:</strong> <br><span style="font-size:60px;font-weight:700;" id="totalMaintenance">Loading...</span>
                     </p>
                 </div>
             </div>
