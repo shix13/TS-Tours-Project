@@ -89,7 +89,7 @@ class RegisterController extends Controller
 
     protected function showRegistrationForm()
 {
-    if (auth()->user()->accountType === 'Manager') {
+    if (auth('employee')->user()->accountType === 'Manager') {
         return view('auth.register');
     } else {
         return redirect()->route('employee.dashboard'); // Redirect unauthorized users
