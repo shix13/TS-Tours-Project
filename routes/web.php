@@ -181,9 +181,13 @@ Route::prefix('driver')->group(function(){
     //auth:employee is temporary, may need to find a way to only let drivers in
     Route::middleware('auth:driver')->group(function () {
         Route::get('/activeTask', [DriverController::class, 'showActive'])->name('driver.active');
-        Route::get('/upcomingTasks', [DriverController::class, 'showUpcoming'])->name('driver.upcoming');
-        Route::get('/logout', [DriverLoginController::class, 'logout'])->name('driver.logout');
+        Route::post('/complete-rent', [DriverController::class, 'completeRent'])->name('driver.complete');
         Route::post('/store-geolocation', [GeolocationController::class, 'store'])->name('driver.store');
+
+        Route::get('/upcomingTasks', [DriverController::class, 'showUpcoming'])->name('driver.upcoming');
+        Route::post('/start-rent', [DriverController::class, 'startRent'])->name('driver.start');
+        
+        Route::get('/logout', [DriverLoginController::class, 'logout'])->name('driver.logout');
     });
 });
 //Route::prefix('test')->group(function(){

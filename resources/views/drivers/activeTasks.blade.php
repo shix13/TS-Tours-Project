@@ -161,7 +161,15 @@
                             </div>
                         </div>
                     </div>
-                    @endforeach
+                @endforeach
+                <hr>
+            <div>
+                <form id="completeTaskForm" method="POST" action="{{ route('driver.complete') }}">
+                    @csrf
+                    <input type="hidden" name="rentID" id="rentID" value="{{ $activeTask->rentID }}">
+                    <button class="btn btn-primary btn-lg btn-block" type="button" onclick="confirmCompleteTask()">Complete Task</button>
+                </form>
+            </div>
         </div>
     </div>
     @else
@@ -236,5 +244,13 @@ function getGeolocation(){
 
 window.addEventListener('load', getGeolocationOnLoad);
 
+function confirmCompleteTask() {
+    if (confirm("Are you sure you want to complete the task?")) {
+        // If the user confirms, submit the form
+        document.querySelector('#completeTaskForm').submit();
+    } else {
+        // If the user cancels, do nothing
+    }
+}
 </script>
 @endsection

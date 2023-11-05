@@ -47,6 +47,16 @@ class DriverController extends Controller
     public function showUpcoming(){
         $driverID = Auth::user()->empID;
 
+        /*
+            need to know if naa active rent para trapping for the "start rent" button sa upcoming tasks module
+            wouldhve been nice to put these queries in a function kai theyre all somewhat the same haha    
+        */
+        $isActiveTask = Rent::whereIn('rent_Period_Status', ['Ongoing'])
+        ->whereHas('assignments', function($query) use ($driverID){
+            $query->whereIn('empID', [$driverID]);
+        })
+        ->exists();
+
         $upcomingTasks = Rent::whereIn('rent_Period_Status', ['Scheduled'])
             ->whereHas('assignments', function($query) use ($driverID){
                 $query->whereIn('empID', [$driverID]);
@@ -63,7 +73,28 @@ class DriverController extends Controller
             }
         }
         */
-        
-        return view('drivers.upcomingTasks', compact('upcomingTasks'));
+        return view('drivers.upcomingTasks', compact('upcomingTasks', 'isActiveTask'));
+    }
+
+    public function startRent(Request $request){
+        $rentID = $request->input('rentID');
+    
+        $rent = Rent::find($rentID);
+        $rent->update([
+            'rent_Period_Status' => 'Ongoing',
+        ]);
+
+        return redirect()->route('driver.active');
+    }
+
+    public function completeRent(Request $request){
+        $rentID = $request->input('rentID');
+
+        $rent = Rent::find($rentID);
+        $rent->update([
+            'rent_Period_Status' => 'Complete',
+        ]);
+
+        return redirect()->route('driver.active');
     }
 }
