@@ -314,26 +314,26 @@ function updateSections(filter) {
                // $('#moneyRemitted').text(data.moneyRemitted);
 
                $('#moneyRemitted').text(data.moneyRemitted);
-
+                    
                const maxRating = 5; // Define the maximum rating value
-const normalizedRating = Math.min(data.ratingAverage, maxRating); // Ensure rating is not higher than the maximum
+                const normalizedRating = Math.min(data.ratingAverage, maxRating); // Ensure rating is not higher than the maximum
 
-// Update the rating average value
-const ratingAverageValue = $('#ratingAverageValue');
-if (!isNaN(data.ratingAverage)) {
-    ratingAverageValue.text(data.ratingAverage + '/5');
-    ratingAverageValue.css({
-        'font-size': '55px',
-        'font-weight': '700',
+                // Update the rating average value
+                const ratingAverageValue = $('#ratingAverageValue');
+                if (!isNaN(data.ratingAverage)) {
+                    ratingAverageValue.text(data.ratingAverage + '/5');
+                    ratingAverageValue.css({
+                        'font-size': '55px',
+                        'font-weight': '700',
 
-    }); // Set a smaller font size and font weight for numbers
-} else {
-    ratingAverageValue.text(data.ratingAverage);
-    ratingAverageValue.css({
-        'font-size': '18px',
-        'font-weight': '400',
-    }); // Set a larger font size and add padding for non-numeric content
-}
+                    }); // Set a smaller font size and font weight for numbers
+                } else {
+                    ratingAverageValue.text(data.ratingAverage);
+                    ratingAverageValue.css({
+                        'font-size': '18px',
+                        'font-weight': '400',
+                    }); // Set a larger font size and add padding for non-numeric content
+                }
 
 
 

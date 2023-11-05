@@ -173,31 +173,32 @@ class ReportsController extends Controller
         }
 
     
-        $topVehicleAssignments = VehicleAssigned::select('unitName', 'registrationNumber','vehicles_Assigned.unitID', \DB::raw('COUNT(*) as assignment_count'))
-            ->join('vehicles', 'vehicles_Assigned.unitID', '=', 'vehicles.unitID')
-            ->where(function ($query) use ($filter, $now) {
-               if ($filter === '1D') {
-                    // Filter for the last 5 days
-                    $query->where('vehicles_Assigned.created_at', '>=', $now->today());
-                } elseif ($filter === '5D') {
-                    // Filter for the last 5 days
-                    $query->where('vehicles_Assigned.created_at', '>=', $now->subDays(5));
-                } elseif ($filter === '1M') {
-                    // Filter for the last 1 month
-                    $query->where('vehicles_Assigned.created_at', '>=', $now->subMonth());
-                } elseif ($filter === '6M') {
-                    // Filter for the last 6 months
-                    $query->where('vehicles_Assigned.created_at', '>=', $now->subMonths(6));
-                } elseif ($filter === '1Y') {
-                    // Filter for the last 1 year
-                    $query->where('vehicles_Assigned.created_at', '>=', $now->subYear());
-                } 
-            })
-            ->where('vehicles.status', 'active')
-            ->groupBy('unitName', 'registrationNumber','vehicles_Assigned.unitID')
-            ->orderBy('assignment_count', 'desc')
-            ->limit(10)
-            ->get();
+        $topVehicleAssignments = VehicleAssigned::select('unitName', 'registrationNumber', 'vehicles_Assigned.unitID', \DB::raw('COUNT(*) as assignment_count'))
+        ->join('vehicles', 'vehicles_Assigned.unitID', '=', 'vehicles.unitID')
+        ->where(function ($query) use ($filter, $now) {
+            if ($filter === '1D') {
+                // Filter for the last 1 day
+                $query->where('vehicles_Assigned.created_at', '>=', $now->today());
+            } elseif ($filter === '5D') {
+                // Filter for the last 5 days
+                $query->where('vehicles_Assigned.created_at', '>=', $now->subDays(5));
+            } elseif ($filter === '1M') {
+                // Filter for the last 1 month
+                $query->where('vehicles_Assigned.created_at', '>=', $now->subMonth());
+            } elseif ($filter === '6M') {
+                // Filter for the last 6 months
+                $query->where('vehicles_Assigned.created_at', '>=', $now->subMonths(6));
+            } elseif ($filter === '1Y') {
+                // Filter for the last 1 year
+                $query->where('vehicles_Assigned.created_at', '>=', $now->subYear());
+            } 
+        })
+        ->where('vehicles.status', 'active')
+        ->groupBy('unitName', 'registrationNumber', 'vehicles_Assigned.unitID')
+        ->orderBy('assignment_count', 'desc')
+        ->limit(10)
+        ->get();
+    
             
         $mergedTopVehicles = $topVehicleAssignments->pluck('registrationNumber')->toArray();
     
