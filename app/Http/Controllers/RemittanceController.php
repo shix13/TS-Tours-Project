@@ -39,7 +39,7 @@ class RemittanceController extends Controller
         */
 
         //dd($rent);
-        return view('employees.remittancecreate', compact('drivers','rent'));
+        return view('employees.remittanceCreate', compact('drivers','rent'));
     }
 
     public function store(Request $request){

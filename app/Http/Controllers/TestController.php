@@ -61,7 +61,13 @@ class TestController extends Controller
         $bookingType = $request->input('bookingType');
         $startDate = $request->input('StartDate');
         $pickupTime = $request->input('PickupTime');
-        
+        $numVehiclesAssigned = 0;
+        foreach ($request->input('TypeQuantity') as $vehicleTypeId => $quantity) {
+            $numVehiclesAssigned += $quantity;
+        }
+
+        //dd($numVehiclesAssigned);
+
         if ($bookingType === 'Rent') {
             $tariffRate = $tariff->rate_Per_Day;
             $endDate = $request->input('EndDate');
@@ -75,7 +81,8 @@ class TestController extends Controller
             $formattedStartDate = $startDateTime->format('Y-m-d H:i:s');
             $formattedEndDate = $endTime->format('Y-m-d H:i:s');
     
-            $subtotal = $this->processRate($tariffRate, $startDate, $endDate);
+            $subtotal = $this->processRate($tariffRate, $startDate, $endDate, $numVehiclesAssigned);
+
         } elseif ($bookingType === 'Pickup/Dropoff') {
             $subtotal = $tariff->do_pu;
             $endDate = $startDate; // Assuming same start and end date for Pickup/Dropoff
@@ -122,16 +129,14 @@ class TestController extends Controller
     }
     
 
-    public function processRate($tariffRate, $startDate, $endDate){
+    public function processRate($tariffRate, $startDate, $endDate, $numVehiclesAssigned){
         $start = Carbon::parse($startDate);
         $end = Carbon::parse($endDate);
 
         $numberOfDays = $end->diffInDays($start);
-
-        // If the result is 0, set it to 1
-        $numberOfDays = $numberOfDays == 0 ? 1 : $numberOfDays;
         
-        $subtotal = $numberOfDays * $tariffRate;
+        //$subtotal = $numberOfDays * $tariffRate;
+        $subtotal = $tariffRate * ($numberOfDays + 1) * $numVehiclesAssigned; // Add 1 to include both the start and end dates
 
         return $subtotal;
     }

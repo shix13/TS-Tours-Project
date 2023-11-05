@@ -174,6 +174,26 @@
                                 {{ $booking['note'] }}
                             </div>
                         </div> <hr>
+                        <div class="row">
+                            <div class="col">
+                                <i class="fas fa-money-bill"></i> Subtotal
+                            </div>
+                            <div class="col">
+                                {{ $booking['subtotal']}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <i class="fas fa-money-bill"></i> Downpayment Fee(10%):
+                            </div>
+                            <div class="col">
+                                @php
+                                    $downpayment = $booking['subtotal'] * 0.10;
+                                @endphp 
+                                {{ $downpayment }}
+                            </div>
+                        </div>
+                    <hr>
                     </div>
                     <div class="col-md-12 text-center" style="border-left: 1px solid Silver; font-size: 18px">
                         Vehicles Assigned

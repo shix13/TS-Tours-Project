@@ -115,7 +115,7 @@
                                         <a href="{{ route('tariff.edit', $tariff->tariffID) }}" class="btn btn-primary col-5"><strong>EDIT</strong></a>
                                         
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $tariff->tariffID }}"><strong>DELETE</strong></button>
-                                        @include('employees.tariffmodal', ['tariffID' => $tariff->tariffID])
+                                        @include('employees.tariffModal', ['tariffID' => $tariff->tariffID])
                                     </td>
                                 </tr>
                             @endforeach

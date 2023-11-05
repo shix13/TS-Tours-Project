@@ -44,8 +44,7 @@
                     </div>
                 </div>
                 @endforeach
-                <br>
-                
+
                 <div class="row">
                     <div class="col">
                         <i class="fas fa-map-marker-alt"></i> Location
@@ -53,11 +52,16 @@
                     <div class="col" >
                         <select id="location" name="location" style="width: 100%">
                             @foreach($tariffData as $t)
-                            <option data-booking-types="{{ json_encode($t->booking_types) }}" value="{{ $t->location }}">{{ $t->location }}</option>
+                            <option data-booking-types="{{ json_encode($t->booking_types) }}" data-rate-per-day="{{ $t->rate_Per_Day }}" data-do-pu="{{ $t->do_pu }}" value="{{ $t->location }}">{{ $t->location }}</option>
                             @endforeach
                         </select>                        
                     </div>
                 </div> 
+                                                        
+                <input type="hidden" id="rate_Per_Day" value="{{ $tariffData->first()->rate_Per_Day }}" readonly>
+                <input type="hidden" id="do_pu" value="{{ $tariffData->first()->do_pu }}" readonly>
+
+                <br>
                 <div class="row container1" style="background: none;box-shadow:none;">
                     <div class="col">
                         <i class="fas fa-calendar-alt"></i> Schedule Date  <hr>
@@ -71,7 +75,16 @@
                         </div><hr>
                     </div>
                 </div>
-                
+                <div class="row"> 
+                    <div class="col">
+                        </i> Subtotal: <span id="subtotal">0.00</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        </i> Downpayment Fee (10%): <span id="downpayment">0.00</span>
+                    </div>
+                </div>
                 <div class="row container1" style="background: none;box-shadow:none;">
                     <div class="col">
                         <i class="fas fa-user"></i> Full Name 
@@ -137,8 +150,8 @@
                 <div class="row">
                     <div class="col text-center">
                         <input type="checkbox">
-                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#termsModal" style="color: black;font-size:13px;">
-                            Terms and Conditions
+                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#termsModal" style="color: #f96332;font-size:13px;">
+                            <u>Terms and Conditions</u>
                         </button>
                     </div>
                 </div>                
@@ -153,6 +166,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+
         // Get references to the Start Date and End Date input elements
         var startDateInput = document.getElementById('StartDate');
         var endDateInput = document.getElementById('EndDate');
@@ -193,52 +207,146 @@
             }
         });
 
+        // Add an event listener to update the tariff values when the location changes
+        document.getElementById('location').addEventListener('change', function () {
+            const selectedOption = this.options[this.selectedIndex];
+            document.getElementById('rate_Per_Day').value = selectedOption.getAttribute('data-rate-per-day');
+            document.getElementById('do_pu').value = selectedOption.getAttribute('data-do-pu');
+            calculateSubtotal();
+        });
 
+        // Add event listeners to input elements that affect calculations
+        const inputElements = document.querySelectorAll('input, select');
+        inputElements.forEach((input) => {
+            input.addEventListener('input', calculateSubtotal);
+        });
 
-        
+        // Validation function to check if all required input fields have values
+        function validateInputs() {
+            const bookingType = document.querySelector('input[name="bookingType"]:checked');
+            const bookingTypeValue = bookingType.value;
+            const location = document.getElementById('location').value;
+            const startDate = document.getElementById('StartDate').value;
+            const endDate = document.getElementById('EndDate').value;
+
+            // Additional input elements that need validation
+            const vehicleTypeInputs = document.querySelectorAll('input[name^="TypeQuantity"]');
+            
+            if (bookingTypeValue === 'Rent') {
+                // Check if any of the required fields is empty
+                if (!bookingType || !location || !startDate || !endDate || vehicleTypeInputs.length === 0 || Array.from(vehicleTypeInputs).some(input => input.value === '')) {
+                    return false; // Validation failed
+                }
+            }
+            else if (bookingTypeValue === 'Pickup/Dropoff') {
+                if (!bookingType || !location || !startDate || vehicleTypeInputs.length === 0 || Array.from(vehicleTypeInputs).some(input => input.value === '')) {
+                return false; // Validation failed
+            } 
+            }
+            return true;//Validation passed
+        }
+        // Function to calculate the subtotal
+        function calculateSubtotal() {
+            // Check if all required fields are filled
+            if (validateInputs()) {
+                var bookingType = document.querySelector('input[name="bookingType"]:checked').value;
+                var location = document.getElementById('location').value;
+                
+                // Get the selected vehicle quantities
+                var quantities = {};
+                var vehicleTypeInputs = document.querySelectorAll('input[name^="TypeQuantity"]');
+                vehicleTypeInputs.forEach((input) => {
+                    quantities[input.name] = parseInt(input.value);
+                });
+
+                var startDate = new Date(document.getElementById('StartDate').value);
+                var endDate, daysToRent;
+                var tariff;
+                if(bookingType === 'Rent'){    
+                    endDate = new Date(document.getElementById('EndDate').value);
+
+                    daysToRent = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+                    tariff = parseFloat(document.getElementById('rate_Per_Day').value);
+                } else if (bookingType === 'Pickup/Dropoff'){
+                    daysToRent = 1;
+                    tariff = parseFloat(document.getElementById('do_pu').value);
+                }
+
+                // Calculate subtotal
+                var subtotal = tariff * daysToRent * Object.values(quantities).reduce((a, b) => a + b, 0);
+
+                // Handle NaN case by replacing with 0
+                if (isNaN(subtotal)) {
+                    subtotal = 0;
+                }
+
+                // Ensure subtotal is not negative
+                if (subtotal < 0) {
+                    subtotal = 0;
+                }
+
+                var downpayment = subtotal * 0.10;
+
+                // Display the subtotal
+                document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+                document.getElementById('downpayment').textContent = downpayment.toFixed(2);
+            }else {
+                document.getElementById('subtotal').textContent = 0.00;
+                console.log('calculation incomplete!');
+            }
+        }
     });
+
     var tariffData = @json($tariffData);
+
     function toggleEndDate() {
-    const rentRadio = document.getElementById('type1');
-    const pickupDropoffRadio = document.getElementById('type2');
-    const endDateCol = document.getElementById('enddatecol');
-    const endDateInput = document.getElementById('EndDate');
-    const locationDropdown = document.getElementById('location');
-    
-    if (pickupDropoffRadio.checked) {
-        // Hide the End Date input field and label column when "Pickup/Dropoff" is selected
-        endDateCol.style.display = 'none';
-        endDateInput.setAttribute('disabled', true);
-        endDateInput.removeAttribute('required');
+        const rentRadio = document.getElementById('type1');
+        const pickupDropoffRadio = document.getElementById('type2');
+        const endDateCol = document.getElementById('enddatecol');
+        const endDateInput = document.getElementById('EndDate');
+        const locationDropdown = document.getElementById('location');
+        
+        if (pickupDropoffRadio.checked) {
+            // Hide the End Date input field and label column when "Pickup/Dropoff" is selected
+            endDateCol.style.display = 'none';
+            endDateInput.setAttribute('disabled', true);
+            endDateInput.removeAttribute('required');
 
-        // Filter and populate the location dropdown with Pickup/Dropoff category
-        locationDropdown.innerHTML = '';
-        tariffData.forEach(function(tariff) {
-            if (tariff.do_pu) {
-                const option = document.createElement('option');
-                option.text = tariff.location;
-                locationDropdown.add(option);
-            }
-        });
-    } else {
-        // Show the End Date input field and label column when "Rent" is selected
-        endDateCol.style.display = 'block';
-        endDateInput.removeAttribute('disabled');
-        endDateInput.setAttribute('required', true);
+            // Filter and populate the location dropdown with Pickup/Dropoff category
+            locationDropdown.innerHTML = '';
+            tariffData.forEach(function(tariff) {
+                if (tariff.do_pu) {
+                    const option = document.createElement('option');
+                    option.text = tariff.location;
+                    option.value = tariff.location; // Set the option's value, if needed
+                    option.setAttribute('data-booking-types', JSON.stringify(tariff.booking_types));
+                    option.setAttribute('data-rate-per-day', tariff.rate_Per_Day);
+                    option.setAttribute('data-do-pu', tariff.do_pu);
+                    locationDropdown.add(option);
+                }
+            });
+        } else {
+            // Show the End Date input field and label column when "Rent" is selected
+            endDateCol.style.display = 'block';
+            endDateInput.removeAttribute('disabled');
+            endDateInput.setAttribute('required', true);
 
-        // Filter and populate the location dropdown with Rent category
-        locationDropdown.innerHTML = '';
-        tariffData.forEach(function(tariff) {
-            if (tariff.rate_Per_Day) {
-                const option = document.createElement('option');
-                option.text = tariff.location;
-                locationDropdown.add(option);
-            }
-        });
+            // Filter and populate the location dropdown with Rent category
+            locationDropdown.innerHTML = '';
+            tariffData.forEach(function(tariff) {
+                if (tariff.rate_Per_Day) {
+                    const option = document.createElement('option');
+                    option.text = tariff.location;
+                    option.value = tariff.location; // Set the option's value, if needed
+                    option.setAttribute('data-booking-types', JSON.stringify(tariff.booking_types));
+                    option.setAttribute('data-rate-per-day', tariff.rate_Per_Day);
+                    option.setAttribute('data-do-pu', tariff.do_pu);
+                    locationDropdown.add(option);
+                }
+            });
+        }
     }
-}
-
-
 </script>
 
 
