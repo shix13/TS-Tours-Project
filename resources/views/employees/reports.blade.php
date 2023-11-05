@@ -77,7 +77,7 @@
     <div class="row">
         <div class="col-md-3">
             <div class="card interactive-card">
-                <div class="card-body" style="padding: 9px">
+                <div class="card-body" style="padding: 10px;">
                     <h4 class="card-title" ><i class="fas fa-wrench"></i>Maintenance</h4>
                     <hr>
                     <p class="card-text text-center" >
@@ -89,7 +89,7 @@
         
         <div class="col-md-3">
             <div class="card interactive-card">
-                <div class="card-body text-center">
+                <div class="card-body text-center"  style="padding: 10px;">
                     <h4 class="card-title"><i class="fa-solid fa-car-side"></i> Rentals</h4>
                     <hr>
                     <p class="card-text">
@@ -101,7 +101,7 @@
 
         <div class="col-md-3">
             <div class="card interactive-card">
-                <div class="card-body text-center">
+                <div class="card-body text-center"  style="padding: 10px;">
                     <h4 class="card-title"><i class="fa-solid fa-laptop-file"></i> Bookings</h4>
                     <hr>
                     <p class="card-text">
@@ -113,11 +113,11 @@
 
         <div class="col-md-3">
             <div class="card interactive-card">
-                <div class="card-body text-center">
+                <div class="card-body text-center" >
                     <h4 class="card-title"><i class="fa-solid fa-star"></i> Rating</h4>
                     <hr>
                     <p class="card-text">
-                        <strong>Average:</strong><br> <span style="font-size: 60px;font-weight:700" id="ratingAverageValue">Loading...</span>/5
+                        <strong>Average:</strong><br> <span style="font-size: 60px;font-weight:700" id="ratingAverageValue">Loading...</span>
                     </p>
                 </div>
             </div>
@@ -148,7 +148,7 @@
         <div class="col-md-6">
             <div class="card interactive-card">
                 <div class="card-body">
-                    <h4 class="card-title" style="font-weight: 700"><i class="fas fa-map-marker-alt"></i> Top Locations</h4>
+                    <h4 class="card-title" style="font-weight: 700"><i class="fas fa-map-marker-alt"></i> Top Booked Location(s)</h4>
                     <hr>
                     <table class="table" id="topLocationsTable">
                         <tbody style="font-size:20px;font-weight:400">
@@ -162,7 +162,7 @@
         <div class="col-md-6">
             <div class="card interactive-card">
                 <div class="card-body">
-                    <h4 class="card-title" style="font-weight: 700"><i class="fas fa-car"></i> Top Active Assigned Fleets </h4></p>
+                    <h4 class="card-title" style="font-weight: 700"><i class="fas fa-car"></i> Top Assigned Fleet(s)</h4></p>
                     <hr>
                     <table class="table" id="assignedVehiclesTable">
    
@@ -267,8 +267,8 @@ function updateSections(filter) {
                     totalAssignmentCount = data.topVehicleAssignments.totalAssignmentCount;
 
                     data.topVehicleAssignments.topVehicleAssignments.forEach((assignment, index) => {
-                        const maintenancePercentage = (assignment.maintenance_count / totalMaintenanceCount) * 100;
-                        const assignmentPercentage = (assignment.assignment_count / totalAssignmentCount) * 100;
+                       // const maintenancePercentage = (assignment.maintenance_count / totalMaintenanceCount) * 100;
+                        //const assignmentPercentage = (assignment.assignment_count / totalAssignmentCount) * 100;
 
                         const fleetText = `
                             <tr>
@@ -295,30 +295,48 @@ function updateSections(filter) {
 
                 // Update the Maintenance section
                 $('#totalMaintenance').text(data.totalMaintenance);
-                $('#maintenanceBar').css('width', data.maintenancePercentage + '%');
+               // $('#maintenanceBar').css('width', data.maintenancePercentage + '%');
 
                 // Update the Rentals section
                 $('#totalFleetRentals').text(data.totalRentals);
-                $('#fleetRentalsBar').css('width', data.rentalsPercentage + '%');
+               // $('#fleetRentalsBar').css('width', data.rentalsPercentage + '%');
 
                 // Update the Booking section
                 $('#totalBookings').text(data.totalBookings);
-                $('#bookingBar').css('width', data.bookingPercentage + '%');
+                //$('#bookingBar').css('width', data.bookingPercentage + '%');
 
                 // Update the Revenue section
                 $('#totalRevenue').text(data.totalRevenue);
-                $('#revenueBar').css('width', data.revenuePercentage + '%');
+               // $('#revenueBar').css('width', data.revenuePercentage + '%');
 
                 // Optionally, update additional sections if needed
                 $('#downpaymentReceived').text(data.downpaymentReceived);
-                $('#moneyRemitted').text(data.moneyRemitted);
+               // $('#moneyRemitted').text(data.moneyRemitted);
 
-                const maxRating = 5; // Define the maximum rating value
-                const normalizedRating = Math.min(data.ratingAverage, maxRating); // Ensure rating is not higher than the maximum
-                $('#ratingAverageValue').text(data.ratingAverage); // Update the rating average value
-                const ratingWidth = (normalizedRating / maxRating) * 100;
-                $('#ratingBar').css('width', ratingWidth + '%');
-               
+               $('#moneyRemitted').text(data.moneyRemitted);
+
+               const maxRating = 5; // Define the maximum rating value
+const normalizedRating = Math.min(data.ratingAverage, maxRating); // Ensure rating is not higher than the maximum
+
+// Update the rating average value
+const ratingAverageValue = $('#ratingAverageValue');
+if (!isNaN(data.ratingAverage)) {
+    ratingAverageValue.text(data.ratingAverage + '/5');
+    ratingAverageValue.css({
+        'font-size': '55px',
+        'font-weight': '700',
+
+    }); // Set a smaller font size and font weight for numbers
+} else {
+    ratingAverageValue.text(data.ratingAverage);
+    ratingAverageValue.css({
+        'font-size': '18px',
+        'font-weight': '400',
+    }); // Set a larger font size and add padding for non-numeric content
+}
+
+
+
                 globalData = data;
             }
         },

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>TS Tours Financial Report</title>
+    <title>TS Tours Services</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -73,7 +73,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>TS Tours Services Report</h1>
+        <h1>TS Tours Services</h1>
         @php
         $now = now();
         $startDate = $now; // Initialize the start date with the current date
@@ -97,17 +97,17 @@
         @endphp
 
         @if ($data['filter'] == '1D')
-            <p style="text-align: center">This is the financial report for Today <br> ({{ $startDateFormatted }}).</p>
+            <p style="text-align: center">This is the System Report for Today <br> ({{ $startDateFormatted }}).</p>
         @elseif ($data['filter'] == '5D')
-            <p style="text-align: center">This is the financial report for the last 5 days <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
+            <p style="text-align: center">This is the System Report for the Last 5 Days <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
         @elseif ($data['filter'] == '1M')
-            <p style="text-align: center">This is the financial report for the last month <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
+            <p style="text-align: center">This is the System Report for the Last Month <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
         @elseif ($data['filter'] == '6M')
-            <p style="text-align: center">This is the financial report for the last 6 months <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
+            <p style="text-align: center">This is the System Report for the Last 6 Months <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
         @elseif ($data['filter'] == '1Y')
-            <p style="text-align: center">This is the financial report for the last 1 year <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
+            <p style="text-align: center">This is the System Report for the Last 1 Year <br> ({{ $startDateFormatted }} to {{ $endDateFormatted }}).</p>
         @elseif ($data['filter'] == 'MAX')
-            <p style="text-align: center">This is the financial report for the maximum available range.</p>
+            <p style="text-align: center">This is the System Report for the Maximum Available Range.</p>
         @endif
     
         <div class="section" style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border: 1px solid #ddd;">
@@ -134,8 +134,15 @@
         
             <div class="summary-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
                 <div class="item-icon" style="color: #f1c40f; font-size: 30px;"><i class="fas fa-star"></i></div>
-                <div class="item-label" style="font-weight: bold; color: #333;">Average Rating</div>
-                <div class="item-value" style="font-size: 24px; color: #333;">{{ $data['ratingAverage'] }}/5</div>
+                <div class="item-label" style="font-weight: bold; color: #333;">Average Star Rating</div>
+                <div class="item-value" style="font-size: 24px; color: #333;">
+                    @if (is_numeric($data['ratingAverage']))
+                        {{ $data['ratingAverage'] }}/5 
+                    @else
+                        {{ $data['ratingAverage'] }}
+                    @endif
+                </div>
+                
             </div>
         
             <div class="summary-item" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
@@ -230,28 +237,38 @@
         
         
         <div class="section" style="page-break-before: always;">
-            <div class="section-title"> Overall Individual Fleet Record</div>
+            <div class="section-title">Overall Individual Fleet Record</div>
             <table>
                 <tr>
                     <th>Unit Name</th>
                     <th>Registration Number</th>
-                    <th>Assignment Count</th>
                     <th>Maintenance Count</th>
+                    <th>Assignment Count</th>
                 </tr>
-                @if(!empty($data['topVehicleAssignments']['topVehicleAssignments']))
-                    @foreach($data['topVehicleAssignments']['topVehicleAssignments'] as $assignment)
-                        <tr>
-                            <td>{{ $assignment['unitName'] }}</td>
-                            <td>{{ $assignment['registrationNumber'] }}</td>
-                            <td>{{ $assignment['assignment_count'] }}</td>
-                            <td>{{ $assignment['maintenance_count'] }}</td>
-                        </tr>
+                @if (!empty($data['topVehicleAssignments']) && is_array($data['topVehicleAssignments']))
+                    @php
+                        $totalMaintenanceCount = 0;
+                        $totalAssignmentCount = 0;
+                    @endphp
+                    @foreach ($data['topVehicleAssignments'] as $assignment)
+                        @foreach ($assignment as $singleAssignment)
+                            @php
+                                $totalMaintenanceCount += $singleAssignment['maintenance_count'];
+                                $totalAssignmentCount += $singleAssignment['assignment_count'];
+                            @endphp
+                            <tr>
+                                <td>{{ $singleAssignment['unitName'] }}</td>
+                                <td>{{ $singleAssignment['registrationNumber'] }}</td>
+                                <td>{{ $singleAssignment['maintenance_count'] }}</td>
+                                <td>{{ $singleAssignment['assignment_count'] }}</td>
+                            </tr>
+                        @endforeach
                     @endforeach
                     <tr>
                         <th>Total</th>
                         <th></th>
-                        <th>{{ $data['topVehicleAssignments']['totalAssignmentCount'] }}</th>
-                        <th>{{ $data['topVehicleAssignments']['totalMaintenanceCount'] }}</th>
+                        <th>{{ $totalMaintenanceCount }}</th>
+                        <th>{{ $totalAssignmentCount }}</th>
                     </tr>
                 @else
                     <tr>
@@ -260,6 +277,8 @@
                 @endif
             </table>
         </div>
+        
+        
         
     
 </body>

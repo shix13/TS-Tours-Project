@@ -152,7 +152,8 @@ class EmployeeController extends Controller
                     'title' => 'Booking for ' . $bookingDate['vehicle']->registrationNumber,
                     'ownershipType'=>$bookingDate['vehicle']->ownership_type,
                     'unitName' => $bookingDate['vehicle']->unitName,
-                    'trackingID' => $bookingDate['trackingID']->reserveID,
+                    'bookingType' => $bookingDate['booking type'],
+                    'trackingID' => $bookingDate['trackingID'],
                     'start' => $bookingDate['date'],
                     'dateRange' => $bookingDate['dateRange'],
                     'bookingstatus' => $bookingDate['booking status'],
@@ -208,7 +209,8 @@ public function getAvailableSchedules()
                         'date' => $date->format('Y-m-d'),
                         'dateRange' =>$dateRange,
                         'vehicle' => $vehicle, 
-                        'trackingID' => $assignment->booking,
+                        'booking type' => $assignment->booking->bookingType,
+                        'trackingID' => $assignment->booking->reserveID,
                         'booking status' => $assignment->booking->status,
                     ];
         
