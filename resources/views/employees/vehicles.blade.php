@@ -114,10 +114,20 @@
                                         @php
                                             // Filter maintenance records for the current week
                                             $maintenanceDates = $vehicle->maintenances->filter(function($maintenance) {
-                                                return in_array($maintenance->status, ['Scheduled', 'In Progress']) &&
-                                                       $maintenance->status !== 'Cancelled' && // Exclude maintenance records with status 'Cancelled'
-                                                       \Carbon\Carbon::parse($maintenance->scheduleDate)->isCurrentWeek();
-                                            });
+                                            return in_array($maintenance->status, ['Scheduled', 'In Progress']) &&
+                                                $maintenance->status !== 'Cancelled' && // Exclude maintenance records with status 'Cancelled'
+                                                (
+                                                    \Carbon\Carbon::parse($maintenance->scheduleDate)->isBetween(
+                                                        now()->startOfWeek(),
+                                                        now()->endOfWeek()
+                                                    ) ||
+                                                    \Carbon\Carbon::parse($maintenance->scheduleDate)->isBetween(
+                                                        now()->startOfWeek()->subWeek(),
+                                                        now()->endOfWeek()->subWeek()
+                                                    )
+                                                );
+                                        });
+
                                         @endphp
                                     
                                         @if($maintenanceDates->isNotEmpty())
@@ -135,11 +145,15 @@
                                             // Filter vehicle assignments for the current week and where booking status is not 'Denied'
                                             $bookingDates = $vehicle->vehicleAssignments->filter(function ($assignment) {
                                             return $assignment->booking &&
-                                            $assignment->booking->status !== 'Denied' &&
-                                            $assignment->booking->status !== 'Cancelled' &&
-                                            (!$assignment->rent || !($assignment->rent->rent_Period_Status === 'Completed') && !($assignment->rent->rent_Period_Status === 'Cancelled')) &&
-                                            (\Carbon\Carbon::parse($assignment->booking->startDate)->isCurrentWeek() || \Carbon\Carbon::parse($assignment->booking->endDate)->isCurrentWeek());
+                                                $assignment->booking->status !== 'Denied' &&
+                                                $assignment->booking->status !== 'Cancelled' &&
+                                                (!$assignment->rent || !in_array($assignment->rent->rent_Period_Status, ['Completed', 'Cancelled'])) &&
+                                                (
+                                                    (\Carbon\Carbon::parse($assignment->booking->startDate)->isCurrentWeek() || \Carbon\Carbon::parse($assignment->booking->endDate)->isCurrentWeek()) ||
+                                                    (\Carbon\Carbon::parse($assignment->booking->startDate)->isBetween(now()->startOfWeek()->subWeek(), now()->endOfWeek()->subWeek()) || \Carbon\Carbon::parse($assignment->booking->endDate)->isBetween(now()->startOfWeek()->subWeek(), now()->endOfWeek()->subWeek()))
+                                                );
                                         });
+
 
                                         @endphp
                                     

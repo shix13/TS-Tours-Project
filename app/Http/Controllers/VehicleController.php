@@ -26,7 +26,7 @@ class VehicleController extends Controller
         // Retrieve all vehicles
         $vehicles = Vehicle::with(['maintenances', 'booking','vehicleAssignments'])
             ->where('status', '!=', 'Inactive')
-            ->paginate(5);
+            ->paginate(10);
     
         return view('employees.vehicles', compact('vehicles'));
     }
@@ -230,10 +230,10 @@ public function VtypeEdit($vehicle_type){
     return view('employees.vehicle_types_edit', compact('vehicleType'));
 }
 
-public function VtypeUpdate(Request $request){
+public function VtypeUpdate(Request $request, $id) {
     // Validate the form data
     $request->validate([
-        'pic' => 'image|mimes:jpeg,png,jpg,gif|max:2048', 
+        'pic' => 'image|mimes:jpeg,png,jpg,gif|max:10000',
         'description' => 'required|string',
     ]);
 
@@ -249,12 +249,12 @@ public function VtypeUpdate(Request $request){
         $vehicleType->pic = $imagePath;
     }
 
-    // Save the updated vehicle
+    // Save the updated vehicle type
     $vehicleType->save();
 
-    // Redirect to the vehicle details page or wherever you want
+    // Redirect to the vehicle type details page or wherever you want
     return redirect()->route('vehicleTypes.view')
-        ->with('success', 'Vehicle updated successfully');
+        ->with('success', 'Vehicle type updated successfully');
 }
 
 

@@ -50,7 +50,7 @@ class RemittanceController extends Controller
         'clerkID' => 'required|integer',
         'driver' => 'required|integer',
         'rent' => 'required|integer',
-        'receipt_num' => 'required|integer|min:1|unique:remittances,receiptNum',
+        'receipt_num' => 'required|min:1|unique:remittances,receiptNum',
         'amount' => 'required|numeric',
         'paymentType' => 'required|in:Cash,GCash',
     ]);

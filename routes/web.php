@@ -122,6 +122,7 @@ Route::prefix('employee')->group(function(){
         Route::get('/vehicle-types/{vehicle_type}/edit', [VehicleController::class, 'VtypeEdit'])->name('vehicleTypes.edit');
         Route::put('/vehicles-types/{vehicle_type}', [VehicleController::class, 'VtypeUpdate'])->name('vehiclesTypes.update');
 
+
     //--Tariffs
         Route::get('/tariff', [TariffController::class, 'tariffIndex'])->name('employee.tariff'); 
         Route::get('/tariffcreate', [TariffController::class, 'create'])->name('tariffs.create');

@@ -337,25 +337,33 @@ public function bookAssign($id)
     $endDate = \Carbon\Carbon::parse($pendingBooking->endDate)->endOfDay()->addDay(1); // End at the end of the day and add 1 day
     //dd($startDate);
     $availableVehicles = Vehicle::where('status', 'Active')
-    ->whereDoesntHave('maintenances', function ($query) use ($startDate, $endDate) {
-        $query->whereNotIn('status', ['In Progress', 'Scheduled'])
-            ->where(function ($query) use ($startDate, $endDate) {
-                $query->whereDate('scheduleDate', '>=', $startDate)
-                    ->whereDate('scheduleDate', '<', $endDate);
-            });
+    ->where(function ($query) use ($startDate, $endDate) {
+        $query->whereDoesntHave('vehicleAssignments.booking', function ($subquery) use ($startDate, $endDate) {
+            $subquery->whereNotIn('status', ['Denied', 'Cancelled'])
+                ->where(function ($subquery) use ($startDate, $endDate) {
+                    $subquery->whereDate('startDate', '<', $endDate)
+                        ->whereDate('endDate', '>=', $startDate);
+                });
+        });
+
+        $query->whereDoesntHave('maintenances', function ($subquery) use ($startDate, $endDate) {
+            $subquery->whereNotIn('status', ['In Progress', 'Scheduled'])
+                ->where(function ($subquery) use ($startDate, $endDate) {
+                    $subquery->whereDate('scheduleDate', '>=', $startDate)
+                        ->whereDate('scheduleDate', '<', $endDate);
+                });
+        });
+
+        $query->where(function ($subquery) {
+            $subquery->doesntHave('vehicleAssignments.rent')
+                ->orWhereHas('vehicleAssignments.rent', function ($subquery) {
+                    $subquery->whereIn('rent_Period_Status', ['Completed', 'Cancelled']);
+                });
+        });
     })
-    ->whereDoesntHave('vehicleAssignments.booking', function ($query) use ($startDate, $endDate) {
-        $query->whereNotIn('status', ['Denied', 'Cancelled'])
-            ->where(function ($query) use ($startDate, $endDate) {
-                $query->whereDate('startDate', '<', $endDate)
-                    ->whereDate('endDate', '>=', $startDate);
-            });
-    })
-    ->whereDoesntHave('vehicleAssignments.rent', function ($query) {
-        $query->whereNotIn('rent_Period_Status', ['Completed','Cancelled']);
-    })    
     ->with('vehicleType')
     ->get();
+
 
 
 
@@ -368,13 +376,16 @@ public function bookAssign($id)
                     ->where('endDate', '>=', $startDate)
                     ->whereNotIn('status', ['Denied', 'Cancelled']);
             })
-            ->whereDoesntHave('rent', function ($rentQuery) {
-                $rentQuery->where('rent_Period_Status', 'Completed')
-                    ->orWhere('rent_Period_Status', 'Cancelled');
+            ->where(function ($rentQuery) {
+                $rentQuery->doesntHave('rent')
+                    ->orWhereHas('rent', function ($subRentQuery) {
+                        $subRentQuery->whereIn('rent_Period_Status', ['Completed', 'Cancelled']);
+                    });
             });
         });
     })
     ->get();
+
 
     // Retrieve data from the 'vehicle_types_booked' table
     $bookedTypes = VehicleTypeBooked::where('reserveID', $pendingBooking->reserveID)->get();
@@ -421,7 +432,7 @@ public function preApproved(){
     ->get();
 
 
-    return view('employees.preapproved', compact('preApprovedBookings'));
+    return view('employees.preApproved', compact('preApprovedBookings'));
 }
 
 public function paymentHistory(){

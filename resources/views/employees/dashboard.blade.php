@@ -123,9 +123,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (info.event.extendedProps.type === 'booking') {
                 // Handle booking event
                 alert(
-                    'Title: ' + info.event.title +
-                    '\nUnit Name: ' + info.event.extendedProps.unitName +
-                    '\nOwnership Type: ' + info.event.extendedProps.ownershipType +
+                    info.event.title + '\n------------------'+
+                    '\nOwnership Type:' + info.event.extendedProps.ownershipType +
                     '\nBooking Type: ' + info.event.extendedProps.bookingType +
                     '\nBooking Number: ' + info.event.extendedProps.trackingID +
                     '\nDate Range: ' + info.event.extendedProps.dateRange+
@@ -136,9 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (info.event.extendedProps.type === 'maintenance') {
                 // Handle maintenance event
                 alert(
-                    'Title: ' + info.event.title +
-                    '\nUnit Name: ' + info.event.extendedProps.unitName +
-                    '\nDate: ' + info.event.start.toISOString().slice(0, 10) +
+                    info.event.title  + '\n------------------'+
                     '\nStatus: ' + info.event.extendedProps.status 
                 );
             }

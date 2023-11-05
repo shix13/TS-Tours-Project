@@ -75,16 +75,25 @@
                         </div><hr>
                     </div>
                 </div>
-                <div class="row"> 
-                    <div class="col">
-                        </i> Subtotal: <span id="subtotal">0.00</span>
+                <div class="container1">
+                    <div class="row"> 
+                        <div class="col">
+                            <h6>Estimated Cost</h6>
+                        </div>
+                    </div>
+                    <div class="row"> 
+                        <div class="col">
+                            </i> Subtotal: <span id="subtotal">0.00</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            </i> Downpayment Fee (10%): <span id="downpayment">0.00</span>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        </i> Downpayment Fee (10%): <span id="downpayment">0.00</span>
-                    </div>
-                </div>
+                <hr>
+            
                 <div class="row container1" style="background: none;box-shadow:none;">
                     <div class="col">
                         <i class="fas fa-user"></i> Full Name 
@@ -132,16 +141,18 @@
                         <input type="time" name="PickupTime" style="margin-left:8px;width: 173px" required>
                     </div>
                 </div>
+                 
                  <br>
                 <div class="col">
                     <div class="col">
                         <i class="fas fa-sticky-note"></i> Additional Notes
                     </div>
                     <div class="col-md-12">
-                        <textarea class="form-control" rows="5" name='Note'></textarea>
+                        <textarea class="form-control" rows="5" name='Note' style="background:white;border:1px solid black"></textarea>
                     </div>
                 </div>
                 <br>
+              
                 <div class="row">
                     <div class="col text-center">
                         <button type="submit" class="btn btn-primary"><i class="fas fa-bookmark"></i> <strong>Book Now </strong></button>

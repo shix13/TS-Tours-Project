@@ -138,8 +138,7 @@ class EmployeeController extends Controller
             foreach ($scheduleData['maintenance'] as $maintenanceDate) {
                 $formattedSchedules[] = [
                     'type' => 'maintenance',
-                    'title' => 'Maintenance for ' . $maintenanceDate['vehicle']->registrationNumber,
-                    'unitName' => $maintenanceDate['vehicle']->unitName,
+                    'title' => 'Maintenance for ' .$maintenanceDate['vehicle']->unitName .' '. $maintenanceDate['vehicle']->registrationNumber,
                     'start' => $maintenanceDate['date'],
                     'status' => $maintenanceDate['status'],
                 ];
@@ -149,9 +148,8 @@ class EmployeeController extends Controller
             foreach ($scheduleData['booking'] as $bookingDate) {
                 $formattedSchedules[] = [
                     'type' => 'booking',
-                    'title' => 'Booking for ' . $bookingDate['vehicle']->registrationNumber,
+                    'title' => 'Booking for ' . $bookingDate['vehicle']->unitName. ' '.$bookingDate['vehicle']->registrationNumber,
                     'ownershipType'=>$bookingDate['vehicle']->ownership_type,
-                    'unitName' => $bookingDate['vehicle']->unitName,
                     'bookingType' => $bookingDate['booking type'],
                     'trackingID' => $bookingDate['trackingID'],
                     'start' => $bookingDate['date'],
@@ -203,7 +201,7 @@ public function getAvailableSchedules()
                 
                 $dateRange = $startDate->format('Y-m-d') . ' to ' . $endDate->format('Y-m-d');
         
-                for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+                for ($date = $startDate->copy(); $date->lte($endDate); ) {
                     $assignmentData = [
                         'type' => 'booking',
                         'date' => $date->format('Y-m-d'),
@@ -222,6 +220,7 @@ public function getAvailableSchedules()
                     }
         
                     $bookingDates[] = $assignmentData;
+                    $date->addDay();
                 }
             }
         }
