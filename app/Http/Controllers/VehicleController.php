@@ -112,7 +112,7 @@ public function store(Request $request)
     // Retrieve the vehicle record by ID and pass it to the edit view
     $vehicle = Vehicle::findOrFail($id);
     $vehicleTypes = VehicleType::all();
-    return view('employees.vehicleedit', compact('vehicle', 'vehicleTypes'));
+    return view('employees.vehicleEdit', compact('vehicle', 'vehicleTypes'));
     }
 
     public function destroy($id)

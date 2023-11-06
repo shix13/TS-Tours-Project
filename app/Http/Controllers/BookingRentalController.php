@@ -432,7 +432,7 @@ public function preApproved(){
     ->get();
 
 
-    return view('employees.preApproved', compact('preApprovedBookings'));
+    return view('employees.preapproved', compact('preApprovedBookings'));
 }
 
 public function paymentHistory(){
