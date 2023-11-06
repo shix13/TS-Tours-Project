@@ -113,18 +113,29 @@ class EmployeeController extends Controller
     {   
         $this->validate($request, [
             'email' => 'required|email',
-            'password' => 'required|min:8'
+            'password' => 'required|min:8',
         ]);
-                
-        if (Auth::guard('employee')->attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
-            return redirect()->route('employee.dashboard');
-            //return redirect()->intened(route('employee.dashboard'));
-            //      intended resulted to go back to login when not logged in as customer (?)
+        
+        $credentials = $request->only('email', 'password');
+        
+        if (Auth::guard('employee')->attempt($credentials, $request->remember)) {
+            $user = Auth::guard('employee')->user();
+            
+            // Check the user's account type
+            if ($user->accountType === 'Clerk' || $user->accountType === 'Manager') {
+                return redirect()->route('employee.dashboard');
+            } else {
+                // Redirect or display an error for unauthorized account types
+                return redirect()->back()->withInput($request->only('email', 'remember'))->withErrors([
+                    'email' => 'You are not authorized to access this system.',
+                ]);
+            }
         }
-
+        
         return redirect()->back()->withInput($request->only('email', 'remember'))->withErrors([
             'email' => 'These credentials do not match our records.',
         ]);
+        
     
     }
 
