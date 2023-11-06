@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-
+<br><br>
 <div class="container">
     <div class="row">
         <div class="col-md-12 offset-md-0">

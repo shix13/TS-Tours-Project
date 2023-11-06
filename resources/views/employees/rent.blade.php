@@ -76,7 +76,7 @@
                             <strong>#</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Booking ID</strong>
+                            <strong>Booking No.</strong>
                         </th>
                         <th class="bold-text">
                             <strong>Rent Status</strong>

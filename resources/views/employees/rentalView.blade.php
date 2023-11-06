@@ -182,7 +182,7 @@
                                              Complete
                                         </option>
                                         <option value="Cancelled" {{ $rents[0]->rent_Period_Status === 'Cancelled' ? 'selected' : '' }}>
-                                             Cancel
+                                             Cancelled
                                         </option>
                                     </select>
                                 </div>

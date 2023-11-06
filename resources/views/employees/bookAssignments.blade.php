@@ -16,7 +16,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h6>Booking Info: {{ $pendingBooking->reserveID }}</h6> <hr>
+                    <h6>Booking Number: {{ $pendingBooking->reserveID }}</h6> <hr>
                     <strong><i class="fas fa-map-marker-alt"></i> Pick-Up Address:</strong> {{ $pendingBooking->pickUp_Address }}<br>
                     <strong><i class="far fa-calendar"></i> Pick up Date:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->format('F j, Y') }}<br>
                     <strong><i class="far fa-clock"></i> Pickup Time:</strong> {{ \Carbon\Carbon::parse($pendingBooking->startDate)->format('g:i A') }}<br>

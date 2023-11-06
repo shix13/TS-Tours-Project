@@ -49,7 +49,7 @@
                     <thead class="text-primary font-montserrat">
                         <tr>
                             <th class="bold-text"><strong>#</strong></th>
-                            <th class="bold-text"><strong>Booking ID</strong></th>
+                            <th class="bold-text"><strong>Booking No.</strong></th>
                             <th class="bold-text"><strong>Customer Name</strong></th>
                             <th class="bold-text"><strong>Total Amount</strong></th>
                             <th class="bold-text"><strong>Downpayment Paid</strong></th>

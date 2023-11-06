@@ -64,7 +64,7 @@ class TariffController extends Controller
     {
         $tariff = Tariff::findOrFail($id);
         // You can pass the $tariff object to your edit view for editing the tariff.
-        return view('employees.tariffedit', compact('tariff'));
+        return view('employees.tariffEdit', compact('tariff'));
     }
 
     public function update(Request $request, $id)

@@ -1,4 +1,4 @@
-@extends('layouts.Index')
+@extends('layouts.index')
 
 @section('title')
     Edit Employee
