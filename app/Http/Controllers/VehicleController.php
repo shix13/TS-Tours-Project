@@ -155,7 +155,7 @@ public function store(Request $request)
 
     // Handle the image upload if a new image is provided
     if ($request->hasFile('pic')) {
-        $imagePath = $request->file('pic')->store('public/vehicle_images');
+        $imagePath = $request->file('pic')->store('public/vehicle');
         $vehicle->pic = str_replace('public/', '', $imagePath);
     }
 
