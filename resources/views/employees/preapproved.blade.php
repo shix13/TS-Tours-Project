@@ -86,7 +86,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <h8>Original Image:</h8>
-                                                <img src="{{ asset('storage/images/gcash.jpg') }}" alt="GCash" style="width: 100%;">
+                                                <img src="{{ asset('images/gcash.jpg') }}" alt="GCash" style="width: 100%; margin-left: 0%">
                                             </div>
                                             <div class="col">
                                                 <h8>Updated Image:</h8>

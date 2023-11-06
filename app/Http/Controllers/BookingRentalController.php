@@ -480,6 +480,7 @@ private function processRate($tariff, $startDate, $endDate, $bookingType,$numVeh
     public function uploadQR(Request $request)
     {
         // Validate the incoming request.
+      
         $request->validate([
             'newImage' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the validation rules as needed.
         ]);
@@ -490,15 +491,21 @@ private function processRate($tariff, $startDate, $endDate, $bookingType,$numVeh
         // Generate a unique filename for the new image.
         $filename = 'gcash.jpg';
 
+        // Construct the full path to the old image.
+        $oldImagePath = public_path('images/' . $filename);
+
         // Delete the old image, if it exists.
-        Storage::delete('public/images/' . $filename);
+        if (file_exists($oldImagePath)) {
+            unlink($oldImagePath);
+        }
 
         // Store the new image in the "images" directory.
-        $image->storeAs('public/images', $filename);
+        $image->move(public_path('images'), $filename);
 
         // You may want to save the new filename in your database if needed.
 
         return redirect()->back()->with('success', 'Image updated successfully.');
+
     }
     
 }

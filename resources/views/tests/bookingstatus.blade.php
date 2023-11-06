@@ -66,7 +66,7 @@
             </div> 
             <div class="col-md-4 ">
                 <!-- Add your image here -->
-                <img src="{{ asset('storage/images/gcash.jpg') }}" alt="GCash" style="width: 100%;margin-left:0%">
+                <img src="{{ asset('images/gcash.jpg') }}" alt="GCash" style="width: 100%; margin-left: 0%">
             </div>
         </div>
     </div>
