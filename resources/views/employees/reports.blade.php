@@ -323,14 +323,14 @@ function updateSections(filter) {
                 if (!isNaN(data.ratingAverage)) {
                     ratingAverageValue.text(data.ratingAverage + '/5');
                     ratingAverageValue.css({
-                        'font-size': '55px',
+                        'font-size': '54px',
                         'font-weight': '700',
 
                     }); // Set a smaller font size and font weight for numbers
                 } else {
                     ratingAverageValue.text(data.ratingAverage);
                     ratingAverageValue.css({
-                        'font-size': '18px',
+                        'font-size': '28px',
                         'font-weight': '400',
                     }); // Set a larger font size and add padding for non-numeric content
                 }

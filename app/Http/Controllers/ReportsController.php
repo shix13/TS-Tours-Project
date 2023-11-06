@@ -40,57 +40,59 @@ class ReportsController extends Controller
         $ratingAverage = 0;
         
         if ($filter === '1D') {
-            $totalMaintenance = Maintenance::whereDate('created_at', $now)->count();
-            $totalRentals = Rent::whereDate('created_at', $now)->count();
-            $totalBookings = Booking::whereDate('created_at', $now)->count();
-            $totalRevenue = Remittance::whereDate('created_at', $now)->sum('amount') + Booking::whereDate('created_at', $now)->sum('downpayment_fee');
-            $downpaymentReceived = Booking::whereDate('created_at', $now)->sum('downpayment_fee');
-            $moneyRemitted = Remittance::whereDate('created_at', $now)->sum('amount');
-            $ratingAverage = Feedback::whereDate('created_at', $now)->avg('rating');
+            $totalMaintenance = Maintenance::whereDate('created_at', $now->today())->count();
+            $totalRentals = Rent::whereDate('created_at', $now->today())->count();
+            $totalBookings = Booking::whereDate('created_at', $now->today())->count();
+            $totalRevenue = Remittance::whereDate('created_at', $now->today())->sum('amount') + Booking::whereDate('created_at', $now)->sum('downpayment_fee');
+            $downpaymentReceived = Booking::whereDate('created_at', $now->today())->sum('downpayment_fee');
+            $moneyRemitted = Remittance::whereDate('created_at', $now->today())->sum('amount');
+            $ratingAverage = Feedback::avg('rating');
         } elseif ($filter === '5D') {
-            $startDate = $now->subDays(5)->startOfDay();
+            $startDate = $now->today()->subDays(5)->startOfDay();
             $totalMaintenance = Maintenance::whereDate('created_at', '>=', $startDate)->count();
             $totalRentals = Rent::whereDate('created_at', '>=', $startDate)->count();
             $totalBookings = Booking::whereDate('created_at', '>=', $startDate)->count();
             $totalRevenue = Remittance::whereDate('created_at', '>=', $startDate)->sum('amount') + Booking::whereDate('created_at', '>=', $startDate)->sum('downpayment_fee');
             $downpaymentReceived = Booking::whereDate('created_at', '>=', $startDate)->sum('downpayment_fee');
             $moneyRemitted = Remittance::whereDate('created_at', '>=', $startDate)->sum('amount');
-            $ratingAverage = Feedback::whereDate('created_at', '>=', $startDate)->avg('rating');
+            $ratingAverage = Feedback::where('created_at', '<=', $startDate)->avg('rating');
         } elseif ($filter === '1M') {
             $startDate = $now->today()->subMonth()->startOfDay();
+            $now = now(); // Get the current date and time
             $totalMaintenance = Maintenance::whereBetween('created_at', [$startDate, $now])->count();
             $totalRentals = Rent::whereBetween('created_at', [$startDate, $now])->count();
             $totalBookings = Booking::whereBetween('created_at', [$startDate, $now])->count();
             $totalRevenue = Remittance::whereBetween('created_at', [$startDate, $now])->sum('amount') + Booking::whereBetween('created_at', [$startDate, $now])->sum('downpayment_fee');
             $downpaymentReceived = Booking::whereBetween('created_at', [$startDate, $now])->sum('downpayment_fee');
             $moneyRemitted = Remittance::whereBetween('created_at', [$startDate, $now])->sum('amount');
-            $ratingAverage = Feedback::whereBetween('created_at', [$startDate, $now])->avg('rating');
+            $ratingAverage = Feedback::where('created_at', '<=', $startDate)->avg('rating');
         } elseif ($filter === '6M') {
-            $startDate = $now->subMonths(6)->startOfDay();
+            $startDate = $now->today()->subMonths(6)->startOfDay();
             $totalMaintenance = Maintenance::where('created_at', '>=', $startDate)->count();
             $totalRentals = Rent::where('created_at', '>=', $startDate)->count();
             $totalBookings = Booking::where('created_at', '>=', $startDate)->count();
             $totalRevenue = Remittance::where('created_at', '>=', $startDate)->sum('amount') + Booking::where('created_at', '>=', $startDate)->sum('downpayment_fee');
             $downpaymentReceived = Booking::where('created_at', '>=', $startDate)->sum('downpayment_fee');
             $moneyRemitted = Remittance::where('created_at', '>=', $startDate)->sum('amount');
-            $ratingAverage = Feedback::where('created_at', '>=', $startDate)->avg('rating');
+            $ratingAverage = Feedback::where('created_at', '<=', $startDate)->avg('rating');
         } elseif ($filter === '1Y') {
-            $startDate = $now->subYear()->startOfDay();
+            $startDate = $now->today()->subYear()->startOfDay();
             $totalMaintenance = Maintenance::where('created_at', '>=', $startDate)->count();
             $totalRentals = Rent::where('created_at', '>=', $startDate)->count();
             $totalBookings = Booking::where('created_at', '>=', $startDate)->count();
             $totalRevenue = Remittance::where('created_at', '>=', $startDate)->sum('amount') + Booking::where('created_at', '>=', $startDate)->sum('downpayment_fee');
             $downpaymentReceived = Booking::where('created_at', '>=', $startDate)->sum('downpayment_fee');
             $moneyRemitted = Remittance::where('created_at', '>=', $startDate)->sum('amount');
-            $ratingAverage = Feedback::where('created_at', '>=', $startDate)->avg('rating');
+            $ratingAverage = Feedback::where('created_at', '<=', $startDate)->avg('rating');
         } elseif ($filter === 'MAX') {
+            $startDate = $now->today()->subYear(3)->startOfDay();
             $totalMaintenance = Maintenance::count();
             $totalRentals = Rent::count();
             $totalBookings = Booking::count();
             $totalRevenue = Remittance::sum('amount') + Booking::sum('downpayment_fee');
             $downpaymentReceived = Booking::sum('downpayment_fee');
             $moneyRemitted = Remittance::sum('amount');
-            $ratingAverage = Feedback::avg('rating');
+            $ratingAverage = Feedback::where('created_at', '<=', $startDate)->avg('rating');
         }
         
 
@@ -173,28 +175,28 @@ class ReportsController extends Controller
         }
 
     
-        $topVehicleAssignments = VehicleAssigned::select('unitName', 'registrationNumber', 'vehicles_Assigned.unitID', \DB::raw('COUNT(*) as assignment_count'))
-        ->join('vehicles', 'vehicles_Assigned.unitID', '=', 'vehicles.unitID')
+        $topVehicleAssignments = VehicleAssigned::select('unitName', 'registrationNumber', 'vehicles_assigned.unitID', \DB::raw('COUNT(*) as assignment_count'))
+        ->join('vehicles', 'vehicles_assigned.unitID', '=', 'vehicles.unitID')
         ->where(function ($query) use ($filter, $now) {
             if ($filter === '1D') {
                 // Filter for the last 1 day
-                $query->where('vehicles_Assigned.created_at', '>=', $now->today());
+                $query->where('vehicles_assigned.created_at', '>=', $now->today());
             } elseif ($filter === '5D') {
                 // Filter for the last 5 days
-                $query->where('vehicles_Assigned.created_at', '>=', $now->subDays(5));
+                $query->where('vehicles_assigned.created_at', '>=', $now->subDays(5));
             } elseif ($filter === '1M') {
                 // Filter for the last 1 month
-                $query->where('vehicles_Assigned.created_at', '>=', $now->subMonth());
+                $query->where('vehicles_assigned.created_at', '>=', $now->subMonth());
             } elseif ($filter === '6M') {
                 // Filter for the last 6 months
-                $query->where('vehicles_Assigned.created_at', '>=', $now->subMonths(6));
+                $query->where('vehicles_assigned.created_at', '>=', $now->subMonths(6));
             } elseif ($filter === '1Y') {
                 // Filter for the last 1 year
-                $query->where('vehicles_Assigned.created_at', '>=', $now->subYear());
+                $query->where('vehicles_assigned.created_at', '>=', $now->subYear());
             } 
         })
         ->where('vehicles.status', 'active')
-        ->groupBy('unitName', 'registrationNumber', 'vehicles_Assigned.unitID')
+        ->groupBy('unitName', 'registrationNumber', 'vehicles_assigned.unitID')
         ->orderBy('assignment_count', 'desc')
         ->limit(10)
         ->get();
