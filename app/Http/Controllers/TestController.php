@@ -152,19 +152,20 @@ class TestController extends Controller
     }
 
     public function processSearch(Request $request){
+      
         $reserveID = $request->input('reserveID');
-        $mobile = $request->input('mobile');
-    
-         // Check if the reserveID and mobileNum match in the Booking model
-        $booking = Booking::where('reserveID', $reserveID)
+    $mobile = $request->input('mobile_number');
+
+    // Check if the reserveID and mobile match in the Booking model
+    $booking = Booking::where('reserveID', $reserveID)
         ->where('mobileNum', $mobile)
         ->first();
-    
-        if($booking){
-            return redirect()->route('checkbookingstatus', $booking);
-        } else {
-            return redirect()->route('search')->with('error', 'Booking not found, check the details you inputted');
-        }
+
+    if ($booking) {
+        return redirect()->route('checkbookingstatus', ['booking' => $booking,'reserveID' => $reserveID, 'mobile' => $mobile]);
+    } else {
+        return redirect()->route('search')->with('error', 'Booking not found, check the details you inputted');
+    }
     }
     
 

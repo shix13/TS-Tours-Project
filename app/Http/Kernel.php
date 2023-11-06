@@ -76,6 +76,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'Manager' => \App\Http\Middleware\ManagerMiddleware::class,
         'auth.guard' => \App\Http\Middleware\RedirectIfNotAuthenticated::class,
+        'verifyMobileNumber' => \App\Http\Middleware\VerifyMobileNumber::class,
         //'customer' => \App\Http\Middleware\Authenticate::class,
     ];
 }
