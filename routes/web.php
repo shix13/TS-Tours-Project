@@ -152,7 +152,7 @@ Route::prefix('employee')->group(function(){
         Route::put('/rental/{id}', [BookingRentalController::class, 'update'])->name('rental.update');
         Route::get('/PreApproved', [BookingRentalController::class, 'preApproved'])->name('employee.preapproved');
         Route::get('/payment-history', [BookingRentalController::class, 'paymentHistory'])->name('employee.paymentHistory');
-
+        Route::post('/payment-history', [BookingRentalController::class, 'uploadQR'])->name('employee.uploadQR');
         Route::get('/bookingAssign{bookingId}', [BookingRentalController::class, 'bookAssign'])->name('booking.Assign');
         Route::post('/storeAssign}', [BookingRentalController::class, 'storeAssigned'])->name('booking.storeAssign');
 

@@ -477,7 +477,28 @@ private function processRate($tariff, $startDate, $endDate, $bookingType,$numVeh
         return view('employees.feedbackView', compact('feedbacks'));
     }
 
+    public function uploadQR(Request $request)
+    {
+        // Validate the incoming request.
+        $request->validate([
+            'newImage' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the validation rules as needed.
+        ]);
 
+        // Get the uploaded image.
+        $image = $request->file('newImage');
 
+        // Generate a unique filename for the new image.
+        $filename = 'gcash.jpg';
+
+        // Delete the old image, if it exists.
+        Storage::delete('public/images/' . $filename);
+
+        // Store the new image in the "images" directory.
+        $image->storeAs('public/images', $filename);
+
+        // You may want to save the new filename in your database if needed.
+
+        return redirect()->back()->with('success', 'Image updated successfully.');
+    }
     
 }

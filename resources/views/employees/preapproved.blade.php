@@ -59,9 +59,54 @@
         
     <div class="card">
         <div class="card-header">
-            <div class="btn-group" role="group" aria-label="Button Group">
-                <a href="{{ route('employee.preapproved') }}" class="btn btn-info ">Pre-approved Booking</a>
-                <a href="{{ route('employee.paymentHistory') }}" class="btn btn-primary ">Payment History</a>
+            <div class="row">
+                <div class="col">
+                    <div class="btn-group" role="group" aria-label="Button Group">
+                        <a href="{{ route('employee.preapproved') }}" class="btn btn-info ">Pre-approved Booking</a>
+                        <a href="{{ route('employee.paymentHistory') }}" class="btn btn-primary ">Payment History</a>
+                    </div>
+                </div>
+                <div class="col" style="text-align:right;">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#editGcash">Edit GCash QR Code</button>
+                </div>
+
+                 <!-- Modal to edit QR code -->
+                <div class="modal fade" id="editGcash">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Upload a New Image</h5>
+                                <button type="button" class="close" data-dismiss="modal" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container">
+                                    <form id="imageUploadForm" method="POST" action="{{ route('employee.uploadQR') }}" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col">
+                                                <h8>Original Image:</h8>
+                                                <img src="{{ asset('storage/images/gcash.jpg') }}" alt="GCash" style="width: 100%;">
+                                            </div>
+                                            <div class="col">
+                                                <h8>Updated Image:</h8>
+                                                <img id="picPreview" src="#" alt="Selected Image" style="display: none; max-width: 100%; max-height: 100%;">
+                                                <label for="newImage" class="custom-file-upload" style="color: black">
+                                                    <i class="fas fa-upload"></i> Select Photo
+                                                </label>
+                                                <input type="file" name="newImage" id="newImage" accept="image/*" onchange="displayImage(this)">
+                                            </div>
+                                        </div>
+                                        <div class="row text-center">
+                                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Image</button>
+                                        </div>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card-body">
@@ -180,6 +225,40 @@
         });
 </script>
 <script>
+    function displayImage(input) {
+        const picPreview = document.getElementById('picPreview');
+        console.log('Function called'); // Debugging: Check if the function is called
+        if (input.files && input.files[0]) {
+            console.log('File selected:', input.files[0].name); // Debugging: Check the selected file
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                picPreview.src = e.target.result;
+                picPreview.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            console.log('No file selected'); // Debugging: Check if no file is selected
+            picPreview.style.display = 'none';
+        }
+    }
+    // Update the image
+    function updateImage() {
+        const newImageInput = document.getElementById('newImage');
+        const image = document.querySelector('img');
+        const file = newImageInput.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                image.src = e.target.result;
+                closeModal();
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+<script>
     $(document).ready(function () {
     // Function to filter the table rows based on search query
     function filterAndSearchTable(query) {
@@ -211,12 +290,13 @@
         }
     });
 });
-
+/*
 function refreshPage() {
         location.reload(); // Reload the current page
     }
 
     // Call the refreshPage function every X milliseconds (e.g., every 5 seconds)
     setTimeout(refreshPage, 30000); 
+    */
 </script>
 @endsection
