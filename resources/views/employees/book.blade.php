@@ -59,7 +59,7 @@
         <br>
         @endif
         
-    <div class="card " style="left:-50px;width: 110%;">
+    <div class="card">
         <div class="card-header">
             <h4 class="card-title" style="font-weight: 700">Pending Bookings</h4>
         </div>
@@ -95,9 +95,6 @@
                             <strong>Note</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Status</strong>
-                        </th>
-                        <th class="bold-text">
                             <strong>Actions</strong>
                         </th>
                     </thead>
@@ -121,7 +118,6 @@
                                     <td>{!! \Carbon\Carbon::parse($pendingBooking->endDate)->format('M d, Y ') !!}</td>
                                     <td>{{ $pendingBooking->pickUp_Address }}</td>
                                     <td>{{ $pendingBooking->note }}</td>
-                                    <td>{{ $pendingBooking->status }}</td>
                                     <td>
                                         <a href="{{ route('booking.Assign', ['bookingId' => $pendingBooking->reserveID]) }}" class="btn btn-success">
                                            <strong><i class="fas fa-check"></i> Assign</strong> 

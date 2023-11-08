@@ -29,7 +29,7 @@ class MaintenanceController extends Controller
                       ->orWhere('maintenances.status', '=', 'In Progress');
             })
             ->select('maintenances.*', 'vehicles.pic', 'mechanics.firstName as mechanic_firstName', 'mechanics.lastName as mechanic_lastName', 'scheduledBy.firstName as scheduled_by_firstName', 'scheduledBy.lastName as scheduled_by_lastName')
-            ->orderBy('scheduleDate')->paginate(10);
+            ->orderBy('scheduleDate')->paginate(20);
     
             $mechanics = Employee::where(function($query) {
                 $query->where('accountType', 'Mechanic')
@@ -48,7 +48,7 @@ public function history()
         ->leftJoin('employees as mechanics', 'maintenances.mechanicAssigned', '=', 'mechanics.empID')
         ->leftJoin('employees as scheduledBy', 'maintenances.empID', '=', 'scheduledBy.empID')
         ->select('maintenances.*', 'vehicles.pic', 'mechanics.firstName as mechanic_firstName', 'mechanics.lastName as mechanic_lastName', 'scheduledBy.firstName as scheduled_by_firstName', 'scheduledBy.lastName as scheduled_by_lastName')
-        ->orderBy('scheduleDate')->paginate(10);
+        ->orderBy('scheduleDate')->paginate(50);
 
     return view('employees.maintenanceHistory', compact('maintenances'));
 }

@@ -196,7 +196,7 @@ Route::prefix('driver')->group(function(){
     Route::post('/processbookingreq', [TestController::class, 'processBooking'])->name('processbookingreq');
     Route::get('/search', [TestController::class, 'searchView'])->name('search');
     Route::post('/search/booking', [TestController::class, 'processSearch'])->name('searchbooking');
-    Route::get('/checkbookingstatus{booking}', [TestController::class, 'bookingStatus'])->name('checkbookingstatus') ->middleware('verifyMobileNumber');;
+    Route::get('/checkbookingstatus{booking}', [TestController::class, 'bookingStatus'])->name('checkbookingstatus') ; //->middleware('verifyMobileNumber');
     Route::post('/checkoutbooking', [TestController::class, 'checkout'])->name('checkoutbooking');
     Route::get('/feedback{id}', [TestController::class, 'feedback'])->name('create.feedback');
     Route::post('/feedbackstore', [TestController::class, 'store'])->name('feedback.store');

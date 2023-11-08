@@ -23,21 +23,22 @@ use App\Mail\BookingApprovedMail;
 use Carbon\Carbon;
 use App\Models\Remittance;
 use App\Models\Feedback;
-
+use Illuminate\Support\Facades\File;
 class BookingRentalController extends Controller
 {
     public function bookIndex()
     {
     
-        // Retrieve a list of pending bookings from the database and order by descending order
         $pendingBookings = Booking::with(['vehicle' => function ($query) {
             $query->withTrashed(); // Include soft-deleted 'vehicle' records
-        }, 'tariff' => function ($query){
+        }, 'tariff' => function ($query) {
             $query->withTrashed(); // Include soft-deleted 'tariff' records
         }])
-            ->where('status', 'Pending')// Assuming you have a 'created_at' column, you can replace it with your actual timestamp column
-            ->paginate(10, ['*'], 'pending');
-    
+        ->where('status', 'Pending')
+        ->orderByRaw('DATE(startDate)') // Sort by the start date (ignoring time)
+        ->orderBy('created_at') // Then, sort by the creation date
+        ->paginate(20, ['*'], 'pending');
+        
         // Pass the data to the Blade view
         return view('employees.book', compact('pendingBookings'));
     }
@@ -268,7 +269,7 @@ public function update(Request $request, $id)
         
         // Calculate subtotal based on changes in dates and booking type
         $subtotal = $this->processRate($booking->tariff, $combinedStartDate, $combinedEndDate, $booking->bookingType,$numVehiclesAssigned);
-    
+        
         // Calculate extra hour fees
         $extraHours = $request->input('extra_hours', 0);
         $ratePerHour = $booking->tariff->rent_Per_Hour;
@@ -282,7 +283,7 @@ public function update(Request $request, $id)
 
         // Calculate the new total price by adding Extra Hour Fees to the Subtotal
         $newTotalPrice = max($subtotal, $subtotal + $extraHourFees);
-
+       
         // Calculate the remittance total
         $remittanceTotal = Remittance::where('rentID', $rental->id)->sum('amount');
 
@@ -291,10 +292,15 @@ public function update(Request $request, $id)
         
         // Update the rental information
         $rental->update([
+            
             'rent_Period_Status' => $request->input('rental_status'),
             'extra_Hours' => $extraHours,
             'total_Price' => $newTotalPrice,
             'balance' => $newBalance,
+        ]);
+        
+        $booking->update([
+            'subtotal' => $subtotal,
         ]);
 
         // Update vehicles assigned based on reserveID
@@ -455,7 +461,7 @@ private function processRate($tariff, $startDate, $endDate, $bookingType,$numVeh
 
     if ($bookingType === 'Rent') {
         // For Rent bookings, calculate the total rate based on the daily rate
-        
+      
         return $tariff->rate_Per_Day * ($diffInDays + 1)* $numVehiclesAssigned; // Add 1 to include both the start and end dates
 
     } elseif ($bookingType === 'Pickup/Dropoff') {
@@ -477,35 +483,30 @@ private function processRate($tariff, $startDate, $endDate, $bookingType,$numVeh
         return view('employees.feedbackView', compact('feedbacks'));
     }
 
-    public function uploadQR(Request $request)
-    {
-        // Validate the incoming request.
-      
-        $request->validate([
-            'newImage' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the validation rules as needed.
-        ]);
+  public function uploadQR(Request $request)
+{
 
-        // Get the uploaded image.
-        $image = $request->file('newImage');
+    // Validate the incoming request.
+    $request->validate([
+        'newImage' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the validation rules as needed.
+    ]);
 
-        // Generate a unique filename for the new image.
-        $filename = 'gcash.jpg';
+    // Get the uploaded image.
+    $image = $request->file('newImage');
 
-        // Construct the full path to the old image.
-        $oldImagePath = public_path('images/' . $filename);
+    // Define the desired filename.
+    $filename = 'gcash.jpg';
+   
+    // Delete the old image, if it exists.
+    Storage::delete('public/images/' . $filename);
 
-        // Delete the old image, if it exists.
-        if (file_exists($oldImagePath)) {
-            unlink($oldImagePath);
-        }
+    // Store the new image in the "public" directory inside the "storage" directory.
+    $image->storeAs('public/images', $filename);
 
-        // Store the new image in the "images" directory.
-        $image->move(public_path('images'), $filename);
+    // You may want to save the new filename in your database if needed.
 
-        // You may want to save the new filename in your database if needed.
+    return redirect()->back()->with('success', 'Image updated successfully.');
+}
 
-        return redirect()->back()->with('success', 'Image updated successfully.');
-
-    }
     
 }

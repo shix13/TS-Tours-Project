@@ -20,11 +20,11 @@ class AccountsController extends Controller
 
     public function accountIndex()
     {
-        $employees = Employee::paginate(10, ['*'], 'employees'); // Fetch all accounts from the database
+        $employees = Employee::paginate(20, ['*'], 'employees'); // Fetch all accounts from the database
 
-        $customers = Customer::paginate(10, ['*'], 'customers');
+       
 
-        return view('employees.accounts', compact('employees', 'customers'));
+        return view('employees.accounts', compact('employees'));
     }
 
     public function create()
