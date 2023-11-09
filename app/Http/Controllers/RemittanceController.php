@@ -21,7 +21,8 @@ class RemittanceController extends Controller
             'driver' => function ($query) {
                 $query->withTrashed(); // Include soft-deleted drivers
             },])
-            ->paginate(10);
+            ->orderby('created_at', 'desc')
+            ->paginate(50);
         
         
         return view('employees.remittance', compact('remittance'));
@@ -89,6 +90,12 @@ $rentData->save();
         $rents = Rent::with('assignments')
             ->where('payment_Status','=','Pending')
             ->where('rent_Period_Status','!=','Cancelled')
+            ->orderByRaw("CASE 
+            WHEN rent_Period_Status = 'Completed' THEN 1 
+            WHEN rent_Period_Status = 'Ongoing' THEN 2 
+            WHEN rent_Period_Status = 'Scheduled' THEN 3 
+            ELSE 4 
+            END")
             ->get();
 
         // Pass the data to the Blade view

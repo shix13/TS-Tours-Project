@@ -78,20 +78,24 @@
                             <strong>#</strong>
                         </th>
                         <th class="bold-text col-md-2">
-                            <strong>Fleet</strong>
+                            <strong>Vehicle</strong>
                         </th>
                         <th class="bold-text">
                             <strong>Mechanic</strong>
-                        </th>
-                        <th class="bold-text">
-                            <strong>Start Date</strong>
                         </th>
                         <th class="bold-text col-md-3">
                             <strong>Notes</strong>
                         </th>
                         <th class="bold-text">
+                            <strong>Mileage</strong>
+                        </th>
+                        <th class="bold-text">
                             <strong>Status</strong>
                         </th>
+                        <th class="bold-text">
+                            <strong>Start Date</strong>
+                        </th>
+                        
                         <th class="bold-text">
                             <strong>Completion Date</strong>
                         </th>
@@ -113,14 +117,19 @@
                                 <strong>{{$maintenance->vehicle->unitName}} - {{$maintenance->vehicle->registrationNumber}}</strong>
                             </td>
                             <td class="text-center"> {{ $maintenance->mechanic_firstName }} {{ $maintenance->mechanic_lastName }}</td>
-                            <td class="text-center">{{ date('M d, Y h:i A', strtotime($maintenance->scheduleDate)) }}</td>
-                            <td class="{{ $maintenance->notes === null ? 'text-center' : '' }}">
+                           
+                            <td class="text-center">
                                 @if ($maintenance->notes === null)
                                     <strong>--No Notes--</strong>
                                 @else
                                     {!! $maintenance->notes !!}
                                 @endif
                             </td>   
+                            <td class="text-center">
+                                @if($maintenance->mileage)
+                                    {{$maintenance->mileage}} km
+                                @endif
+                            </td>
                             </td>
                             <td class="status col-md-0 align-middle text-center">
                                 <span
@@ -128,6 +137,7 @@
                                     <strong>{{ $maintenance->status }}</strong>
                                 </span>
                             </td>
+                            <td class="text-center">{{ date('M d, Y h:i A', strtotime($maintenance->scheduleDate)) }}</td>
                             <td class="text-center">
                                 {{ $maintenance->endDate ? date('M d, Y h:i A', strtotime($maintenance->endDate)) : 'Not Completed' }}
                             </td>                            

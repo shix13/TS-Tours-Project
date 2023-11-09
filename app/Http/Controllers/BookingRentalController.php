@@ -478,7 +478,7 @@ private function processRate($tariff, $startDate, $endDate, $bookingType,$numVeh
 
     public function feedbackIndex()
     {
-        $feedbacks = Feedback::orderBy('created_at', 'desc')->paginate(20); // You can specify the number of items per page (e.g., 10)
+        $feedbacks = Feedback::orderBy('created_at', 'desc')->paginate(100); // You can specify the number of items per page (e.g., 10)
 
         return view('employees.feedbackView', compact('feedbacks'));
     }

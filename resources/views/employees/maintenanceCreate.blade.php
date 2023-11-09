@@ -54,7 +54,7 @@
                             <!-- Scheduled Date and Time Field -->
                             <div class="form-group col-md-3">
                                 <label for="scheduleDateTime" style="color:black"><i class="fas fa-clock"></i> Scheduled Date and Time:</label>
-                                <input type="text" class="form-control" id="scheduleDateTime" name="scheduleDateTime" placeholder="Select Date and Time" style="background: white;  cursor: default;font-size:18px">
+                                <input type="text" class="form-control" id="scheduleDateTime" name="scheduleDateTime" placeholder="Select Date and Time" style="background: white;  cursor: default;font-size:18px" required>
                                 <!-- Error message -->
                                 @error('scheduleDateTime')
                                     <span class="invalid-feedback" role="alert">
@@ -63,6 +63,20 @@
                                 @enderror
                             </div>                          
                         </div>
+
+                        <hr>
+                        <!-- Mileage Field -->
+                        <div class="form-group">
+                            <label for="mileage" style="color:black"><i class="fas fa-tachometer-alt" ></i> Mileage:</label>
+                            <input type="number" min="1" class="form-control{{ $errors->has('mileage') ? ' is-invalid' : '' }}" id="mileage" name="mileage" style="font-size:25px;width:30%">
+                            <!-- Error message -->
+                            @error('mileage')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
 
                         <!-- Notes Field -->
                         <div class="form-group">

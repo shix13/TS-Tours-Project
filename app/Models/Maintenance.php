@@ -32,7 +32,7 @@ class Maintenance extends Authenticatable
      */
     protected $primaryKey = 'maintID'; 
     protected $fillable = [
-        'unitID', 'empID', 'mechanicAssigned', 'scheduleDate', 'notes', 'status', 'endDate'
+        'unitID', 'empID', 'mechanicAssigned', 'scheduleDate', 'notes', 'status', 'endDate','mileage'
     ];
 
     /**

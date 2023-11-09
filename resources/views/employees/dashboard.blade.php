@@ -96,6 +96,7 @@
 </div>
 <hr>
 <h2 class="text-center" style="margin-top:5%">CALENDAR SCHEDULE</h2>
+
 <div class="mx-auto" id="calendar" style="width: 90%;"></div>
     <hr>
 </div>
@@ -103,9 +104,8 @@
 
 @section('scripts')
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/daygrid/main.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/daygrid/main.js"></script>
+
 
 
 <script>
@@ -114,10 +114,62 @@ document.addEventListener('DOMContentLoaded', function() {
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         events: {!! json_encode($formattedSchedules) !!}, // Convert to JSON
-        eventRender: function(info) {
-            if (info.event.extendedProps.type === 'maintenance') {
-                info.el.style.backgroundColor = 'blue'; // Set the background color for maintenance events
+        eventContent: function(arg) {
+            var eventDiv = document.createElement('div');
+            var status = arg.event.extendedProps.status;
+            var bookingStatus = arg.event.extendedProps.bookingstatus;
+            var rentStatus = arg.event.extendedProps.rentstatus;
+
+            // Determine the background color based on the status
+            var backgroundColor = '';
+            if (status === 'Completed') {
+                backgroundColor = '#76ba1b';
+            } else if (status === 'Ongoing') {
+                backgroundColor = '#fc6a03';
+            } else if (status === 'Scheduled') {
+                backgroundColor = '#2a9df4';
             }
+
+    // Check the booking status and modify the background color
+   
+        if (bookingStatus === 'Approved') {
+            if (rentStatus === 'Scheduled') {
+                backgroundColor = 'navy';
+            } else if (rentStatus === 'Ongoing') {
+                backgroundColor = 'orangered';
+            } else if (rentStatus === 'Completed') {
+                backgroundColor = 'darkgreen';
+            } else if (rentStatus === 'Cancelled') {
+                backgroundColor = 'black';
+            }
+        } else if (bookingStatus === 'Pre-approved') {
+            backgroundColor = '#1167b1';
+        } else if (bookingStatus === 'Denied') {
+            backgroundColor = 'red';
+        }
+
+    // Set the background color for maintenance events
+    if (arg.event.extendedProps.type === 'maintenance') {
+        eventDiv.style.backgroundColor = backgroundColor;
+     
+    } else {
+        eventDiv.style.backgroundColor = backgroundColor;
+       
+    }
+    eventDiv.style.padding = '5px';
+    var title = arg.event.title;
+
+    // Define a maximum title length
+    var maxTitleLength = 20;
+
+    // Shorten the title if it exceeds the maximum length and add an ellipsis
+    if (title.length > maxTitleLength) {
+        title = title.substring(0, maxTitleLength) + '...';
+    }
+
+    eventDiv.innerText = title;
+    return { domNodes: [eventDiv] };
+
         },
         eventClick: function(info) {
             if (info.event.extendedProps.type === 'booking') {

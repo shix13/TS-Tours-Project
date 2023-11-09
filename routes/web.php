@@ -141,6 +141,8 @@ Route::prefix('employee')->group(function(){
         Route::post('/maintenance/store', [MaintenanceController::class, 'store'])->name('maintenance.store');
         Route::put('/maintenance/{id}/update', [MaintenanceController::class, 'update'])->name('maintenance.update');
         Route::delete('/maintenance/{id}/delete', [MaintenanceController::class, 'destroy'])->name('maintenance.destroy');
+        Route::put('/maintenance/edit{id}', [MaintenanceController::class, 'rescheduleIndex'])->name('maintenance.rescheduleIndex');
+        Route::put('/maintenance/{id}/reschedule', [MaintenanceController::class, 'reschedule'])->name('maintenance.reschedule');
 
     //BOOKING AND RENTAL
         Route::get('/booking', [BookingRentalController::class, 'bookIndex'])->name('employee.booking'); //BOOKING LIST

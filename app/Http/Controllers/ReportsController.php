@@ -40,8 +40,8 @@ class ReportsController extends Controller
         $ratingAverage = 0;
         
         if ($filter === '1D') {
-            $totalMaintenance = Maintenance::whereDate('created_at', $now->today())->count();
-            $totalRentals = Rent::whereDate('created_at', $now->today())->count();
+            $totalMaintenance = Maintenance::whereDate('updated_at', $now->today()) ->where('status', 'Completed')->count();
+            $totalRentals = Rent::whereDate('updated_at', $now->today()) ->where('rent_Period_Status', 'Completed')->count();
             $totalBookings = Booking::whereDate('created_at', $now->today())->count();
             $totalRevenue = Remittance::whereDate('created_at', $now->today())->sum('amount') + Booking::whereDate('created_at', $now)->sum('downpayment_fee');
             $downpaymentReceived = Booking::whereDate('created_at', $now->today())->sum('downpayment_fee');
@@ -49,8 +49,8 @@ class ReportsController extends Controller
             $ratingAverage = Feedback::avg('rating');
         } elseif ($filter === '5D') {
             $startDate = $now->today()->subDays(5)->startOfDay();
-            $totalMaintenance = Maintenance::whereDate('created_at', '>=', $startDate)->count();
-            $totalRentals = Rent::whereDate('created_at', '>=', $startDate)->count();
+            $totalMaintenance = Maintenance::whereDate('updated_at', '>=', $startDate)->where('status', 'Completed')->count();
+            $totalRentals = Rent::whereDate('updated_at', '>=', $startDate)->where('rent_Period_Status', 'Completed')->count();
             $totalBookings = Booking::whereDate('created_at', '>=', $startDate)->count();
             $totalRevenue = Remittance::whereDate('created_at', '>=', $startDate)->sum('amount') + Booking::whereDate('created_at', '>=', $startDate)->sum('downpayment_fee');
             $downpaymentReceived = Booking::whereDate('created_at', '>=', $startDate)->sum('downpayment_fee');
@@ -59,8 +59,8 @@ class ReportsController extends Controller
         } elseif ($filter === '1M') {
             $startDate = $now->today()->subMonth()->startOfDay();
             $now = now(); // Get the current date and time
-            $totalMaintenance = Maintenance::whereBetween('created_at', [$startDate, $now])->count();
-            $totalRentals = Rent::whereBetween('created_at', [$startDate, $now])->count();
+            $totalMaintenance = Maintenance::whereBetween('updated_at', [$startDate, $now])->where('status', 'Completed')->count();
+            $totalRentals = Rent::whereBetween('updated_at', [$startDate, $now])->where('rent_Period_Status', 'Completed')->count();
             $totalBookings = Booking::whereBetween('created_at', [$startDate, $now])->count();
             $totalRevenue = Remittance::whereBetween('created_at', [$startDate, $now])->sum('amount') + Booking::whereBetween('created_at', [$startDate, $now])->sum('downpayment_fee');
             $downpaymentReceived = Booking::whereBetween('created_at', [$startDate, $now])->sum('downpayment_fee');
@@ -68,8 +68,8 @@ class ReportsController extends Controller
             $ratingAverage = Feedback::where('created_at', '<=', $startDate)->avg('rating');
         } elseif ($filter === '6M') {
             $startDate = $now->today()->subMonths(6)->startOfDay();
-            $totalMaintenance = Maintenance::where('created_at', '>=', $startDate)->count();
-            $totalRentals = Rent::where('created_at', '>=', $startDate)->count();
+            $totalMaintenance = Maintenance::where('updated_at', '>=', $startDate)->where('status', 'Completed')->count();
+            $totalRentals = Rent::where('updated_at', '>=', $startDate)->where('rent_Period_Status', 'Completed')->count();
             $totalBookings = Booking::where('created_at', '>=', $startDate)->count();
             $totalRevenue = Remittance::where('created_at', '>=', $startDate)->sum('amount') + Booking::where('created_at', '>=', $startDate)->sum('downpayment_fee');
             $downpaymentReceived = Booking::where('created_at', '>=', $startDate)->sum('downpayment_fee');
@@ -77,8 +77,8 @@ class ReportsController extends Controller
             $ratingAverage = Feedback::where('created_at', '<=', $startDate)->avg('rating');
         } elseif ($filter === '1Y') {
             $startDate = $now->today()->subYear()->startOfDay();
-            $totalMaintenance = Maintenance::where('created_at', '>=', $startDate)->count();
-            $totalRentals = Rent::where('created_at', '>=', $startDate)->count();
+            $totalMaintenance = Maintenance::where('updated_at', '>=', $startDate)->where('status', 'Completed')->count();
+            $totalRentals = Rent::where('updated_at', '>=', $startDate)->where('rent_Period_Status', 'Completed')->count();
             $totalBookings = Booking::where('created_at', '>=', $startDate)->count();
             $totalRevenue = Remittance::where('created_at', '>=', $startDate)->sum('amount') + Booking::where('created_at', '>=', $startDate)->sum('downpayment_fee');
             $downpaymentReceived = Booking::where('created_at', '>=', $startDate)->sum('downpayment_fee');

@@ -23,6 +23,18 @@ Licensed under the MIT license - http://opensource.org/licenses/MIT
 Copyright (c) 2015 Daniel Eden
 */
 
+.maintenance-event {
+    background-color: blue; /* Set the background color for maintenance events */
+    color: white; /* Set the text color for maintenance events */
+    /* You can add more styling properties as needed */
+}
+
+/* Styles for booking events */
+.booking-event {
+    background-color: yellow; /* Set the background color for booking events */
+    color: black; /* Set the text color for booking events */
+    /* You can add more styling properties as needed */
+}
 .interactive-card {
   background-color: #fff;
   border: 1px solid #e0e0e0;

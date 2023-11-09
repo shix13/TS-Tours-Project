@@ -26,7 +26,7 @@ class MaintenanceController extends Controller
             ->leftJoin('employees as scheduledBy', 'maintenances.empID', '=', 'scheduledBy.empID')
             ->where(function($query) {
                 $query->where('maintenances.status', '=', 'Scheduled')
-                      ->orWhere('maintenances.status', '=', 'In Progress');
+                      ->orWhere('maintenances.status', '=', 'Ongoing');
             })
             ->select('maintenances.*', 'vehicles.pic', 'mechanics.firstName as mechanic_firstName', 'mechanics.lastName as mechanic_lastName', 'scheduledBy.firstName as scheduled_by_firstName', 'scheduledBy.lastName as scheduled_by_lastName')
             ->orderBy('scheduleDate')->paginate(20);
@@ -48,7 +48,7 @@ public function history()
         ->leftJoin('employees as mechanics', 'maintenances.mechanicAssigned', '=', 'mechanics.empID')
         ->leftJoin('employees as scheduledBy', 'maintenances.empID', '=', 'scheduledBy.empID')
         ->select('maintenances.*', 'vehicles.pic', 'mechanics.firstName as mechanic_firstName', 'mechanics.lastName as mechanic_lastName', 'scheduledBy.firstName as scheduled_by_firstName', 'scheduledBy.lastName as scheduled_by_lastName')
-        ->orderBy('scheduleDate')->paginate(50);
+        ->orderBy('updated_at','desc')->paginate(50);
 
     return view('employees.maintenanceHistory', compact('maintenances'));
 }
@@ -74,7 +74,7 @@ public function create()
                             ->where('endDate', '>=', $now);
                     });
             })
-            ->whereIn('status', ['Scheduled', 'In Progress'])
+            ->whereIn('status', ['Scheduled', 'Ongoing'])
             ->exists();
         return $isScheduled;
     });
@@ -85,11 +85,49 @@ public function create()
     return view('employees.maintenanceCreate', compact('vehicles', 'mechanicEmployees', 'maintenances'));
 }
 
+public function rescheduleIndex($id)
+{
+    $maintenance = Maintenance::join('employees', 'maintenances.mechanicAssigned', '=', 'employees.empID')
+    ->join('vehicles', 'maintenances.unitID', '=', 'vehicles.unitID')
+    ->where('maintenances.maintID', $id)
+    ->select('maintenances.*', 'employees.firstName as mechanicFirstName', 'employees.lastName as mechanicLastName','employees.accountType as mechanicType', 'vehicles.unitName', 'vehicles.registrationNumber')
+    ->first();
+
+    //dd($maintenance);
+
+    return view('employees.maintenanceEdit', compact('maintenance'));
+}
+
+public function reschedule(Request $request, $id)
+{       
+    $request->validate([
+        'notes' => 'nullable|string',
+        'scheduleDateTime' => 'required',
+        'mileage'=>'required',
+    ]);
+
+    $maintenance = Maintenance::findOrFail($id);
+
+    // Update maintenance record with new note and scheduleDateTime
+    $maintenance->update([
+        'notes' => $request->input('notes'),
+        'scheduleDate' => $request->input('scheduleDateTime'),
+        'empID' => $request->input('empID'),
+        'mileage'=> $request->input('mileage'),
+    ]);
+
+    // You can add any additional logic or redirects here
+
+    return redirect()->route('employee.maintenance')->with('success', 'Maintenance record rescheduled successfully');
+}
+
+
+
 
 
     // Handle the form submission
     public function store(Request $request)
-    {    //dd($request);
+    {   
         // Validate the form data
         $validatedData = $request->validate([
             'unitID' => 'required|integer',  
@@ -98,17 +136,19 @@ public function create()
             'scheduleDateTime' => [
                 'required',
                 'after_or_equal:yesterday', 
-            ],
+            ], 
+            'mileage'=>'required|integer',
             'notes' => 'nullable|string',            
         ]);
         
-        
+       // dd($validatedData);
         // Create a new maintenance record
         Maintenance::create([
             'unitID' => $validatedData['unitID'],
             'empID' => $validatedData['empID'],
             'mechanicAssigned' => $validatedData['mechanicAssigned'],
             'scheduleDate' => $validatedData['scheduleDateTime'],
+            'mileage'=> $validatedData['mileage'],
             'notes' => $validatedData['notes'],
             'status' => 'Scheduled',
         ]);
@@ -122,7 +162,7 @@ public function create()
     {
         // Validate the incoming request data
         $request->validate([
-            'status' => 'required|in:Scheduled,In Progress,Cancelled,Completed',
+            'status' => 'required|in:Scheduled,Ongoing,Completed',
         ]);
 
         // Find the maintenance record by its ID
@@ -135,13 +175,13 @@ public function create()
         $maintenance->update([
             'status' => $request->input('status'),
         ]);
-
+        
         // Check if the status was changed to "Completed"
     if ($request->input('status') === 'Completed' && $currentStatus !== 'Completed') {
         $maintenance->update([
             'endDate' => now(), // Set the endDate to the current date and time
         ]);
-    } elseif ($request->input('status') === 'In Progress' && $currentStatus !== 'In Progress') {
+    } elseif ($request->input('status') === 'Ongoing' && $currentStatus !== 'Ongoing') {
         $maintenance->update([
             'scheduleDate' => now(), // Set the scheduleDate to the current date and time
         ]);
@@ -202,7 +242,7 @@ public function getAvailableSchedules($vehicleId) {
 
     // Get all maintenance records for the vehicle
     $maintenanceDates = $vehicle->maintenances->filter(function($maintenance) {
-        return in_array($maintenance->status, ['Scheduled', 'In Progress']) &&
+        return in_array($maintenance->status, ['Scheduled', 'Ongoing']) &&
             $maintenance->status !== 'Cancelled';
     })->pluck('scheduleDate');
    

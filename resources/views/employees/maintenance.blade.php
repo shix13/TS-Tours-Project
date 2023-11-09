@@ -31,7 +31,7 @@
                     <select id="statusFilter" class="form-control">
                         <option value="">All</option>
                         <option value="Scheduled">Scheduled</option>
-                        <option value="In Progress">In Progress</option>
+                        <option value="Ongoing">Ongoing</option>
                     </select>
                 </div>
             </div>
@@ -109,7 +109,8 @@
                                <span id="mechanicAssigned"> <strong>Mechanic: </strong>{{ $maintenance->mechanic_firstName }} {{ $maintenance->mechanic_lastName }} <br> </span>
                                 
                                 
-                               <span id="scheduledate"> <strong>Start Date: </strong>{{ date('M d, Y h:i A', strtotime($maintenance->scheduleDate)) }}</span> <hr>
+                               <span id="scheduledate"> <strong>Start Date: </strong>{{ date('M d, Y h:i A', strtotime($maintenance->scheduleDate)) }}</span> <br>
+                               <span id="mileage"> <strong>Mileage: </strong>{{ $maintenance->mileage }}Km</span> <hr>
                                 
                             <span class="{{ $maintenance->notes === null ? 'text-center' : '' }}">
                                 @if ($maintenance->notes === null)
@@ -118,7 +119,7 @@
                                   <span id="notes"> Note: {!! $maintenance->notes !!}</span>
                                 @endif
                             </span>  <hr>
-                            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="changeMechanicButton">
+                            <button style="width: 90%;margin-left:5%" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="changeMechanicButton">
                                 <i class="fas fa-wrench"></i> Change Mechanic
                             </button>  
                             <div class="dropdown-menu" aria-labelledby="changeMechanicButton">
@@ -127,11 +128,20 @@
                                         {{ $mechanic->firstName }} {{ $mechanic->lastName }} - ({{ $mechanic->accountType }})
                                     </a>
                                 @endforeach
+                            </div> <hr>
+                            <div class="col-md-12">
+                            <form id="rescheduleForm" action="{{ route('maintenance.rescheduleIndex', ['id' => $maintenance->maintID]) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="btn btn-info btn-block">
+                                    <i class="fa fa-calendar" aria-hidden="true"></i> Reschedule
+                                </button>
+                            </form>
                             </div>
                             </td>
                             <td class="status col-md-0 align-middle text-center">
                                 <span id="status"
-                                    style="color: {{ $maintenance->status === 'Scheduled' ? 'blue' : ($maintenance->status === 'In Progress' ? 'orange' : ($maintenance->status === 'Cancelled' ? 'red' : ($maintenance->status === 'Completed' ? 'green' : ''))) }}">
+                                    style="color: {{ $maintenance->status === 'Scheduled' ? 'blue' : ($maintenance->status === 'Ongoing' ? 'orange' : ($maintenance->status === 'Cancelled' ? 'red' : ($maintenance->status === 'Completed' ? 'green' : ''))) }}">
                                     <strong>{{ $maintenance->status }}</strong>
                                 </span>
                             </td>
@@ -152,15 +162,19 @@
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="form-group">
-                                                        <select class="form-control" name="status" id="statusSelect">
-                                                            <option value="In Progress" @if($maintenance->status === 'In Progress') selected @endif>In Progress</option>
-                                                            <option value="Cancelled" @if($maintenance->status === 'Cancelled') selected @endif>Cancelled</option>
+                                                        <select class="form-control" name="status" id="statusSelect" style="font-size: 15px">
+                                                            <option value="Ongoing" @if($maintenance->status === 'Ongoing') selected @endif>Ongoing</option>
                                                             <option value="Completed" @if($maintenance->status === 'Completed') selected @endif>Completed</option>
                                                         </select>
                                                     </div>
                                                     <button type="submit" class="btn btn-primary btn-block">Save</button>
                                                 </form>
-                                            </div>                                            
+                                            </div> 
+                                            <hr>
+                                            
+                                           <div>
+                                            
+                                        </div>                               
                                         @endif
                                     </div>                                                                      
                                 </div>
@@ -180,12 +194,17 @@
         </div>
     </div>
 
-    <!-- Table for Completed and Cancelled Maintenance Records -->
+   
+
+    
    
 </div>
+
 @endsection
 
 @section('scripts')
+
+
 <script>
     $(document).ready(function () {
     // Function to filter the table rows based on status and search query
@@ -271,7 +290,15 @@ $(document).on('click', '#statusSelect', function (e) {
     e.stopPropagation();
 });
 
-
+$('#statusSelect').on('change', function () {
+        var selectedStatus = $(this).val();
+        if (selectedStatus === 'Reschedule') {
+            $('#rescheduleDate').show();
+            $('#rescheduleDate').datepicker(); // Initialize the date picker
+        } else {
+            $('#rescheduleDate').hide();
+        }
+    });
 </script>
 @endsection
 

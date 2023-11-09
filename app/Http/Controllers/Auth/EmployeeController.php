@@ -194,7 +194,7 @@ public function getAvailableSchedules()
 
         // Get all maintenance records for the vehicle
         foreach ($vehicle->maintenances as $maintenance) {
-            if (in_array($maintenance->status, ['Scheduled', 'In Progress', 'Completed']) && $maintenance->status !== 'Cancelled') {
+            if ($maintenance->status !== 'Cancelled') {
                 $maintenanceDates[] = [
                     'type' => 'maintenance',
                     'date' => \Carbon\Carbon::parse($maintenance->scheduleDate)->toDateString(),
