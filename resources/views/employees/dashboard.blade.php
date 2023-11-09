@@ -91,16 +91,16 @@
                 </div>
                 <a href="{{ route('employee.remittance') }}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
             </div>
+            </div>
         </div>
     </div>
-</div>
-<hr>
-<h2 class="text-center" style="margin-top:5%">CALENDAR SCHEDULE</h2>
-
-<div class="mx-auto" id="calendar" style="width: 90%;"></div>
-    <hr>
-</div>
-@endsection
+            <hr>
+            <h2 class="text-center" style="margin-top:5%">CALENDAR SCHEDULE</h2>
+                
+            <div class="mx-auto" id="calendar" style="width: 90%;"></div>
+                <hr><img src="{{ asset('/images/color_code.png') }}" alt="Legends:color code">
+            </div>
+            @endsection
 
 @section('scripts')
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.css" rel="stylesheet">
