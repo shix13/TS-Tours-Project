@@ -327,22 +327,22 @@ public function update(Request $request, $id)
     }
 }
 
-
-
-
-
-
-
 public function bookAssign($id)
 {
     // Retrieve data from the 'booking' table where status is 'Pending' and reserveID matches $id
     $pendingBooking = Booking::where('status', 'Pending')->where('reserveID', $id)->first();
-
+    $vehicleTypesBooked = $pendingBooking->vehicleTypesBooked;
+    $vehicleTypes;
+    foreach($vehicleTypesBooked as $vehicleTypeBooked){
+        $vehicleTypes[]=$vehicleTypeBooked->vehicleType->vehicle_Type_ID;
+    }
+    
     // Calculate start and end dates for checking availability
     $startDate = \Carbon\Carbon::parse($pendingBooking->startDate)->startOfDay(); // Start from midnight
     $endDate = \Carbon\Carbon::parse($pendingBooking->endDate)->endOfDay()->addDay(1); // End at the end of the day and add 1 day
     //dd($startDate);
     $availableVehicles = Vehicle::where('status', 'Active')
+    ->whereIn('vehicle_Type_ID', $vehicleTypes)
     ->where(function ($query) use ($startDate, $endDate) {
         $query->whereDoesntHave('vehicleAssignments.booking', function ($subquery) use ($startDate, $endDate) {
             $subquery->whereNotIn('status', ['Denied', 'Cancelled'])
@@ -369,9 +369,6 @@ public function bookAssign($id)
     })
     ->with('vehicleType')
     ->get();
-
-
-
 
     //dd($availableVehicles);
     $availableDrivers = Employee::whereIn('accountType', ['Driver', 'Driver Outsourced'])
