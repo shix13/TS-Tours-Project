@@ -102,6 +102,7 @@ class TestController extends Controller
             'tariffID' => $tariff->tariffID,
             'mobileNum' => $request->input('MobileNum'),
             'pickUp_Address' => $request->input('PickUpAddress'),
+            'pax' => $request->input('Pax'),
             'note' => $request->input('Note'),
             'downpayment_Fee' => $downpayment,
             'subtotal' => $subtotal,

@@ -83,6 +83,10 @@
                 <td>{{ $bookingData['bookingType'] }}</td>
             </tr>
             <tr>
+                <td><strong>Pax:</strong></td>
+                <td>{{ $bookingData['pax'] }}</td>
+            </tr>
+            <tr>
                 <td><strong>Pick-Up Address:</strong></td>
                 <td>{{ $bookingData['pickUp_Address'] }}</td>
             </tr>

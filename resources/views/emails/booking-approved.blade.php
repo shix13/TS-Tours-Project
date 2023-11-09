@@ -101,6 +101,10 @@
                     <td>{{ $booking->startDate }}</td>
                 </tr>
                 <tr>
+                    <td><strong>Pax:</strong></td>
+                    <td>{{ $booking->pax }}</td>
+                </tr>
+                <tr>
                     <td><strong>Return Date:</strong></td>
                     <td>{{ \Carbon\Carbon::parse($booking->endDate)->format('Y-m-d') }}</td>
                 </tr>

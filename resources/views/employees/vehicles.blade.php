@@ -73,9 +73,6 @@
                             <strong>Schedule Dates</strong>
                         </th>
                         <th class="bold-text">
-                            <strong>Status</strong>
-                        </th>
-                        <th class="bold-text">
                             <strong>Actions</strong>
                         </th>
                     </thead>
@@ -153,8 +150,6 @@
                                                     (\Carbon\Carbon::parse($assignment->booking->startDate)->isBetween(now()->startOfWeek()->subWeek(), now()->endOfWeek()->subWeek()) || \Carbon\Carbon::parse($assignment->booking->endDate)->isBetween(now()->startOfWeek()->subWeek(), now()->endOfWeek()->subWeek()))
                                                 );
                                         });
-
-
                                         @endphp
                                     
                                         @if($bookingDates->isNotEmpty())
@@ -166,17 +161,25 @@
                                             <p>No booking schedule within the week.</p>
                                         @endif
                                     </td>
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    <td class="status col-md-0 align-middle text-center">
-                                        <span style="color: {{ $vehicle->status === 'Active' ? 'green' : 'red' }}"><strong>{{ $vehicle->status }}</strong></span>
-                                    </td>
+
                                     <td class="status col-md-1 align-middle text-center">
-                                        <a href="{{ route('vehicles.edit', $vehicle->unitID) }}" class="btn btn-primary"> <i class="fas fa-edit"></i>EDIT</a>
-                                        
+                                        <a href="{{ route('vehicles.edit', $vehicle->unitID) }}" class="btn btn-primary"> <i class="fas fa-edit"></i> EDIT</a> <hr>
+                                    
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-{{ $vehicle->status === 'Active' ? 'info' : 'danger' }} dropdown-toggle" data-toggle="dropdown">
+                                                {{ $vehicle->status }}
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                
+                                                <a class="dropdown-item" href="#" onclick="changeStatus('{{ route('vehicles.updateStatus', ['id' => $vehicle->unitID, 'status' => 'Active']) }}', 'Active')">Active</a>
+                                                @if ($bookingDates && $bookingDates->count() > 0)
+                                                <a class="dropdown-item" href="#" onclick="promptClearSchedule('{{ route('vehicles.updateStatus', ['id' => $vehicle->unitID, 'status' => 'Inactive']) }}')">Inactive</a>
+                                                @else
+                                                    <a class="dropdown-item" href="#" onclick="changeStatus('{{ route('vehicles.updateStatus', ['id' => $vehicle->unitID, 'status' => 'Inactive']) }}', 'Inactive')">Inactive</a>
+                                                @endif
+
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -237,6 +240,19 @@
             searchTable(query);
         });
     });
+</script>
+<script>
+    function changeStatus(url, status) {
+        if (confirm('Are you sure you want to change the status to ' + status + '?')) {
+            window.location.href = url;
+        }
+    }
+
+    function promptClearSchedule(url) {
+    var confirmation = alert('There are active booking schedules. Clear the schedules before making the vehicle inactive. Press "OK" to cancel.');
+    }
+
+
 </script>
 @endsection
 

@@ -130,8 +130,7 @@ public function store(Request $request)
         'pic' => 'image|mimes:jpeg,png,jpg,gif|max:10000',
         'unitName' => 'required|string|max:255',
         'pax' => 'required|integer|min:1',
-        'specification' => 'nullable|string',
-        'status' => 'required|in:Active,Inactive',
+        'specification' => 'nullable|string',       
         'ownership_type' => 'required|in:Owned,Outsourced',
         'outsourced_from' => 'nullable|required_if:ownership_type,Outsourced|string|max:255',
         'color' => 'required|string|max:255',
@@ -146,7 +145,6 @@ public function store(Request $request)
     $vehicle->unitName = $request->input('unitName');
     $vehicle->pax = $request->input('pax');
     $vehicle->specification = $request->input('specification');
-    $vehicle->status = $request->input('status');
     $vehicle->vehicle_Type_ID = $request->input('vehicleType');
     $vehicle->ownership_type = $request->input('ownership_type');
     $vehicle->outsourced_from = ($request->input('ownership_type') === 'Outsourced') ? $request->input('outsourced_from') : null;
@@ -257,5 +255,14 @@ public function VtypeUpdate(Request $request, $id) {
         ->with('success', 'Vehicle type updated successfully');
 }
 
+public function updateStatus($id, $status)
+    {   
+        $vehicle = Vehicle::findOrFail($id);
+       
+        // Assuming you have a 'status' column in your 'vehicles' table
+        $vehicle->update(['status' => $status]);
+
+        return redirect()->back()->with('success', 'Vehicle status updated successfully.');
+    }
 
 }

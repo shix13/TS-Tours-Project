@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+<br><br>
 <div class="container">
     @if($errors->any())
 <div class="alert alert-danger">
@@ -130,18 +131,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="status" style="color: black"><i class="fas fa-check-circle"></i> Status</label>
-                            <select name="status" id="status" class="form-control @error('status') is-invalid @enderror">
-                                <option value="Active" {{ old('status', $vehicle->status) == 'Active' ? 'selected' : '' }}>Active</option>
-                                <option value="Inactive" {{ old('status', $vehicle->status) == 'Inactive' ? 'selected' : '' }}>Inactive</option>
-                            </select>
-                            @error('status')
-                            <span class="invalid-feedback" role="alert">
-                                <i class="fas fa-exclamation-circle"></i> {{ $message }}
-                            </span>
-                            @enderror
-                        </div>
+                     
 
                         <div class="form-group col-md-4">
                             <label for="vehicleType" style="color: black"><i class="fas fa-car"></i> Vehicle Type</label>

@@ -22,9 +22,9 @@ class Booking extends Authenticatable
 
     protected $primaryKey = 'reserveID';
     
-     protected $fillable = [
+    protected $fillable = [
         'cust_first_name', 'cust_last_name', 'cust_email', 'tariffID', 'startDate', 'endDate', 'mobileNum', 'pickUp_Address',
-        'note', 'downpayment_Fee', 'gcash_RefNum', 'subtotal', 'status', 'bookingType'
+        'note', 'downpayment_Fee', 'gcash_RefNum', 'subtotal', 'status', 'bookingType', 'pax', 
     ];
 
     /**

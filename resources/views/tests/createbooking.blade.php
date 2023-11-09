@@ -50,17 +50,17 @@
                         <i class="fas fa-map-marker-alt"></i> Location
                     </div>
                     <div class="col" >
-                        <select id="location" name="location" style="width: 100%">
+                        <select id="location" name="location" style="width: 100%;padding:5px">
                             @foreach($tariffData as $t)
                             <option data-booking-types="{{ json_encode($t->booking_types) }}" data-rate-per-day="{{ $t->rate_Per_Day }}" data-do-pu="{{ $t->do_pu }}" value="{{ $t->location }}">{{ $t->location }}</option>
                             @endforeach
                         </select>                        
                     </div>
                 </div> 
-                                                        
+              
                 <input type="hidden" id="rate_Per_Day" value="{{ $tariffData->first()->rate_Per_Day }}" readonly>
                 <input type="hidden" id="do_pu" value="{{ $tariffData->first()->do_pu }}" readonly>
-
+                
                 <br>
                 <div class="row container1" style="background: none;box-shadow:none;">
                     <div class="col">
@@ -72,7 +72,8 @@
                         <div class="col" id="enddatecol">
                             Return Date <input type="date" name="EndDate" id="EndDate" required>
                         </div>
-                        </div><hr>
+                        
+                        </div>
                     </div>
                 </div>
                 <div class="container1">
@@ -91,12 +92,15 @@
                             </i> Downpayment Fee (10%): <span id="downpayment">0.00</span>
                         </div>
                     </div>
+                </div> <br>
+                <div class="col">
+                    Pax <br> <input type="number" name="Pax" id="Pax" required>
                 </div>
                 <hr>
             
                 <div class="row container1" style="background: none;box-shadow:none;">
                     <div class="col">
-                        <i class="fas fa-user"></i> Full Name 
+                        <i class="fas fa-user"></i> Contact Person
                         <div class="row">
                             <div class="col">
                                 First Name <input type="text" name="FirstName" required>
@@ -108,40 +112,40 @@
                     </div> 
                 </div>
                 <br>
-
-                <div class="row">
-                    <div class="col">
-                        <i class="fas fa-envelope"></i> Email Address
+             
+                <div class="row" style="justify-content:center">
+                    <div class="col-md-4">
+                        <i class="fas fa-envelope"></i> Email Address: 
                     </div>
-                    <div class="col">
+                    <div class="col-md-4">
                         <input name="Email" required>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col">
+                <div class="row" style="justify-content:center">
+                    <div class="col-md-4" >
                         <i class="fas fa-phone"></i> Phone Number
                     </div>
-                    <div class="col">
+                    <div class="col-md-4" >
                         <input name="MobileNum" required>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col">
+                <div class="row" style="justify-content:center">
+                    <div class="col-md-4">
                         <i class="fas fa-map-pin"></i> Pickup Address
                     </div>
-                    <div class="col">
+                    <div class="col-md-4">
                         <input name="PickUpAddress" required>
                     </div>
                 </div> 
-                <div class="row">
-                    <div class="col" style="margin-left:-12px">
+                <div class="row"  style="justify-content:center">
+                    <div class="col-md-4" >
                         <i class="fas fa-clock"></i> Pickup Time
                     </div>
-                    <div class="col">
-                        <input type="time" name="PickupTime" style="margin-left:8px;width: 173px" required>
+                    <div class="col-md-4">
+                        <input type="time" name="PickupTime" style=";width: 175px" required>
                     </div>
                 </div>
-                 
+          
                  <br>
                 <div class="col">
                     <div class="col">

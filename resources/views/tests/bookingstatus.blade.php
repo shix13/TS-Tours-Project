@@ -118,16 +118,16 @@
                             <div class="col">
                                 <i class="fas fa-calendar-alt"></i> Schedule Date
                                 <div class="row">
-                                    <div class="col">
+                                    <div class="col-2">
                                         Start Date:
                                     </div>
-                                    <div class="col">
+                                    <div class="col-2">
                                         {{ $booking['startDate'] }}
                                     </div>
-                                    <div class="col">
+                                    <div class="col-2">
                                         End Date:
                                     </div>
-                                    <div class="col">
+                                    <div class="col-2">
                                         {{ $booking['endDate'] }}
                                     </div>
                                 </div>
@@ -135,58 +135,66 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-2">
                                 <i class="fas fa-map-marker-alt"></i> Location
                             </div>
-                            <div class="col">
+                            <div class="col-2">
                                 {{ $booking->tariff->location }}
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-2">
                                 <i class="fas fa-user"></i> Customer Name
                             </div>
-                            <div class="col">
+                            <div class="col-2">
                                 {{ $booking['cust_first_name'] }} {{ $booking['cust_last_name'] }}
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-2">
                                 <i class="fas fa-phone"></i> Phone Number
                             </div>
-                            <div class="col">
+                            <div class="col-2">
                                 {{ $booking['mobileNum'] }}
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-2">
                                 <i class="fas fa-map-pin"></i> Pickup Address
                             </div>
-                            <div class="col">
+                            <div class="col-2">
                                 {{ $booking['pickUp_Address'] }}
                             </div>
                         </div>
+                        <div class="row" >
+                            <div class="col-2">
+                                <i class="fas fa-map-pin"></i> Pax:
+                            </div>
+                            <div class="col-2">
+                                {{ $booking['pax'] }}
+                            </div>
+                        </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-2">
                                 <i class="fas fa-sticky-note"></i> Additional Notes
                             </div>
-                            <div class="col">
+                            <div class="col-2">
                                 {{ $booking['note'] }}
                             </div>
                         </div> <hr>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-2">
                                 <i class="fas fa-money-bill"></i> Subtotal
                             </div>
-                            <div class="col">
+                            <div class="col-2">
                                 {{ $booking['subtotal']}}
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-2">
                                 <i class="fas fa-money-bill"></i> Downpayment Fee(10%):
                             </div>
-                            <div class="col">
+                            <div class="col-2">
                                 @php
                                     $downpayment = $booking['subtotal'] * 0.10;
                                 @endphp 
@@ -197,7 +205,7 @@
                     </div>
                     <div class="col-md-12 text-center" style="border-left: 1px solid Silver; font-size: 18px">
                         Vehicles Assigned
-                        <p style="font-size: 14px">You can view more details in the email we sent you</p>
+                        <p style="font-size: 14px;font-weight:400">You can view more details in the email we sent you</p>
                         <div class="row">
                             <div class="col-md-12">
                                 @if(isset($vehiclesAssigned))
@@ -223,9 +231,9 @@
                                                         <h5 class="card-title" style="font-weight:700;font-size:25px">{{ $vName }}</h5> <hr>
                                                         <p class="card-text" style="text-align: left;font-weight:400">
                                                             <strong>Plate Number:</strong> {{ $vPlate }}<br>
-                                                            <strong>Passenger Capacity:</strong> {{ $vPax }}<br>
+                                                            <strong>Maximum Capacity:</strong> {{ $vPax }}<br>
                                                             <strong>Year Model:</strong> {{ $vModel }}<br>
-                                                            <strong>Color:</strong> {{ $vColor }}
+                                                            <strong>Color:</strong> {{ $vColor }} <br>
                                                         </p>
                                                     </div>
                                                 </div>

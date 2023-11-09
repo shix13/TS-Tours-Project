@@ -6,7 +6,7 @@
 
 @section('content')
 
-
+<br><br>
 
       
 @if($errors->any())

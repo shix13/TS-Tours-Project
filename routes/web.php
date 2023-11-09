@@ -121,6 +121,7 @@ Route::prefix('employee')->group(function(){
         Route::delete('/vehicle-types/{vehicle_type}', [VehicleController::class, 'VtypeDestroy'])->name('vehicleTypes.destroy');
         Route::get('/vehicle-types/{vehicle_type}/edit', [VehicleController::class, 'VtypeEdit'])->name('vehicleTypes.edit');
         Route::put('/vehicles-types/{vehicle_type}', [VehicleController::class, 'VtypeUpdate'])->name('vehiclesTypes.update');
+        Route::get('/vehicles/{id}/update/{status}', [VehicleController::class, 'updateStatus'])->name('vehicles.updateStatus');
 
 
     //--Tariffs
