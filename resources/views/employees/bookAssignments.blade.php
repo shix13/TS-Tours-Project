@@ -37,12 +37,6 @@
                     @endphp
 
                     {{ $numberOfDays }} {{ $daysLabel }}
-
-                
-                
-                
-                        <br>
-                    <strong><i class="fas fa-sticky-note"></i> Notes:</strong> {{ $pendingBooking->note }}
                     
                 </div>
                 <div class="col-md-6">
@@ -50,6 +44,15 @@
                     <strong><i class="fas fa-user"></i> Customer Name:</strong> {{ $pendingBooking->cust_first_name }} {{ $pendingBooking->cust_last_name }}<br>
                     <strong><i class="fas fa-envelope"></i> Email:</strong> {{ $pendingBooking->cust_email }}<br>
                     <strong><i class="fas fa-mobile-alt"></i> Mobile Number:</strong> {{ $pendingBooking->mobileNum }}<br>       
+                </div>
+            </div>
+        
+            <hr/>
+
+            <div class="row">
+                <div class="col">
+                <strong><i class="fas fa-users"></i> Pax:</strong> {{ $pendingBooking->pax }}<br>
+                    <strong><i class="fas fa-sticky-note"></i> Notes:</strong> {{ $pendingBooking->note }}
                 </div>
             </div>
         </div>
