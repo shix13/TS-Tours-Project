@@ -123,26 +123,34 @@
                     <div class="modal-body">
                     <div class="container">
                         <div class="row mx-auto">
-                        @foreach($availableVehicles as $vehicle)
-                            <div class="col-md-4 mb-4" id="{{ $vehicle->unitID }}" data-identifier="{{ $vehicle->unitID }}">
-                                <div class="vehicle-card" data-vehicle="{{ json_encode($vehicle) }}">
-                                    <!--div class="row g-0"-->
-                                    <div style="height: 100px; overflow: hidden; margin: 0 auto;">
-                                        <img src="{{ asset('storage/' . $vehicle->pic) }}" class="card-img-top" style="width: 100%; height: 100%; object-fit: cover;" alt="Vehicle Image">
+                            @if(!($availableVehicles->isEmpty()))
+                                @foreach($availableVehicles as $vehicle)
+                                    <div class="col-md-4 mb-4" id="{{ $vehicle->unitID }}" data-identifier="{{ $vehicle->unitID }}">
+                                        <div class="vehicle-card" data-vehicle="{{ json_encode($vehicle) }}">
+                                            <!--div class="row g-0"-->
+                                            <div style="height: 100px; overflow: hidden; margin: 0 auto;">
+                                                <img src="{{ asset('storage/' . $vehicle->pic) }}" class="card-img-top" style="width: 100%; height: 100%; object-fit: cover;" alt="Vehicle Image">
+                                            </div>
+                                            <div class="card-body">
+                                                <h5 class="card-title" style="text-align:center;"><b>{{ $vehicle->unitName }}</b></h5>
+                                                <p class="card-text">
+                                                    Vehicle Type: {{ $vehicle->vehicleType->vehicle_Type }} <br/>
+                                                    License No.: {{ $vehicle->registrationNumber }} <br/>
+                                                    Capacity: {{ $vehicle->pax }}<br/>
+                                                    Year Model: {{ $vehicle->yearModel }}<br/>
+                                                    Color: {{ $vehicle->color }}<br/>
+                                                </p>
+                                            </div>    
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title" style="text-align:center;"><b>{{ $vehicle->unitName }}</b></h5>
-                                        <p class="card-text">
-                                            Vehicle Type: {{ $vehicle->vehicleType->vehicle_Type }} <br/>
-                                            License No.: {{ $vehicle->registrationNumber }} <br/>
-                                            Capacity: {{ $vehicle->pax }}<br/>
-                                            Year Model: {{ $vehicle->yearModel }}<br/>
-                                            Color: {{ $vehicle->color }}<br/>
-                                        </p>
-                                    </div>    
-                                </div>
-                            </div>
-                        @endforeach
+                                @endforeach
+                            @else
+                                <div class="col">
+                                    <p>
+                                        There are no available vehicles for this booking!
+                                    </p>
+                                </div>    
+                            @endif
                         </div>
                     </div>
                     </div>
