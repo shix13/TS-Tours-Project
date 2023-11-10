@@ -100,10 +100,10 @@
                 </div>
                 
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#assignmentModal">
-                    <i class="fa-solid fa-plus"></i>Add Fleet
+                    <i class="fa-solid fa-plus"></i> Assign vehicle(s)
                 </button>
 
-                <button type="submit" class="btn btn-success"><i class="fa-solid fa-save"></i> Save</button>
+                <button type="submit" id="submit" class="btn btn-success" disabled><i class="fa-solid fa-save"></i> Save</button>
             </form>
         </div>
 
@@ -112,7 +112,7 @@
             <div class="modal-dialog modal-dialog-scrollable" style="max-width: 1100px; max-height: 700px;">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="assignmentModalLabel">Assign vehicles</h5>
+                        <h5 class="modal-title" id="assignmentModalLabel">Assign vehicle(s)</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -182,6 +182,7 @@
             card.style.backgroundColor = 'white'; // Deselect
         });
 
+        if(selectedVehicles.length > 0){
         const assignmentContainer = document.getElementById('fleet-assignment-container');
 
         selectedVehicles.forEach(selectedVehicle => {
@@ -191,8 +192,7 @@
         const newRow = document.createElement('div');
         newRow.className = 'col-md-4 mb-4';
         newRow.innerHTML = `
-            <label for="unitID${assignmentCount}">Vehicle</label>
-            <input name="unitID[]" id="unitID${assignmentCount}" class="form-control fleet-select fleet-dropdown" value="${selectedVehicle.unitID}" style="font-size:18px" readonly>
+            <input type="hidden" name="unitID[]" id="unitID${assignmentCount}" class="form-control fleet-select fleet-dropdown" value="${selectedVehicle.unitID}" style="font-size:18px">
             <div class="card">
                 <div style="height: 100px; overflow: hidden; margin: 0 auto;">
                     <img src="../storage/${picURL}" class="card-img-top" style="width: 100%; height: 100%; object-fit: cover;" alt="Vehicle Image">
@@ -207,7 +207,7 @@
                         Color: ${selectedVehicle.color}<br/>
                     </p>
                     <label for="empID${assignmentCount}">Driver Name</label>
-                    <select name="empID[]" id="empID${assignmentCount}" class="form-control driver-select driver-dropdown" required style="font-size:18px">
+                    <select name="empID[]" id="empID${assignmentCount}" class="form-control driver-select driver-dropdown" required style="font-size:18px" onchange="updateDriverOptions(this)">
                         <option value="" selected disabled>Select Employee</option>
                         @foreach($availableDrivers as $employee)
                             <option value="{{ $employee->empID }}">{{ $employee->firstName}} {{ $employee->lastName }}</option>
@@ -229,6 +229,11 @@
         });
 
         selectedVehicles.length=0;
+
+        }
+        else{
+            alert("Please select a vehicle first!");
+        }
     }
 
     function disableSelectedOptions(selectedVehicle) {
@@ -252,6 +257,15 @@
         // Remove the parent element from the DOM
         parentElement.parentNode.removeChild(parentElement);
 
+        // Check if there are no more elements in the fleet-assignment-container
+        const assignmentContainer = document.getElementById('fleet-assignment-container');
+        const remainingElements = assignmentContainer.getElementsByClassName('col-md-4 mb-4').length;
+
+        // If no more elements, disable the submit button
+        if (remainingElements === 0) {
+            document.getElementById('submit').disabled = true;
+        }
+
         restoreOptions(selectedVehicleID);
     }
 
@@ -265,6 +279,29 @@
         // Show the card element
         cardElement.style.display="block";
     }
+
+    $(document).on('change', '.fleet-select, .driver-select', function() {
+        updateDriverOptions(this);
+    });
+
+    function updateDriverOptions(changedDropdown) {
+        // Enable all options in fleet and driver selects
+        $('.driver-dropdown').find('option').removeClass('hidden');
+
+        // Disable selected drivers in other driver selects
+        const selectedDriverIds = Array.from(document.querySelectorAll('.driver-select')).map(select => select.value);
+        selectedDriverIds.forEach(selectedDriverId => {
+            $('.driver-dropdown').not(`[value="${selectedDriverId}"]`).find(`option[value="${selectedDriverId}"]`).addClass('hidden');
+        });
+
+        // Check if all dropdowns have a selected value other than "Select Employee"
+        const allDropdownsFilled = Array.from(document.querySelectorAll('.driver-select')).every(select => select.value !== "");
+
+        // Enable or disable the button based on the condition
+        const submitButton = document.getElementById('submit'); // Change the ID based on your actual submit button ID
+        submitButton.disabled = !allDropdownsFilled;
+    }
+
 </script>
 <script>
     /*
