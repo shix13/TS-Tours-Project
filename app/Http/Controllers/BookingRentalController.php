@@ -240,7 +240,7 @@ public function update(Request $request, $id)
     try {
         // Find the rental by ID
         $rental = Rent::find($id);
-
+        
         // Check if the rental exists
         if (!$rental) {
             return redirect()->back()->with('error', 'Rental not found.');
@@ -266,33 +266,30 @@ public function update(Request $request, $id)
         $newHours = $combinedEndDate->diffInHours($combinedStartDate);
        
         $numVehiclesAssigned = count($request->input('unitID', []));
-        
+       
         // Calculate subtotal based on changes in dates and booking type
         $subtotal = $this->processRate($booking->tariff, $combinedStartDate, $combinedEndDate, $booking->bookingType,$numVehiclesAssigned);
-        
+       
         // Calculate extra hour fees
         $extraHours = $request->input('extra_hours', 0);
         $ratePerHour = $booking->tariff->rent_Per_Hour;
-        $oldExtraHours = $rental->extra_Hours;
-
-        // Calculate the difference between the new and old extra hours
-        $extraHoursDifference = $extraHours - $oldExtraHours;
-
+       
         // Calculate the Extra Hour Fees based on the difference
-        $extraHourFees = $extraHoursDifference * $ratePerHour;
+        $extraHourFees = $extraHours * $ratePerHour;
 
         // Calculate the new total price by adding Extra Hour Fees to the Subtotal
         $newTotalPrice = max($subtotal, $subtotal + $extraHourFees);
        
+        $rental = Rent::find($id);
+      
         // Calculate the remittance total
-        $remittanceTotal = Remittance::where('rentID', $rental->id)->sum('amount');
-
+        $remittanceTotal = Remittance::where('rentID', $rental->rentID)->sum('amount');
+       
         // Calculate the new balance ensuring it doesn't go negative
         $newBalance = max(0, $newTotalPrice - ($remittanceTotal + $booking->downpayment_Fee));
         
         // Update the rental information
         $rental->update([
-            
             'rent_Period_Status' => $request->input('rental_status'),
             'extra_Hours' => $extraHours,
             'total_Price' => $newTotalPrice,
@@ -326,6 +323,12 @@ public function update(Request $request, $id)
         return redirect()->back()->with('error', 'An error occurred while updating rental information: ' . $e->getMessage());
     }
 }
+
+
+
+
+
+
 
 public function bookAssign($id)
 {
@@ -450,16 +453,16 @@ public function paymentHistory(){
 private function processRate($tariff, $startDate, $endDate, $bookingType,$numVehiclesAssigned)
 {  // dd($rate);
     // Parse the start and end dates using Carbon
-    $startDateTime = Carbon::parse($startDate);
-    $endDateTime = Carbon::parse($endDate);
-
+    $startDateTime = Carbon::parse($startDate)->startOfDay();
+    $endDateTime = Carbon::parse($endDate)->startOfDay();
+    
     // Calculate the difference in days between start and end dates
-    $diffInDays = $endDateTime->diffInDays($startDateTime);
-
+    $diffInDays = $endDateTime->diffInDays($startDateTime)+1;
+  
     if ($bookingType === 'Rent') {
         // For Rent bookings, calculate the total rate based on the daily rate
-      
-        return $tariff->rate_Per_Day * ($diffInDays + 1)* $numVehiclesAssigned; // Add 1 to include both the start and end dates
+       
+        return $tariff->rate_Per_Day * ($diffInDays)* $numVehiclesAssigned; // Add 1 to include both the start and end dates
 
     } elseif ($bookingType === 'Pickup/Dropoff') {
         // For Pickup/Dropoff bookings, the rate is already fixed, return it directly

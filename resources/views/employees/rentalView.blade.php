@@ -82,28 +82,28 @@
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
                                     <label style="color: black;"><i class="fa-solid fa-calendar-days"></i> Schedule Date</label>
-                                    <input type="date" class="form-control" name="pickup_date" value="{{ \Carbon\Carbon::parse($bookings[0]->startDate)->format('Y-m-d') }}">
+                                    <input style="color: black;background-color: white" type="date" class="form-control" name="pickup_date" value="{{ \Carbon\Carbon::parse($bookings[0]->startDate)->format('Y-m-d') }}" readonly>
                                 </div>
                             </div>
 
                             <div class="col-md-3 pl-1">
                                 <div class="form-group">
                                     <label style="color: black;"><i class="fa-regular fa-clock"></i> Pick-Up Time</label>
-                                    <input type="time" class="form-control" name="pickup_time" value="{{ \Carbon\Carbon::parse($bookings[0]->startDate)->format('H:i') }}">
+                                    <input style="color: black;background-color: white" type="time" class="form-control" name="pickup_time" value="{{ \Carbon\Carbon::parse($bookings[0]->startDate)->format('H:i') }}" readonly>
                                 </div>
                             </div>
 
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
                                     <label style="color: black;"><i class="fa-solid fa-calendar"></i> Drop-Off Date</label>
-                                    <input type="date" class="form-control" name="dropoff_date" value="{{ \Carbon\Carbon::parse($bookings[0]->endDate)->format('Y-m-d') }}">
+                                    <input style="color: black;background-color: white" type="date" class="form-control" name="dropoff_date" value="{{ \Carbon\Carbon::parse($bookings[0]->endDate)->format('Y-m-d') }}" readonly>
                                 </div>
                             </div>
 
                             <div class="col-md-3 pl-1">
                                 <div class="form-group">
                                     <label style="color: black;"><i class="fa-solid fa-clock"></i> Drop-Off Time</label>
-                                    <input type="time" class="form-control" name="dropoff_time" value="{{ \Carbon\Carbon::parse($bookings[0]->endDate)->format('H:i') }}">
+                                    <input style="color: black;background-color: white" type="time" class="form-control" name="dropoff_time" value="{{ \Carbon\Carbon::parse($bookings[0]->endDate)->format('H:i') }}" readonly>
                                 </div>
                             </div>
                         </div>
@@ -179,7 +179,7 @@
                                            Ongoing
                                         </option>
                                         <option value="Completed" {{ $rents[0]->rent_Period_Status === 'Completed' ? 'selected' : '' }}>
-                                             Complete
+                                             Completed
                                         </option>
                                         <option value="Cancelled" {{ $rents[0]->rent_Period_Status === 'Cancelled' ? 'selected' : '' }}>
                                              Cancelled
