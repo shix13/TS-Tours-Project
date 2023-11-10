@@ -6,6 +6,14 @@
 
 @section('content')
 <div class="container">
+    @if($balance !== null)
+    <div class="alert alert-info">
+        Reserve ID: {{ $reserveID }} |
+        Balance: ₱{{ $balance }}
+    </div>
+@endif
+
+
     
     @if($activeTask)
     <div class="container" style="text-align:center; color:white;">

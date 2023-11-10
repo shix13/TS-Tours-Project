@@ -20,7 +20,8 @@ class DriverController extends Controller
     */
     public function showActive(){
         $driverID = Auth::user()->empID;
-        
+        $balance = session()->has('balance') ? session('balance') : null;
+        $reserveID = session()->has('reserveID') ? session('reserveID') : null;
         /*
         $assignments = VehicleAssigned::where('empID', $driverID)
             ->whereHas('rent', function($query){
@@ -44,7 +45,7 @@ class DriverController extends Controller
             }])
             ->first();
 
-        return view('drivers.activeTasks', compact('activeTask', 'driverID'));
+            return view('drivers.activeTasks', compact('activeTask', 'driverID', 'balance', 'reserveID'));
     }
 
     public function showUpcoming(){
@@ -149,7 +150,8 @@ class DriverController extends Controller
         'balance' => $balance,
     ]);  
 
-    return redirect()->route('driver.active');
+    return redirect()->route('driver.active')->with(['balance' => $balance, 'reserveID' => $rent->reserveID]);
+
 }
 
     
