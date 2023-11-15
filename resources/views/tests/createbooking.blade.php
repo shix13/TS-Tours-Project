@@ -52,7 +52,14 @@
                     <div class="col" >
                         <select id="location" name="location" style="width: 100%;padding:5px">
                             @foreach($tariffData as $t)
-                            <option data-booking-types="{{ json_encode($t->booking_types) }}" data-rate-per-day="{{ $t->rate_Per_Day }}" data-do-pu="{{ $t->do_pu }}" value="{{ $t->location }}">{{ $t->location }}</option>
+                                <option data-booking-types="{{ json_encode($t->booking_types) }}" 
+                                    data-rate-per-day="{{ $t->rate_Per_Day }}" 
+                                    data-rentPerDayHrs="{{ $t->rentPerDayHrs }}"
+                                    data-rent-per-hour="{{ $t->rent_Per_Hour }}"
+                                    data-do-pu="{{ $t->do_pu }}" 
+                                    data-location="{{ $t->location }}"
+                                    value="{{ $t->location }}">
+                                {{ $t->location }}</option>
                             @endforeach
                         </select>                        
                     </div>
@@ -76,6 +83,21 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="container1">
+                    <div id="location-info">
+                        <div class="row"> 
+                            <div class="col">
+                                <h6>Pricing Info</h6>
+                            </div>
+                        </div>
+                        <div class="row"> 
+                            <div class="col">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="container1">
                     <div class="row"> 
                         <div class="col">
@@ -178,7 +200,7 @@
 @endsection
 
 @include('customers.termsModal')
-
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
@@ -362,6 +384,73 @@
             });
         }
     }
+
+    $(document).ready(function () {
+        
+        // Attach change event handler to the location dropdown
+        $('#location').change(updateLocationInfo);
+
+        document.querySelectorAll('input[name="bookingType"]').forEach(function(radioButton) {
+            radioButton.addEventListener('change', updateLocationInfo);
+        });
+        
+        // Trigger the change event on page load
+        updateLocationInfo();
+
+        // Function to update information based on the selected location
+        function updateLocationInfo() {
+            //Get the selected booking type
+            const selectedType = document.querySelector('input[name="bookingType"]:checked').value;
+            console.log(selectedType);
+
+            // Get the selected location
+            const selectedLocation = $('option:selected', '#location');
+
+            // Extract data attributes
+            const location = selectedLocation.data('location');
+            const ratePerDay = selectedLocation.data('rate-per-day');
+            const hours = selectedLocation.data('rentperdayhrs');
+            const rateExtra = selectedLocation.data('rent-per-hour');
+
+            const doPu = selectedLocation.data('do-pu');
+
+            if(selectedType == 'Rent') {
+                // Update the information
+                $('#location-info').html(`
+                    <div class="row"> 
+                        <div class="col">
+                            <h6>Pricing Info (${location})</h6>
+                        </div>
+                    </div>
+                    <div class="row"> 
+                        <div class="col">
+                            Rate Per Day (${hours} hours): ${ratePerDay} <br>
+                            Succeeding Rate Per Hour: ${rateExtra} <br>
+                        </div>
+                    </div>
+                `);
+            }
+            else if(selectedType == 'Pickup/Dropoff') {
+                // Update the information
+                $('#location-info').html(`
+                    <div class="row"> 
+                        <div class="col">
+                            <h6>Pricing Info (${location})</h6>
+                        </div>
+                    </div>
+                    <div class="row"> 
+                        <div class="col">
+                            Dropoff/Pickup Rate: ${doPu}
+                        </div>
+                    </div>
+                `);
+            }
+            /*else{
+                console.log('Yawa');
+            }*/
+        }
+    });
+    
 </script>
 
 
