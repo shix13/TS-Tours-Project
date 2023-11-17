@@ -15,7 +15,7 @@
 
     <hr>
 
-    <div class="row mx-auto text-center">
+    <div class="row mx-auto text-center justify-content-center">
         @foreach($vehicleTypes as $v)
         <div class="col-md-3 mb-4">
             <div class="vehicle-card" data-id="{{ $v->vehicle_Type_ID }}" style="border-radius:10px; background-color:white;">

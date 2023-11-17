@@ -91,7 +91,7 @@ class DriverController extends Controller
         return redirect()->route('driver.active');
     }
 
-    public function completeRent(Request $request)
+public function completeRent(Request $request)
 {
     $rentID = $request->input('rentID');
 
@@ -135,14 +135,38 @@ class DriverController extends Controller
     // Calculate extra hours
     $extraHours = max(0, $hoursRented - $totalExpectedHours);
 
+
+    //dd($hoursRented, $numberOfDays, $totalExpectedHours, $extraHours, $extraHoursFee, $booking, $tariff, $rent, $request);
+    
+    //I honeslty have no idea what the fuck is going on with my calculation na
+    /*
+        Get ang tenths place diba? Kai if the extra hours go beyond 10, use the rate_per_day. 
+        Pero like what if beyond 10? If 11 ang extra hours so ang first 10 is gigamit rate_per_day
+        and then that 1 extra hour just uses rent_per_hour? What if 22 hours, so first 10 is rate_per_day
+        then next 10 is another rate_per_day. So 20 na, then the 2 is just rent_per_hour?
+    */
+    $extraHours = 37;
+    $tenths = floor($extraHours / 10) * 10; //floor(37/10) = 3; 3 * 10 = 30 
+    $tenHours = $tenths/10; //30/10 = 3;
+
+    $extraHoursFee = $tenHours * $tariff->rate_Per_Day; //3 * 5000 = 15000;
+
+    $ones = $extraHours % 10; //37 % 10 = 7;
+
+    $extraHoursFee += ($ones * $tariff->rent_Per_Hour); //15000 + (7 * 500)
+
     // Calculate extra hours fee
-    $extraHoursFee = $extraHours * $tariff->rent_Per_Hour;
- //   dd($hoursRented, $numberOfDays, $totalExpectedHours, $extraHours, $extraHoursFee, $booking, $tariff, $rent, $request);
+    //$extraHoursFee = $extraHours * $tariff->rent_Per_Hour;
+
     // Update rent status and extra hours fee
     $totalPrice = $booking->subtotal + $extraHoursFee;
+
+    dd($booking->subtotal, $tariff->rent_Per_Hour, $extraHoursFee, $totalPrice);
+
     $balance = $totalPrice - $booking->downpayment_Fee - Remittance::where('rentID', $rent->rentID)->sum('amount');
   
-    
+    dd($tensPlace, $onesPlace);
+
     $rent->update([
         'rent_Period_Status' => 'Completed',
         'extra_Hours' => $extraHours,
