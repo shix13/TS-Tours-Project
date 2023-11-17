@@ -30,59 +30,64 @@ class TestController extends Controller
 
     public function proceedBooking(Request $request){
         $selectedVehicleTypes = $request->input('selectedVehicleTypes');
-
+    
         // Convert the comma-separated string to an array
         $selectedVehicleTypes = explode(',', $selectedVehicleTypes);
-
-        //dd($selectedVehicleTypes);
+    
         $vehicleTypes = [];
-
+        $smallestPaxCounts = [];
+    
         foreach ($selectedVehicleTypes as $selectedType) {
-            $i = 0;
-            $vehicleType = VehicleType::find($selectedType[$i]); // Assuming your model is named VehicleType
+            $vehicleType = VehicleType::find($selectedType); // Assuming your model is named VehicleType
             if ($vehicleType) {
                 $vehicleTypes[] = $vehicleType;
+    
+                // Get the smallest pax count for the current vehicle type directly from the database
+                $smallestPaxCount = Vehicle::where('vehicle_Type_ID', $vehicleType->vehicle_Type_ID)->min('pax');
+                $smallestPaxCounts[$vehicleType->vehicle_Type_ID] = $smallestPaxCount; 
             }
-            $i++;
         }
 
         $tariffData = Tariff::all();
-        return view('tests.createbooking', compact('vehicleTypes', 'tariffData'));
+        return view('tests.createbooking', compact('vehicleTypes', 'tariffData', 'smallestPaxCounts'));
     }
+    
+    
 
-    public function processBooking(Request $request){
+    public function processBooking(Request $request)
+    {
+        // Validate your request as needed...
+
         $location = $request->input('location');
         $tariff = Tariff::where('location', 'LIKE', "%{$location}%")->first();
-    
+
         if (!$tariff) {
             return redirect()->back()->with('error', 'Tariff not found for the specified location.');
         }
-    
+
         $bookingType = $request->input('bookingType');
         $startDate = $request->input('StartDate');
         $pickupTime = $request->input('PickupTime');
         $numVehiclesAssigned = 0;
+
         foreach ($request->input('TypeQuantity') as $vehicleTypeId => $quantity) {
             $numVehiclesAssigned += $quantity;
         }
 
-        //dd($numVehiclesAssigned);
-
         if ($bookingType === 'Rent') {
             $tariffRate = $tariff->rate_Per_Day;
             $endDate = $request->input('EndDate');
-    
+
             $startDateTime = Carbon::parse($startDate . ' ' . $pickupTime);
             $endDateTime = Carbon::parse($endDate . ' ' . $pickupTime);
-    
+
             $diffInDays = $endDateTime->diffInDays($startDateTime);
             $endTime = $startDateTime->copy()->addDays($diffInDays)->addHours($tariff->rentPerDayHrs);
-            
+
             $formattedStartDate = $startDateTime->format('Y-m-d H:i:s');
             $formattedEndDate = $endTime->format('Y-m-d H:i:s');
-    
-            $subtotal = $this->processRate($tariffRate, $startDate, $endDate, $numVehiclesAssigned);
 
+            $subtotal = $request->input('subtotalInput');
         } elseif ($bookingType === 'Pickup/Dropoff') {
             $subtotal = $tariff->do_pu;
             $endDate = $startDate; // Assuming same start and end date for Pickup/Dropoff
@@ -91,9 +96,9 @@ class TestController extends Controller
         } else {
             return redirect()->back()->with('error', 'Invalid booking type.');
         }
-    
+
         $downpayment = 0; // Calculate downpayment logic can be added here if needed
-    
+
         $booking = new Booking([
             'cust_first_name' => $request->input('FirstName'),
             'cust_last_name' => $request->input('LastName'),
@@ -109,23 +114,25 @@ class TestController extends Controller
             'status' => 'Pending',
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate,
+            // Include other necessary attributes here...
         ]);
-    
+
         $booking->save();
-    
+
         // Process vehicle types booked (assuming 'TypeQuantity' is an array of vehicle type IDs and quantities)
         foreach ($request->input('TypeQuantity') as $vehicleTypeId => $quantity) {
             $vehicleTypeBooked = new VehicleTypeBooked([
                 'vehicle_Type_ID' => $vehicleTypeId,
                 'quantity' => $quantity,
                 'reserveID' => $booking->reserveID,
+                // Include other necessary attributes here...
             ]);
             $vehicleTypeBooked->save();
         }
-    
+
         // Send booking confirmation email
         Mail::to($booking->cust_email)->send(new BookingConfirmation($booking->toArray()));
-    
+
         return redirect()->route('checkbookingstatus', ['booking' => $booking])->with('success', 'Your booking details have been saved successfully');
     }
     
