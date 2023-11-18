@@ -130,7 +130,12 @@ class TestController extends Controller
         }
 
         // Send booking confirmation email
-        Mail::to($booking->cust_email)->send(new BookingConfirmation($booking->toArray()));
+        try {
+            Mail::to($booking->cust_email)->send(new BookingConfirmation($booking->toArray()));
+        } catch (\Exception $e) {
+           
+            return redirect()->back()->with('error', 'An error occurred while sending the booking confirmation email.');
+        }
 
         return redirect()->route('checkbookingstatus', ['booking' => $booking])->with('success', 'Your booking details have been saved successfully');
     }

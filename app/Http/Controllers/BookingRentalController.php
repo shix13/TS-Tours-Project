@@ -254,51 +254,10 @@ public function update(Request $request, $id)
             return redirect()->back()->with('error', 'Booking not found.');
         }
 
-        // Combine pickup_date and pickup_time into a single datetime string
-        $pickupDateTime = $request->input('pickup_date') . ' ' . $request->input('pickup_time');
-        $combinedStartDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $pickupDateTime);
-
-        // Combine dropoff_date and dropoff_time into a single datetime string
-        $dropoffDateTime = $request->input('dropoff_date') . ' ' . $request->input('dropoff_time');
-        $combinedEndDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $dropoffDateTime);
-
-        // Calculate the difference in hours between the new start and end dates
-        $newHours = $combinedEndDate->diffInHours($combinedStartDate);
-       
-        $numVehiclesAssigned = count($request->input('unitID', []));
-       
-        // Calculate subtotal based on changes in dates and booking type
-        $subtotal = $this->processRate($booking->tariff, $combinedStartDate, $combinedEndDate, $booking->bookingType,$numVehiclesAssigned);
-       
-        // Calculate extra hour fees
-        $extraHours = $request->input('extra_hours', 0);
-        $ratePerHour = $booking->tariff->rent_Per_Hour;
-       
-        // Calculate the Extra Hour Fees based on the difference
-        $extraHourFees = $extraHours * $ratePerHour;
-
-        // Calculate the new total price by adding Extra Hour Fees to the Subtotal
-        $newTotalPrice = max($subtotal, $subtotal + $extraHourFees);
-       
-        $rental = Rent::find($id);
-      
-        // Calculate the remittance total
-        $remittanceTotal = Remittance::where('rentID', $rental->rentID)->sum('amount');
-       
-        // Calculate the new balance ensuring it doesn't go negative
-        $newBalance = max(0, $newTotalPrice - ($remittanceTotal + $booking->downpayment_Fee));
-        
-        // Update the rental information
         $rental->update([
             'rent_Period_Status' => $request->input('rental_status'),
-            'extra_Hours' => $extraHours,
-            'total_Price' => $newTotalPrice,
-            'balance' => $newBalance,
         ]);
         
-        $booking->update([
-            'subtotal' => $subtotal,
-        ]);
 
         // Update vehicles assigned based on reserveID
         $unitIDs = $request->input('unitID', []); // Provide an empty array as default
@@ -405,32 +364,38 @@ public function bookAssign($id)
 
 
 public function storeAssigned(Request $request){
-    $unitIDs = $request->input('unitID');
-    $empIDs = $request->input('empID');
-    $reserveID = $request->input('reserveID');
-    
-    foreach($unitIDs as $i => $unitID){
-        VehicleAssigned::create([
-            'unitID' => $unitID,
-            'empID' => $empIDs[$i],
-            'reserveID' => $reserveID,
-        ]);
+    try {
+        $unitIDs = $request->input('unitID');
+        $empIDs = $request->input('empID');
+        $reserveID = $request->input('reserveID');
+        
+        foreach($unitIDs as $i => $unitID){
+            VehicleAssigned::create([
+                'unitID' => $unitID,
+                'empID' => $empIDs[$i],
+                'reserveID' => $reserveID,
+            ]);
+        }
+
+        $booking = Booking::where('reserveID', $reserveID)->first();
+        if ($booking) {
+            $customerFirstName = $booking->cust_first_name;
+            $customerLastName = $booking->cust_last_name;
+            $booking->update([
+                'status' => 'Pre-approved',
+            ]);
+            // Send email notification to customer
+            Mail::to($booking->cust_email)->send(new BookingConfirmationMail($reserveID, $customerFirstName, $customerLastName));
+        }
+
+        return redirect()->route('employee.booking')->with('success', 'Vehicles assigned successfully.');
+
+    } catch (\Exception $e) {
+        // Log the exception or handle it as appropriate for your application
+        return redirect()->route('employee.booking')->with('error', 'An error occurred while assigning vehicles.');
     }
-
-    $booking = Booking::where('reserveID', $reserveID)->first();
-    if ($booking) {
-        $customerFirstName = $booking->cust_first_name;
-        $customerLastName = $booking->cust_last_name;
-        $booking->update([
-            'status' => 'Pre-approved',
-        ]);
-        // Send email notification to customer
-        Mail::to($booking->cust_email)->send(new BookingConfirmationMail($reserveID, $customerFirstName, $customerLastName));
-
-    }
-
-    return redirect()->route('employee.booking')->with('success', 'Vehicles assigned successfully.');
 }
+
 
 public function preApproved(){
     

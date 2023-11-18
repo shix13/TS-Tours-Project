@@ -72,10 +72,17 @@ class RemittanceController extends Controller
     $rentData = Rent::find($data['rent']);
     $bookingData = $rentData->booking;
    // dd($bookingData->cust_email);
-if ($rentData->balance <= $data['amount']) {
+   if ($rentData->balance <= $data['amount']) {
     $rentData->payment_Status = 'Paid';
-    Mail::to($email)->send(new FeedbackEmail($bookingData,$rentData)); 
+
+    try {
+        Mail::to($email)->send(new FeedbackEmail($bookingData, $rentData));
+    } catch (\Exception $e) {
+        // Log the exception or handle it as appropriate for your application
+        return redirect()->back()->with('error', 'An error occurred while sending the email.');
+    }
 }
+
 
 $rentData->balance -= $data['amount'];
 $rentData->save();

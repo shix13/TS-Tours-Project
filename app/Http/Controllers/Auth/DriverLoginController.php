@@ -41,7 +41,8 @@ class DriverLoginController extends Controller
         ]);
           
         $credentials = $request->only('mobileNum', 'password');
-        $credentials['accountType'] = 'driver';
+       $credentials['accountType'] = ['Driver', 'Driver Outsourced'];
+
 
         if (Auth::guard('driver')->attempt($credentials)) {
             return redirect()->route('driver.active');

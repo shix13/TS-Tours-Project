@@ -171,14 +171,14 @@
                                     <label style="color: black;">
                                         <i class="fas fa-calendar-alt"></i> Rental Status
                                     </label>
-                                    <select class="form-control" name="rental_status">
+                                    <select class="form-control" name="rental_status" required>
                                         <option value="Scheduled" {{ $rents[0]->rent_Period_Status === 'Scheduled' ? 'selected' : '' }}>
                                              Scheduled
                                         </option>
                                         <option value="Ongoing" {{ $rents[0]->rent_Period_Status === 'Ongoing' ? 'selected' : '' }}>
                                            Ongoing
                                         </option>
-                                        <option value="Completed" {{ $rents[0]->rent_Period_Status === 'Completed' ? 'selected' : '' }}>
+                                        <option value="" {{ $rents[0]->rent_Period_Status === 'Completed' ? 'selected' : '' }}>
                                              Completed
                                         </option>
                                         <option value="Cancelled" {{ $rents[0]->rent_Period_Status === 'Cancelled' ? 'selected' : '' }}>
@@ -202,9 +202,9 @@
                             <div class="col-md-3 pr-1">
                                 <div class="form-group">
                                     <label style="color: black;">
-                                        <i class="fa-solid fa-hourglass-half"></i> Extra Hours
+                                        <i class="fa-solid fa-hourglass-half"></i> Total Hours
                                     </label>
-                                    <input id="extra_hours" type="number" class="form-control" min="0" name="extra_hours" min='0' value="{{ $rents[0]->extra_Hours ?? 0 }}">
+                                    <input style="color: black;background-color: rgb(255, 255, 255)" id="extra_hours" type="number" class="form-control" min="0" name="extra_hours" min='0' value="{{ $rents[0]->extra_Hours ?? 0 }}" readonly>
                                 </div>
                             </div>      
                             
@@ -238,15 +238,6 @@
                             </div>
                         
                             <div class="col-md-3 pr-1">
-                                <div class="form-group">
-                                    <label style="color: black;">
-                                        <i class="fa-solid fa-money-check-dollar"></i> Extra Hour Fees
-                                    </label>
-                                    <input style="color: black;background-color: rgb(255, 255, 255)" id='compute' type="text" class="form-control" value="₱ 0" readonly>
-                                </div>
-                            </div>
-                        
-                            <div class="col-md-3 pl-1">
                                 <div class="form-group">
                                     <label style="color: black;">
                                         <i class="fa-solid fa-dollar-sign"></i> Balance
@@ -335,34 +326,5 @@
     function goBack() {
     window.location.href = "{{ route('employee.rental') }}";
 }
-
-    document.addEventListener('DOMContentLoaded', function () {
-    // Get the input fields and add event listeners for input changes
-    const extraHoursInput = document.getElementById('extra_hours');
-    const ratePerHour = parseFloat('{{ $bookings[0]->tariff->rent_Per_Hour }}') || 0;
-    const computeInput = document.getElementById('compute');
-
-    // Update the values when the page loads
-    updateValues();
-
-    // Add input event listener
-    extraHoursInput.addEventListener('input', updateValues);
-
-    function updateValues() {
-        // Get the value of extra hours input
-        const extraHours = parseFloat(extraHoursInput.value) || 0;
-        
-        // Calculate the extra hour fees based on rate per hour and extra hours
-        const extraHourFees = extraHours * ratePerHour;
-        
-        // Display the calculated fees in the 'compute' input field
-        computeInput.value = '₱ ' + extraHourFees.toFixed(2);
-        
-        // Log the result to the console for debugging
-        console.log('Script is running');
-    }
-});
-
-
 </script>
 @endsection
