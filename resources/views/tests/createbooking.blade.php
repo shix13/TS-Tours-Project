@@ -25,6 +25,19 @@
                         </div>
                     </div>
                 </div>
+
+                @foreach ($vehicleTypes as $vehicleType)
+                <br>
+                    @php
+                        $quantityInputName = "TypeQuantity[$vehicleType->vehicle_Type_ID]";
+                        $smallestPaxCount = $smallestPaxCounts[$vehicleType->vehicle_Type_ID] ?? 0;
+                    @endphp
+                    
+                    <input type="hidden" name="{{ $quantityInputName }}_minPax" value="{{ $smallestPaxCount }}">
+                    
+                @endforeach
+                <input  type="hidden" name="countVtype" id="countVtype" value="{{ count($vehicleTypes) }}"> 
+                <input type="hidden" name="Paxcounter" id="Paxcounter" >
                 
                 <div class="row">
                     <div class="col">
@@ -41,7 +54,7 @@
                     </div>
                     <div class="col" style="padding: 5px;">
                         <input type="number" name="TypeQuantity[{{ $vehicleType->vehicle_Type_ID }}]" value="1" min="1" class="quantity-input">
-                    </div>                    
+                    </div>                                     
                 </div>
                 @endforeach
                 <div id="recommendation"></div>
@@ -95,18 +108,7 @@
                 <div class="col">
                     Pax
                     <input type="number" name="Pax" id="Pax" min="1" required> 
-                    @foreach ($vehicleTypes as $vehicleType)
-                    <br>
-                        @php
-                            $quantityInputName = "TypeQuantity[$vehicleType->vehicle_Type_ID]";
-                            $smallestPaxCount = $smallestPaxCounts[$vehicleType->vehicle_Type_ID] ?? 0;
-                        @endphp
-                        
-                        <input type="hidden" name="{{ $quantityInputName }}_minPax" value="{{ $smallestPaxCount }}">
-                        
-                    @endforeach
-                    <input  type="hidden" name="countVtype" id="countVtype" value="{{ count($vehicleTypes) }}"> 
-                    <input type="hidden" name="Paxcounter" id="Paxcounter" >
+                  
                 </div>
                 <hr>
             
@@ -315,6 +317,7 @@
 
         function calculateSubtotal() {
     if (validateInputs()) {
+      
         var bookingType = document.querySelector('input[name="bookingType"]:checked').value;
         const ratePerDayInput = document.getElementById('rate_Per_Day');
         const rentPerHourInput = document.getElementById('rent_Per_Hour');
@@ -639,6 +642,7 @@
             updatePaxCounter();
         });
         document.getElementById('Pax').addEventListener('input', updatePaxCounter);
+       
         @foreach ($vehicleTypes as $vehicleType)
         @php
         $quantityInputName = "TypeQuantity[$vehicleType->vehicle_Type_ID]";

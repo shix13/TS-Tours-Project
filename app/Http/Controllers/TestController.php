@@ -57,7 +57,6 @@ class TestController extends Controller
     public function processBooking(Request $request)
     {
         // Validate your request as needed...
-
         $location = $request->input('location');
         $tariff = Tariff::where('location', 'LIKE', "%{$location}%")->first();
 
