@@ -8,7 +8,7 @@
 <div class="container">
     @if($balance !== null)
     <div class="alert alert-info">
-        Reserve ID: {{ $reserveID }} |
+        Booking ID: {{ $reserveID }} |
         Balance: ₱{{ $balance }}
     </div>
 @endif

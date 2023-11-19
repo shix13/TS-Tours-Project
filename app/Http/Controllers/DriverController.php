@@ -107,7 +107,7 @@ public function completeRent(Request $request)
 
     // Get the associated booking
     $booking = $rent->booking;
-
+    
     // Get the associated tariff
     $tariff = $booking->tariff;
 
@@ -125,14 +125,13 @@ public function completeRent(Request $request)
     $currentDateTime = Carbon::now();
     $hoursRented = $currentDateTime->diffInHours($booking->startDate);
 
-    // Calculate extra hours
-    $totalHours = max(0, $hoursRented);
     $tariffID = $rent->booking->tariffID;
-  
     $tariff = Tariff::where('tariffID', $tariffID)->first();
-  
+    $totalHours = max(0, $hoursRented);
+
+    if ($booking->bookingType == 'Rent'){
+    // Calculate extra hours
     $tenths = floor($totalHours /  $tariff->rentPerDayHrs);
-   
   
     $Fee = $tenths * $tariff->rate_Per_Day; 
 
@@ -140,12 +139,21 @@ public function completeRent(Request $request)
   
     $extraHoursFee = ($extraHours * $tariff->rent_Per_Hour); 
    
-   
     // Update rent status and extra hours fee
     $totalPrice = $Fee + $extraHoursFee;
-
+        
+    }else{
+        $totalPrice= $tariff->do_pu;
+    }
     $balance = $totalPrice - $booking->downpayment_Fee - Remittance::where('rentID', $rent->rentID)->sum('amount');
-  
+ 
+    if ($balance == 0){
+        $rent->update([
+            'payment_Status' => 'Paid'
+        ]);
+
+    }
+
     $rent->update([
         'rent_Period_Status' => 'Completed',
         'extra_Hours' => $totalHours,
