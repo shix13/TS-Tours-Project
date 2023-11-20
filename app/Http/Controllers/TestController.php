@@ -55,7 +55,7 @@ class TestController extends Controller
     
 
     public function processBooking(Request $request)
-    {
+    {  
         // Validate your request as needed...
         $location = $request->input('location');
         $tariff = Tariff::where('location', 'LIKE', "%{$location}%")->first();
@@ -67,6 +67,21 @@ class TestController extends Controller
         $bookingType = $request->input('bookingType');
         $startDate = $request->input('StartDate');
         $pickupTime = $request->input('PickupTime');
+
+        $startDateTime = Carbon::parse($startDate . ' ' . $pickupTime);
+        $formattedStartDate = $startDateTime->format('Y-m-d H:i:s');
+
+        $EndDate = $request->input('EndDate');
+
+        // Create a DateTime object from the string
+        $endTime = new \DateTime($EndDate);
+
+        // Set time to 12:00:00 PM
+        $endTime->setTime(12, 0, 0);
+
+        $formattedEndDate = $endTime->format('Y-m-d H:i:s');
+
+       
         $numVehiclesAssigned = 0;
 
         foreach ($request->input('TypeQuantity') as $vehicleTypeId => $quantity) {
@@ -74,28 +89,15 @@ class TestController extends Controller
         }
 
         if ($bookingType === 'Rent') {
-            $tariffRate = $tariff->rate_Per_Day;
-            $endDate = $request->input('EndDate');
-
-            $startDateTime = Carbon::parse($startDate . ' ' . $pickupTime);
-            $endDateTime = Carbon::parse($endDate . ' ' . $pickupTime);
-
-            $diffInDays = $endDateTime->diffInDays($startDateTime);
-            $endTime = $startDateTime->copy()->addDays($diffInDays)->addHours($tariff->rentPerDayHrs);
-
-            $formattedStartDate = $startDateTime->format('Y-m-d H:i:s');
-            $formattedEndDate = $endTime->format('Y-m-d H:i:s');
-
             $subtotal = $request->input('subtotalInput');
         } elseif ($bookingType === 'Pickup/Dropoff') {
             $subtotal = $tariff->do_pu;
-            $endDate = $startDate; // Assuming same start and end date for Pickup/Dropoff
             $formattedStartDate = Carbon::parse($startDate . ' ' . $pickupTime)->format('Y-m-d H:i:s');
-            $formattedEndDate = $formattedStartDate; // Same start and end date for Pickup/Dropoff
+           
         } else {
             return redirect()->back()->with('error', 'Invalid booking type.');
         }
-
+      
         $downpayment = 0; // Calculate downpayment logic can be added here if needed
 
         $booking = new Booking([

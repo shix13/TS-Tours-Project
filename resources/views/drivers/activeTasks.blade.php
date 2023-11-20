@@ -175,7 +175,11 @@
                 <form id="completeTaskForm" method="POST" action="{{ route('driver.complete') }}">
                     @csrf
                     <input type="hidden" name="rentID" id="rentID" value="{{ $activeTask->rentID }}">
-                    <button class="btn btn-primary btn-lg btn-block" type="button" onclick="confirmCompleteTask()">Complete Task</button>
+                    <input type="hidden" name="extraHours" id="extraHoursInput">
+                    <button type="button" style="width: 100%" class="btn btn-primary" data-toggle="modal" data-target="#extraHoursModal">
+                       Complete Task
+                    </button>
+                    
                 </form>
             </div>
         </div>
@@ -183,7 +187,32 @@
     @else
         <h3 style="color: white; text-align: center">You currently have no active task</h3>
     @endif
+    <!-- Modal -->
+<!-- Modal -->
+<div class="modal fade" id="extraHoursModal" tabindex="-1" role="dialog" aria-labelledby="extraHoursModalLabel" aria-hidden="true">
+    <div class="modal-dialog justify-content-center align-items-center" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="extraHoursModalLabel">Confirm Extra Hours</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="extraHours">Enter Extra Hours:</label>
+                <input style="font-size:20px" type="number" id="extraHours" name="extraHours" class="form-control">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitFormWithExtraHours()">Confirm</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+</div>
+
+
 
 <script src="{{ asset('assets/js/core/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
@@ -251,6 +280,20 @@ function getGeolocation(){
 }
 
 window.addEventListener('load', getGeolocationOnLoad);
+
+function submitFormWithExtraHours() {
+    // Get the value of extra hours from the input field
+    var extraHours = document.getElementById('extraHours').value;
+
+    // Validate the extraHours if needed
+
+    // Set the value of extra hours in a hidden input field
+    document.getElementById('extraHoursInput').value = extraHours;
+
+    // Submit the form
+    document.querySelector('#completeTaskForm').submit();
+}
+
 
 function confirmCompleteTask() {
     if (confirm("Are you sure you want to complete the task?")) {

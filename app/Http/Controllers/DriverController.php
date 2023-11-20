@@ -95,6 +95,7 @@ class DriverController extends Controller
 public function completeRent(Request $request)
 {  
     $rentID = $request->input('rentID');
+    $Extra = $request->input('extraHours');
 
     // Find the rent
     $rent = Rent::find($rentID);
@@ -123,30 +124,30 @@ public function completeRent(Request $request)
 
     // Calculate the hours rented as of the current moment
     $currentDateTime = Carbon::now();
-    $hoursRented = $currentDateTime->diffInHours($booking->startDate);
-
+    $DaysRented = $currentDateTime->diffInDays($booking->startDate)+1;
+    
+    
     $tariffID = $rent->booking->tariffID;
     $tariff = Tariff::where('tariffID', $tariffID)->first();
-    $totalHours = max(0, $hoursRented);
+    $ExtraHours = max(0, $Extra);
 
     if ($booking->bookingType == 'Rent'){
-    // Calculate extra hours
-    $tenths = floor($totalHours /  $tariff->rentPerDayHrs);
   
-    $Fee = $tenths * $tariff->rate_Per_Day; 
-
-    $extraHours = $totalHours % $tariff->rentPerDayHrs; 
+    $Fee = $DaysRented * $tariff->rate_Per_Day; 
   
-    $extraHoursFee = ($extraHours * $tariff->rent_Per_Hour); 
+    $extraHoursFee = ($ExtraHours * $tariff->rent_Per_Hour); 
    
     // Update rent status and extra hours fee
     $totalPrice = $Fee + $extraHoursFee;
         
     }else{
-        $totalPrice= $tariff->do_pu;
+        $Fee= $tariff->do_pu;
+        $extraHoursFee = ($ExtraHours * $tariff->rent_Per_Hour); 
+        $totalPrice = $Fee + $extraHoursFee;
     }
+  
     $balance = $totalPrice - $booking->downpayment_Fee - Remittance::where('rentID', $rent->rentID)->sum('amount');
- 
+
     if ($balance == 0){
         $rent->update([
             'payment_Status' => 'Paid'
@@ -156,7 +157,7 @@ public function completeRent(Request $request)
 
     $rent->update([
         'rent_Period_Status' => 'Completed',
-        'extra_Hours' => $totalHours,
+        'extra_Hours' => $ExtraHours,
         'total_Price' => $totalPrice,
         'balance' => $balance,
     ]);  

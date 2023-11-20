@@ -194,10 +194,7 @@
                     <div class="row"> 
                         <div class="col">
                             Vehicle Count: <span id="vCount">0</span> <br>
-                            Rent Per Day: ₱<span id="perDay">0.00</span> <br>
-                            Extra Hours: ₱<span id="xtra">0.00</span> <hr>
-                             
-                             
+                           
                         </div>
                     </div>
                     <div class="row">
@@ -346,68 +343,26 @@
 
         if (bookingType === 'Rent') {
             endDate = new Date(document.getElementById('EndDate').value);
-
             // Calculate daysToRent
-            daysToRent = (endDate - startDate) / (1000 * 60 * 60 * 24) + 1;
+            var daysToRent = Math.floor((endDate - StartDateTime) / (1000 * 60 * 60 * 24)) + 1;
+            
             console.log(daysToRent)
-            // If booking is for 1 day, compute the time starting at PickupTime
-            if (endDate.getDate() === startDate.getDate()) {
+           
+            
                 // Calculate subtotal for one day
-                var subtotal = parseFloat(ratePerDayInput.value) * totalVehicleQuantity ;
+                var subtotal = parseFloat(ratePerDayInput.value) * totalVehicleQuantity * daysToRent;
                 var downpayment = subtotal * 0.10;
-                
                 document.getElementById('vCount').textContent = totalVehicleQuantity;
-                document.getElementById('perDay').textContent = subtotal.toFixed(2);
-                document.getElementById('xtra').textContent = '0.00';
                 document.getElementById('subtotal').textContent = subtotal.toFixed(2);
                 document.getElementById('downpayment').textContent = downpayment.toFixed(2);
-                
                 document.getElementById('subtotalInput').value = subtotal.toFixed(2);
 
-            } else if (daysToRent > 1) {
                 // If booking is for more than 1 day
                 endDate.setHours(12, 0, 0, 0);
                 var timeToRent = endDate.getTime() - StartDateTime.getTime();
                 
                 var hoursToRent = timeToRent / (1000 * 60 * 60);
 
-                // If extra hours are greater than or equal to rentPerDayHrsInput
-                if (hoursToRent >= parseFloat(rentPerDayHrsInput.value)) {
-                    // Calculate extra hours
-                    var extraHours = Math.floor(hoursToRent / parseFloat(rentPerDayHrsInput.value)) * parseFloat(rentPerDayHrsInput.value);
-
-                    // Calculate subtotal for whole blocks of rentPerDayHrsInput
-                    var subtotalBlocks = (extraHours / parseFloat(rentPerDayHrsInput.value)) * parseFloat(ratePerDayInput.value);
-                    var subtotalBlocks = subtotalBlocks * totalVehicleQuantity;
-                    // Calculate subtotal for the remainder hours
-                    var remainderHours = hoursToRent % parseFloat(rentPerDayHrsInput.value);
-                    var subtotalRemainder = (remainderHours / parseFloat(rentPerDayHrsInput.value)) * parseFloat(ratePerDayInput.value);
-                    var remainderHours = remainderHours * totalVehicleQuantity;
-                    var subtotalRemainder= subtotalRemainder * totalVehicleQuantity;
-                    // Sum the subtotals for whole blocks and remainder
-                    var subtotal = subtotalBlocks + subtotalRemainder ;
-
-                    var downpayment = subtotal * 0.10;
-                    document.getElementById('perDay').textContent = subtotalBlocks.toFixed(2);
-                    document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-                    document.getElementById('xtra').textContent = subtotalRemainder.toFixed(2);
-                    document.getElementById('downpayment').textContent = downpayment.toFixed(2);
-                    document.getElementById('vCount').textContent = totalVehicleQuantity;
-
-                    document.getElementById('subtotalInput').value = subtotal.toFixed(2);
-                } else {
-                    // Use rentPerHourInput for extra hours (or rentPerDayHrsInput if less)
-                    rentPerDayHrsInput.value = Math.min(parseFloat(ratePerDayInput.value), parseFloat(rentPerHourInput.value));
-
-                    // Calculate subtotal
-                    var subtotal = parseFloat(ratePerDayInput.value) + parseFloat(rentPerDayHrsInput.value) * (daysToRent - 1);
-                    var downpayment = subtotal * 0.10;
-                    document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-                    document.getElementById('downpayment').textContent = downpayment.toFixed(2);
-                    document.getElementById('subtotalInput').value = subtotal.toFixed(2);
-                    document.getElementById('vCount').textContent = totalVehicleQuantity;
-                }
-            }
         } else if (bookingType === 'Pickup/Dropoff') {
             // Logic for Pickup/Dropoff booking type
             daysToRent = 1;
@@ -415,12 +370,11 @@
             var tariff = parseFloat(doPuInput.value);
 
             // Calculate subtotal
-            var subtotal = (tariff * daysToRent) * totalVehicleQuantity;
+            var subtotal = (tariff * daysToRent) * totalVehicleQuantity * daysToRent;
             var downpayment = subtotal * 0.10;
             document.getElementById('subtotal').textContent = subtotal.toFixed(2);
             document.getElementById('downpayment').textContent = downpayment.toFixed(2);
-            document.getElementById('xtra').textContent = '0.00';
-            document.getElementById('perDay').textContent = '0.00';
+            
             document.getElementById('subtotalInput').value = subtotal.toFixed(2);
             document.getElementById('vCount').textContent = totalVehicleQuantity;
         } else {
@@ -553,12 +507,12 @@
                     <div class="row"> 
                         <div class="col">
                             Rent Rate  (${hours} hours): ₱${ratePerDay} <br>
-                            Succeeding Rate Per Hour: ₱${rateExtra} <hr>
+                           <hr>
                         </div>
                     </div>
                     <div class="row"> 
                         <div class="col">
-                            <h6>Estimation of extra hours based on: <br> If more than 1 day, return of 12PM on the return date</h6>
+                            <h6>   Note: Succeeding Rate Per Hour: ₱${rateExtra}</h6>
                            <hr>
                         </div>
                     </div>
@@ -574,7 +528,7 @@
                     <div class="row"> 
                         <div class="col">
                             Dropoff/Pickup Rate: ₱${doPu} <br>
-                            Succeeding Rate Per Hour: ₱${rateExtra} <br>
+                            Note: Succeeding Rate Per Hour: ₱${rateExtra} <br>
                         </div>
                     </div>
                 `);
